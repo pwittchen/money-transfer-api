@@ -4,6 +4,8 @@ import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
+import com.pwittchen.money.transfer.api.repository.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.repository.exception.DifferentCurrencyException;
 import com.pwittchen.money.transfer.api.repository.exception.NotEnoughMoneyException;
 import io.reactivex.Completable;
 import java.util.LinkedList;
@@ -23,24 +25,46 @@ public class InMemoryTransactionRepository implements TransactionRepository {
 
   @Override public Completable commit(Transaction transaction) {
     return Completable.create(emitter -> {
-      Money senderBalance = getSenderBalance(transaction);
-      Money moneyWithTransactionFee = getMoneyWithTransactionFee(transaction);
 
-      if (senderBalance.isGreaterThan(moneyWithTransactionFee)) {
-        //TODO: use DI
-        //TODO: consider other validation variants -> check if accounts exist
-        //TODO: consider using conversion rate or allow to transfer only the same currency
+      //TODO: move this validation somewhere else
+      boolean senderAccountExists = accountRepository.get(transaction.from().number()).isPresent();
 
-        Account sender = accountRepository.get(transaction.from().number()).get();
-        sender.withdraw(moneyWithTransactionFee);
-
-        Account receiver = accountRepository.get(transaction.to().number()).get();
-        receiver.put(transaction.money());
-
-        transactions.add(transaction);
-      } else {
-        emitter.onError(new NotEnoughMoneyException(transaction.from().number()));
+      if (!senderAccountExists) {
+        emitter.onError(new AccountNotExistsException(transaction.from().number()));
+        return;
       }
+
+      boolean receiverAccountExists = accountRepository.get(transaction.to().number()).isPresent();
+
+      if (!receiverAccountExists) {
+        emitter.onError(new AccountNotExistsException(transaction.to().number()));
+        return;
+      }
+
+      if (getSenderBalance(transaction).isLessThan(getMoneyWithTransactionFee(transaction))) {
+        emitter.onError(new NotEnoughMoneyException(transaction.from().number()));
+        return;
+      }
+
+      if (!transaction.from().money().isSameCurrency(transaction.to().money())) {
+        emitter.onError(
+            new DifferentCurrencyException(
+                transaction.from().number(),
+                transaction.to().number()
+            )
+        );
+        return;
+      }
+
+      //TODO: use DI
+
+      Account sender = accountRepository.get(transaction.from().number()).get();
+      sender.withdraw(getMoneyWithTransactionFee(transaction));
+
+      Account receiver = accountRepository.get(transaction.to().number()).get();
+      receiver.put(transaction.money());
+
+      transactions.add(transaction);
     });
   }
 
