@@ -24,7 +24,7 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
-mainClassName = 'com.pwittchen.money.transfer.api.App'
+mainClassName = 'com.pwittchen.money.transfer.api.Application'
 
 sourceSets {
   main {
@@ -62,6 +62,7 @@ tasks.withType(FindBugs) {
   reports {
     xml.enabled = false
     html.enabled = true
+    reportLevel = "high"
   }
 }
 

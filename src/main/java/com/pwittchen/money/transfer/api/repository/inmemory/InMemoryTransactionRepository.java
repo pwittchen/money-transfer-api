@@ -9,6 +9,7 @@ import io.reactivex.Completable;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
+import javax.inject.Inject;
 
 public class InMemoryTransactionRepository implements TransactionRepository {
 
@@ -16,6 +17,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
   private final AccountRepository accountRepository;
   private final TransactionValidation transactionValidation;
 
+  @Inject
   public InMemoryTransactionRepository(final AccountRepository accountRepository,
       final TransactionValidation transactionValidation) {
     this.accountRepository = accountRepository;
