@@ -35,4 +35,6 @@ public final class User {
   public String address() {
     return address;
   }
+
+  //TODO: add builder
 }

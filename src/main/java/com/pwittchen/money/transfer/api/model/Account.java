@@ -39,4 +39,6 @@ public final class Account {
   public void withdraw(final Money moneyToWithdraw) {
     this.money = money.minus(moneyToWithdraw);
   }
+
+  //TODO: add builder
 }

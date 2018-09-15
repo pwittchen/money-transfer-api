@@ -44,4 +44,6 @@ public final class Transaction {
   public BigDecimal fee() {
     return fee;
   }
+
+  //TODO: add builder
 }
