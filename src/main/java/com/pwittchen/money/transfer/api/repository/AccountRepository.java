@@ -3,9 +3,10 @@ package com.pwittchen.money.transfer.api.repository;
 import com.pwittchen.money.transfer.api.model.Account;
 import io.reactivex.Completable;
 import java.util.List;
+import java.util.Optional;
 
 public interface AccountRepository {
-  Account get(String number);
+  Optional<Account> get(String number);
 
   List<Account> get();
 
