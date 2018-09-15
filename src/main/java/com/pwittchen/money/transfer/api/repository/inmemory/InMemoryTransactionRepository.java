@@ -65,6 +65,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
       receiver.put(transaction.money());
 
       transactions.add(transaction);
+      emitter.onComplete();
     });
   }
 
