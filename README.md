@@ -1,2 +1,2 @@
 # money-transfer-api
-REST API for money transfer between accounts
+HTTP Server with REST API for money transfer between bank accounts
