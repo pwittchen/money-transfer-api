@@ -1,7 +1,17 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.github.jengelman.gradle.plugins:shadow'
+  }
+}
+
 plugins {
   id 'java'
   id 'idea'
   id 'application'
+  id 'com.github.johnrengelman.shadow' version '2.0.4'
 }
 
 group 'com.pwittchen'
@@ -25,10 +35,21 @@ sourceSets {
   }
 }
 
+shadowJar {
+  baseName = 'app'
+  classifier = 'all'
+  version = '1.0'
+}
+
 repositories {
   mavenCentral()
 }
 
 dependencies {
+  implementation 'io.javalin:javalin:2.1.1'
+  implementation 'org.slf4j:slf4j-simple:1.7.25'
+
   testImplementation 'junit:junit:4.12'
+  testImplementation 'com.google.truth:truth:0.42'
+  testImplementation 'org.mockito:mockito-core:2.22.0'
 }
