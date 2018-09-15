@@ -1,7 +1,14 @@
 package com.pwittchen.money.transfer.api.repository.exception;
 
 public class AccountAlreadyExistsException extends RuntimeException {
+
+  private final String number;
+
+  public AccountAlreadyExistsException(String number) {
+    this.number = number;
+  }
+
   @Override public String getMessage() {
-    return "Account with given number already exists";
+    return String.format("Account with number %s already exists", number);
   }
 }

@@ -28,7 +28,7 @@ public class InMemoryAccountRepository implements AccountRepository {
   @Override public Completable create(Account account) {
     return Completable.create(emitter -> {
       if (accounts.containsKey(account.number())) {
-        emitter.onError(new AccountAlreadyExistsException());
+        emitter.onError(new AccountAlreadyExistsException(account.number()));
       } else {
         accounts.put(account.number(), account);
         emitter.onComplete();
@@ -39,9 +39,10 @@ public class InMemoryAccountRepository implements AccountRepository {
   @Override public Completable update(String number, Account account) {
     return Completable.create(emitter -> {
       if (accounts.containsKey(number)) {
-        accounts.put(number, account);
+        accounts.remove(number);
+        accounts.put(account.number(), account);
       } else {
-        emitter.onError(new AccountNotExistsException());
+        emitter.onError(new AccountNotExistsException(account.number()));
       }
     });
   }
@@ -52,7 +53,7 @@ public class InMemoryAccountRepository implements AccountRepository {
         accounts.remove(number);
         emitter.onComplete();
       } else {
-        emitter.onError(new AccountNotExistsException());
+        emitter.onError(new AccountNotExistsException(number));
       }
     });
   }
