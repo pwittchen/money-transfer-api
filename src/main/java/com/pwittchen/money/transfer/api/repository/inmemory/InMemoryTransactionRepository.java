@@ -9,8 +9,6 @@ import io.reactivex.Completable;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
-import org.jetbrains.annotations.NotNull;
-import org.joda.money.Money;
 
 public class InMemoryTransactionRepository implements TransactionRepository {
 
@@ -36,7 +34,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
       }
 
       Account sender = accountRepository.get(transaction.from().number()).get();
-      sender.withdraw(getMoneyWithTransactionFee(transaction));
+      sender.withdraw(transaction.money());
 
       Account receiver = accountRepository.get(transaction.to().number()).get();
       receiver.put(transaction.money());
@@ -44,12 +42,6 @@ public class InMemoryTransactionRepository implements TransactionRepository {
       transactions.add(transaction);
       emitter.onComplete();
     });
-  }
-
-  @NotNull private Money getMoneyWithTransactionFee(Transaction transaction) {
-    return transaction
-        .money()
-        .plus(transaction.fee());
   }
 
   @Override public Optional<Transaction> get(String id) {
