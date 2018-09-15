@@ -8,8 +8,4 @@ public class DefaultTransactionValidation implements TransactionValidation {
   @Override public boolean canCommit(Transaction transaction) {
     return true; //TODO: implement
   }
-
-  @Override public boolean canRevert(String id) {
-    return true; //TODO: implement
-  }
 }
