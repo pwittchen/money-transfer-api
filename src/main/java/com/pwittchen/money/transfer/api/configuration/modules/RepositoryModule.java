@@ -1,4 +1,4 @@
-package com.pwittchen.money.transfer.api.di.modules;
+package com.pwittchen.money.transfer.api.configuration.modules;
 
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;

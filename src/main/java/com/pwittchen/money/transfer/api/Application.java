@@ -1,9 +1,9 @@
 package com.pwittchen.money.transfer.api;
 
-import com.pwittchen.money.transfer.api.di.component.ApplicationComponent;
-import com.pwittchen.money.transfer.api.di.component.DaggerApplicationComponent;
-import com.pwittchen.money.transfer.api.di.modules.RepositoryModule;
-import com.pwittchen.money.transfer.api.di.modules.ValidationModule;
+import com.pwittchen.money.transfer.api.configuration.component.ApplicationComponent;
+import com.pwittchen.money.transfer.api.configuration.component.DaggerApplicationComponent;
+import com.pwittchen.money.transfer.api.configuration.modules.RepositoryModule;
+import com.pwittchen.money.transfer.api.configuration.modules.ValidationModule;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import io.javalin.Javalin;
