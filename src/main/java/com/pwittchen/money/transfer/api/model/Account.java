@@ -11,11 +11,11 @@ public final class Account {
     this(builder());
   }
 
-  protected Account(Builder builder) {
+  private Account(final Builder builder) {
     this(builder.number, builder.user, builder.money);
   }
 
-  protected Account(final String number, final User user, final Money money) {
+  private Account(final String number, final User user, final Money money) {
     this.number = number;
     this.user = user;
     this.money = money;

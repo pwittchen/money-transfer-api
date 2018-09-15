@@ -7,23 +7,20 @@ public final class Transaction {
   private final Account from;
   private final Account to;
   private final Money money;
-  private final Money fee;
 
   private Transaction() {
     this(builder());
   }
 
-  protected Transaction(final Builder builder) {
-    this(builder.id, builder.from, builder.to, builder.money, builder.fee);
+  private Transaction(final Builder builder) {
+    this(builder.id, builder.from, builder.to, builder.money);
   }
 
-  protected Transaction(final String id, final Account from, final Account to, final Money money,
-      final Money fee) {
+  private Transaction(final String id, final Account from, final Account to, final Money money) {
     this.id = id;
     this.from = from;
     this.to = to;
     this.money = money;
-    this.fee = fee;
   }
 
   public static Builder builder() {
@@ -62,20 +59,11 @@ public final class Transaction {
     return builder().money(money);
   }
 
-  public Money fee() {
-    return fee;
-  }
-
-  public static Builder fee(final Money fee) {
-    return builder().fee(fee);
-  }
-
   public static class Builder {
     private String id;
     private Account from;
     private Account to;
     private Money money;
-    private Money fee;
 
     private Builder() {
     }
@@ -97,11 +85,6 @@ public final class Transaction {
 
     public Builder money(final Money money) {
       this.money = money;
-      return this;
-    }
-
-    public Builder fee(final Money fee) {
-      this.fee = fee;
       return this;
     }
 

@@ -4,24 +4,19 @@ public final class User {
   private final String id;
   private final String name;
   private final String surname;
-  private final String email;
-  private final String address;
 
   private User() {
     this(builder());
   }
 
-  protected User(final Builder builder) {
-    this(builder.id, builder.name, builder.surname, builder.email, builder.address);
+  private User(final Builder builder) {
+    this(builder.id, builder.name, builder.surname);
   }
 
-  protected User(final String id, final String name, final String surname, final String email,
-      final String address) {
+  private User(final String id, final String name, final String surname) {
     this.id = id;
     this.name = name;
     this.surname = surname;
-    this.email = email;
-    this.address = address;
   }
 
   public static Builder builder() {
@@ -52,24 +47,10 @@ public final class User {
     return builder().surname(surname);
   }
 
-  public String email() {
-    return email;
-  }
-
-  public String address() {
-    return address;
-  }
-
-  public static Builder address(final String address) {
-    return builder().address(address);
-  }
-
   public static class Builder {
     private String id;
     private String name;
     private String surname;
-    private String email;
-    private String address;
 
     private Builder() {
     }
@@ -86,16 +67,6 @@ public final class User {
 
     public Builder surname(final String surname) {
       this.surname = surname;
-      return this;
-    }
-
-    public Builder email(final String email) {
-      this.email = email;
-      return this;
-    }
-
-    public Builder address(final String address) {
-      this.address = address;
       return this;
     }
 

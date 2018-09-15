@@ -41,7 +41,7 @@ public class DefaultTransactionValidation implements TransactionValidation {
     );
 
     rules.put(
-        transaction.from().money().isLessThan(transaction.money().plus(transaction.fee())),
+        transaction.from().money().isLessThan(transaction.money()),
         new NotEnoughMoneyException(transaction.from().number())
     );
 
