@@ -74,6 +74,9 @@ public class InMemoryAccountRepositoryTest {
     assertThat(accountRepository.get().isEmpty()).isFalse();
     assertThat(createdAccount).isEqualTo(account);
     assertThat(createdAccount.user()).isEqualTo(account.user());
+    assertThat(createdAccount.user().id()).isEqualTo(account.user().id());
+    assertThat(createdAccount.user().name()).isEqualTo(account.user().name());
+    assertThat(createdAccount.user().surname()).isEqualTo(account.user().surname());
     assertThat(createdAccount.number()).isEqualTo(account.number());
     assertThat(createdAccount.money()).isEqualTo(account.money());
   }
