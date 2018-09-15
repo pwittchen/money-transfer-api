@@ -8,7 +8,7 @@ import dagger.Component;
 
 @Component(modules = {RepositoryModule.class, ValidationModule.class})
 public interface ApplicationComponent {
-  AccountRepository injectAccountRepository();
+  AccountRepository accountRepository();
 
-  TransactionRepository injectTransactionRepository();
+  TransactionRepository transactionRepository();
 }

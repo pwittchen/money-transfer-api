@@ -16,8 +16,8 @@ public class Application {
 
   public static void main(String args[]) {
     final ApplicationComponent component = createApplicationComponent();
-    final AccountRepository accountRepository = component.injectAccountRepository();
-    final TransactionRepository transactionRepository = component.injectTransactionRepository();
+    final AccountRepository accountRepository = component.accountRepository();
+    final TransactionRepository transactionRepository = component.transactionRepository();
 
     Javalin app = Javalin.create().start(PORT);
     app.get("/", context -> context.result("server is running"));
