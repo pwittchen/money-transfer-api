@@ -5,7 +5,6 @@ import org.joda.money.Money;
 public final class Account {
   private final String number;
   private final User user;
-  private final Money allowedDebit;
   private Money money;
 
   private Account() {
@@ -13,14 +12,12 @@ public final class Account {
   }
 
   protected Account(Builder builder) {
-    this(builder.number, builder.user, builder.allowedDebit, builder.money);
+    this(builder.number, builder.user, builder.money);
   }
 
-  protected Account(final String number, final User user, final Money allowedDebit,
-      final Money money) {
+  protected Account(final String number, final User user, final Money money) {
     this.number = number;
     this.user = user;
-    this.allowedDebit = allowedDebit;
     this.money = money;
   }
 
@@ -44,14 +41,6 @@ public final class Account {
     return builder().user(user);
   }
 
-  public Money allowedDebit() {
-    return allowedDebit;
-  }
-
-  public static Builder allowedDebit(final Money allowedDebit) {
-    return builder().allowedDebit(allowedDebit);
-  }
-
   public Money money() {
     return money;
   }
@@ -71,7 +60,6 @@ public final class Account {
   public static class Builder {
     private String number;
     private User user;
-    private Money allowedDebit;
     private Money money;
 
     private Builder() {
@@ -84,11 +72,6 @@ public final class Account {
 
     public Builder user(final User user) {
       this.user = user;
-      return this;
-    }
-
-    public Builder allowedDebit(final Money allowedDebit) {
-      this.allowedDebit = allowedDebit;
       return this;
     }
 

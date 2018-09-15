@@ -9,8 +9,6 @@ import com.pwittchen.money.transfer.api.validation.TransactionValidation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
-import org.joda.money.Money;
 
 public class DefaultTransactionValidation implements TransactionValidation {
 
@@ -43,7 +41,7 @@ public class DefaultTransactionValidation implements TransactionValidation {
     );
 
     rules.put(
-        getSenderBalance(transaction).isLessThan(getMoneyWithTransactionFee(transaction)),
+        transaction.from().money().isLessThan(transaction.money().plus(transaction.fee())),
         new NotEnoughMoneyException(transaction.from().number())
     );
 
@@ -53,18 +51,5 @@ public class DefaultTransactionValidation implements TransactionValidation {
     );
 
     return rules;
-  }
-
-  @NotNull private Money getSenderBalance(Transaction transaction) {
-    return transaction
-        .from()
-        .money()
-        .plus(transaction.from().allowedDebit());
-  }
-
-  @NotNull private Money getMoneyWithTransactionFee(Transaction transaction) {
-    return transaction
-        .money()
-        .plus(transaction.fee());
   }
 }
