@@ -5,11 +5,14 @@ import org.joda.money.Money;
 public final class Account {
   private final String number;
   private final User user;
+  private final Money allowedDebit;
   private Money money;
 
-  public Account(final String number, final User user, final Money money) {
+  public Account(final String number, final User user, final Money allowedDebit,
+      final Money money) {
     this.number = number;
     this.user = user;
+    this.allowedDebit = allowedDebit;
     this.money = money;
   }
 
@@ -23,6 +26,10 @@ public final class Account {
 
   public Money money() {
     return money;
+  }
+
+  public Money allowedDebit() {
+    return allowedDebit;
   }
 
   public void put(final Money moneyToPut) {

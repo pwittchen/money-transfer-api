@@ -2,28 +2,58 @@ package com.pwittchen.money.transfer.api.repository.inmemory;
 
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
+import com.pwittchen.money.transfer.api.repository.exception.AccountAlreadyExistsException;
+import com.pwittchen.money.transfer.api.repository.exception.AccountNotExistsException;
 import io.reactivex.Completable;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class InMemoryAccountRepository implements AccountRepository {
+
+  private final Map<String, Account> accounts = new HashMap<>();
+
   @Override public Optional<Account> get(String number) {
-    return Optional.empty(); //TODO: implement
+    final Account account = accounts.get(number);
+    if (account == null) {
+      return Optional.empty();
+    }
+    return Optional.of(account);
   }
 
-  @Override public List<Account> get() {
-    return null; //TODO: implement
+  @Override public Map<String, Account> get() {
+    return accounts;
   }
 
   @Override public Completable create(Account account) {
-    return null; //TODO: implement
+    return Completable.create(emitter -> {
+      if (accounts.containsKey(account.number())) {
+        emitter.onError(new AccountAlreadyExistsException());
+      } else {
+        accounts.put(account.number(), account);
+        emitter.onComplete();
+      }
+    });
   }
 
   @Override public Completable update(String number, Account account) {
-    return null; //TODO: implement
+    return Completable.create(emitter -> {
+      if (accounts.containsKey(number)) {
+        accounts.put(number, account);
+      } else {
+        emitter.onError(new AccountNotExistsException());
+      }
+    });
   }
 
   @Override public Completable delete(String number) {
-    return null; //TODO: implement
+    return Completable.create(emitter -> {
+      if (accounts.containsKey(number)) {
+        accounts.remove(number);
+        emitter.onComplete();
+      } else {
+        emitter.onError(new AccountNotExistsException());
+      }
+    });
   }
 }
