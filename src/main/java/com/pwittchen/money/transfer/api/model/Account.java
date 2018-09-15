@@ -1,5 +1,6 @@
 package com.pwittchen.money.transfer.api.model;
 
+import java.util.Objects;
 import org.joda.money.Money;
 
 public final class Account {
@@ -55,6 +56,19 @@ public final class Account {
 
   public void withdraw(final Money moneyToWithdraw) {
     this.money = money.minus(moneyToWithdraw);
+  }
+
+  @Override public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Account account = (Account) o;
+    return Objects.equals(number, account.number) &&
+        Objects.equals(user, account.user) &&
+        Objects.equals(money, account.money);
+  }
+
+  @Override public int hashCode() {
+    return Objects.hash(number, user, money);
   }
 
   public static class Builder {
