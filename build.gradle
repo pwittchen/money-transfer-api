@@ -1,0 +1,34 @@
+plugins {
+  id 'java'
+  id 'idea'
+  id 'application'
+}
+
+group 'com.pwittchen'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+mainClassName = 'com.pwittchen.money.transfer.api.App'
+
+sourceSets {
+  main {
+    java {
+      srcDirs 'src/main/java'
+    }
+  }
+
+  test {
+    java {
+      srcDir 'src/test/java'
+    }
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  testImplementation 'junit:junit:4.12'
+}
