@@ -9,7 +9,7 @@ public final class Transaction {
   private final Account to;
   private final Money money;
   private final BigDecimal conversionRate;
-  private final BigDecimal transactionFee;
+  private final BigDecimal fee;
 
   public Transaction(final String id, final Account from, final Account to, final Money money,
       final BigDecimal conversionRate, final BigDecimal transactionFee) {
@@ -18,7 +18,7 @@ public final class Transaction {
     this.to = to;
     this.money = money;
     this.conversionRate = conversionRate;
-    this.transactionFee = transactionFee;
+    this.fee = transactionFee;
   }
 
   public String id() {
@@ -41,7 +41,7 @@ public final class Transaction {
     return conversionRate;
   }
 
-  public BigDecimal transactionFee() {
-    return transactionFee;
+  public BigDecimal fee() {
+    return fee;
   }
 }
