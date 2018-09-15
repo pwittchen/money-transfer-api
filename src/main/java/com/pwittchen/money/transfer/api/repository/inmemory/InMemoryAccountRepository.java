@@ -41,6 +41,7 @@ public class InMemoryAccountRepository implements AccountRepository {
       if (accounts.containsKey(number)) {
         accounts.remove(number);
         accounts.put(account.number(), account);
+        emitter.onComplete();
       } else {
         emitter.onError(new AccountNotExistsException(account.number()));
       }

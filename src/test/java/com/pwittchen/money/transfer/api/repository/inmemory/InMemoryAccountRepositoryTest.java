@@ -4,6 +4,7 @@ import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.exception.AccountAlreadyExistsException;
+import com.pwittchen.money.transfer.api.repository.exception.AccountNotExistsException;
 import io.reactivex.observers.TestObserver;
 import java.util.Map;
 import java.util.Optional;
@@ -58,7 +59,7 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test
-  @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test check is not needed
+  @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
   public void shouldCreateNewAccount() {
     // given
     TestObserver testObserver = new TestObserver();
@@ -89,23 +90,59 @@ public class InMemoryAccountRepositoryTest {
 
     // then
     testObserver.assertError(AccountAlreadyExistsException.class);
+    testObserver.assertErrorMessage(
+        new AccountAlreadyExistsException(account.number()).getMessage()
+    );
   }
 
   @Test
+  @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
   public void shouldUpdateAccount() {
-    //TODO: implement
+    // given
+    TestObserver testObserver = new TestObserver();
+    Account account = createAccount();
+    Account anotherAccount = createAnotherAccount(account.number());
+    accountRepository.create(account).subscribe();
+
+    // when
+    accountRepository.update(account.number(), anotherAccount).subscribe(testObserver);
+
+    // then
+    testObserver.assertComplete();
+    assertThat(accountRepository.get(account.number()).get()).isEqualTo(anotherAccount);
   }
 
   @Test
+  @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
   public void shouldUpdateAccountAndItsNumber() {
-    //TODO: implement
+    // given
+    TestObserver testObserver = new TestObserver();
+    Account account = createAccount();
+    String newAccountNumber = UUID.randomUUID().toString();
+    Account anotherAccount = createAnotherAccount(newAccountNumber);
+    accountRepository.create(account).subscribe();
 
+    // when
+    accountRepository.update(account.number(), anotherAccount).subscribe(testObserver);
+
+    // then
+    testObserver.assertComplete();
+    assertThat(accountRepository.get(newAccountNumber).get()).isEqualTo(anotherAccount);
+    assertThat(accountRepository.get(account.number()).isPresent()).isFalse();
   }
 
   @Test
   public void shouldNotUpdateAccountIfItDoesNotExist() {
-    //TODO: implement
+    // given
+    TestObserver testObserver = new TestObserver();
+    Account account = createAccount();
 
+    // when
+    accountRepository.update(account.number(), account).subscribe(testObserver);
+
+    // then
+    testObserver.assertError(AccountNotExistsException.class);
+    testObserver.assertErrorMessage(new AccountNotExistsException(account.number()).getMessage());
   }
 
   @Test
@@ -134,6 +171,24 @@ public class InMemoryAccountRepositoryTest {
         .id(UUID.randomUUID().toString())
         .name("John")
         .surname("Doe")
+        .build();
+  }
+
+  private Account createAnotherAccount(String number) {
+    return Account
+        .builder()
+        .user(createAnotherUser())
+        .number(number)
+        .money(Money.of(CurrencyUnit.GBP, 5))
+        .build();
+  }
+
+  private User createAnotherUser() {
+    return User
+        .builder()
+        .id(UUID.randomUUID().toString())
+        .name("testName")
+        .surname("testSurname")
         .build();
   }
 }

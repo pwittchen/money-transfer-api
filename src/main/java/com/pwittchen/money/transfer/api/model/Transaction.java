@@ -61,13 +61,20 @@ public final class Transaction {
   }
 
   @Override public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
     Transaction that = (Transaction) o;
-    return Objects.equals(id, that.id) &&
-        Objects.equals(from, that.from) &&
-        Objects.equals(to, that.to) &&
-        Objects.equals(money, that.money);
+
+    return Objects.equals(id, that.id)
+        && Objects.equals(from, that.from)
+        && Objects.equals(to, that.to)
+        && Objects.equals(money, that.money);
   }
 
   @Override public int hashCode() {
