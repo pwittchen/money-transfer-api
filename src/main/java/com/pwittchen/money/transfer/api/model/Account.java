@@ -8,7 +8,15 @@ public final class Account {
   private final Money allowedDebit;
   private Money money;
 
-  public Account(final String number, final User user, final Money allowedDebit,
+  private Account() {
+    this(builder());
+  }
+
+  protected Account(Builder builder) {
+    this(builder.number, builder.user, builder.allowedDebit, builder.money);
+  }
+
+  protected Account(final String number, final User user, final Money allowedDebit,
       final Money money) {
     this.number = number;
     this.user = user;
@@ -16,20 +24,40 @@ public final class Account {
     this.money = money;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   public String number() {
     return number;
+  }
+
+  public static Builder number(final String number) {
+    return builder().number(number);
   }
 
   public User user() {
     return user;
   }
 
-  public Money money() {
-    return money;
+  public static Builder user(final User user) {
+    return builder().user(user);
   }
 
   public Money allowedDebit() {
     return allowedDebit;
+  }
+
+  public static Builder allowedDebit(final Money allowedDebit) {
+    return builder().allowedDebit(allowedDebit);
+  }
+
+  public Money money() {
+    return money;
+  }
+
+  public static Builder money(final Money money) {
+    return builder().money(money);
   }
 
   public void put(final Money moneyToPut) {
@@ -40,5 +68,37 @@ public final class Account {
     this.money = money.minus(moneyToWithdraw);
   }
 
-  //TODO: add builder
+  public static class Builder {
+    private String number;
+    private User user;
+    private Money allowedDebit;
+    private Money money;
+
+    private Builder() {
+    }
+
+    public Builder number(final String number) {
+      this.number = number;
+      return this;
+    }
+
+    public Builder user(final User user) {
+      this.user = user;
+      return this;
+    }
+
+    public Builder allowedDebit(final Money allowedDebit) {
+      this.allowedDebit = allowedDebit;
+      return this;
+    }
+
+    public Builder money(final Money money) {
+      this.money = money;
+      return this;
+    }
+
+    public Account build() {
+      return new Account(this);
+    }
+  }
 }

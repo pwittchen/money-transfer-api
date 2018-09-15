@@ -28,14 +28,15 @@ public class InMemoryTransactionRepository implements TransactionRepository {
 
       if (senderBalance.isGreaterThan(moneyWithTransactionFee)) {
         //TODO: use DI
-        //TODO: consider other validation variants
+        //TODO: consider other validation variants -> check if accounts exist
         //TODO: consider using conversion rate or allow to transfer only the same currency
 
-        Account senderAccount = updateSenderAccount(transaction, moneyWithTransactionFee);
-        Account receiverAccount = updateReceiverAccount(transaction, transaction.money());
+        Account sender = accountRepository.get(transaction.from().number()).get();
+        sender.withdraw(moneyWithTransactionFee);
 
-        accountRepository.update(transaction.from().number(), senderAccount);
-        accountRepository.update(transaction.to().number(), receiverAccount);
+        Account receiver = accountRepository.get(transaction.to().number()).get();
+        receiver.put(transaction.money());
+
         transactions.add(transaction);
       } else {
         emitter.onError(new NotEnoughMoneyException(transaction.from().number()));
@@ -43,37 +44,17 @@ public class InMemoryTransactionRepository implements TransactionRepository {
     });
   }
 
-  @NotNull
-  private Account updateSenderAccount(Transaction transaction, Money moneyWithTransactionFee) {
-    //TODO: refactor it to builder pattern
-    return new Account(
-        transaction.from().number(),
-        transaction.from().user(),
-        transaction.from().allowedDebit(),
-        transaction.from().money().minus(moneyWithTransactionFee));
-  }
-
-  @NotNull
-  private Account updateReceiverAccount(Transaction transaction, Money money) {
-    //TODO: refactor it to builder pattern
-    return new Account(
-        transaction.from().number(),
-        transaction.from().user(),
-        transaction.from().allowedDebit(),
-        transaction.from().money().plus(money));
+  @NotNull private Money getSenderBalance(Transaction transaction) {
+    return transaction
+        .from()
+        .money()
+        .plus(transaction.from().allowedDebit());
   }
 
   @NotNull private Money getMoneyWithTransactionFee(Transaction transaction) {
     return transaction
         .money()
         .plus(transaction.fee());
-  }
-
-  @NotNull private Money getSenderBalance(Transaction transaction) {
-    return transaction
-        .from()
-        .money()
-        .plus(transaction.from().allowedDebit());
   }
 
   @Override public Optional<Transaction> get(String id) {
