@@ -147,13 +147,33 @@ public class InMemoryAccountRepositoryTest {
 
   @Test
   public void shouldDeleteAccount() {
-    //TODO: implement
+    // given
+    TestObserver testObserver = new TestObserver();
+    Account account = createAccount();
+    accountRepository.create(account).subscribe();
 
+    // when
+    accountRepository.delete(account.number()).subscribe(testObserver);
+
+    // then
+    testObserver.assertComplete();
+    assertThat(accountRepository.get(account.number()).isPresent()).isFalse();
   }
 
   @Test
   public void shouldNotDeleteAccountIfItDoesNotExist() {
-    //TODO: implement
+    // given
+    TestObserver testObserver = new TestObserver();
+    String numberWhichDoesNotExist = "numberWhichDoesNotExist";
+
+    // when
+    accountRepository.delete(numberWhichDoesNotExist).subscribe(testObserver);
+
+    // then
+    testObserver.assertError(AccountNotExistsException.class);
+    testObserver.assertErrorMessage(
+        new AccountNotExistsException(numberWhichDoesNotExist).getMessage()
+    );
   }
 
   private Account createAccount() {
