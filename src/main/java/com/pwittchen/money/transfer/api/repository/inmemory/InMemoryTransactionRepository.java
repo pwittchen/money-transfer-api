@@ -24,6 +24,17 @@ public class InMemoryTransactionRepository implements TransactionRepository {
     this.transactionValidation = transactionValidation;
   }
 
+  @Override public Optional<Transaction> get(String id) {
+    return transactions
+        .stream()
+        .filter(transaction -> transaction.id().equals(id))
+        .findFirst();
+  }
+
+  @Override public Queue<Transaction> get() {
+    return transactions;
+  }
+
   @Override
   @SuppressWarnings("OptionalGetWithoutIsPresent") // transactionValidation verifies it earlier
   public Completable commit(Transaction transaction) {
@@ -44,16 +55,5 @@ public class InMemoryTransactionRepository implements TransactionRepository {
       transactions.add(transaction);
       emitter.onComplete();
     });
-  }
-
-  @Override public Optional<Transaction> get(String id) {
-    return transactions
-        .stream()
-        .filter(transaction -> transaction.id().equals(id))
-        .findFirst();
-  }
-
-  @Override public Queue<Transaction> get() {
-    return transactions;
   }
 }

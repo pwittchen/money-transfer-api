@@ -6,9 +6,9 @@ import java.util.Optional;
 import java.util.Queue;
 
 public interface TransactionRepository {
-  Completable commit(Transaction transaction);
-
   Optional<Transaction> get(String id);
 
   Queue<Transaction> get();
+
+  Completable commit(Transaction transaction);
 }

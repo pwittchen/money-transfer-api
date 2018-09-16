@@ -8,11 +8,17 @@ import com.pwittchen.money.transfer.api.configuration.module.RepositoryModule;
 import com.pwittchen.money.transfer.api.configuration.module.ValidationModule;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
+import io.javalin.ForbiddenResponse;
 import io.javalin.Javalin;
 import io.javalin.JavalinEvent;
 import io.javalin.json.JavalinJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static io.javalin.apibuilder.ApiBuilder.delete;
+import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.apibuilder.ApiBuilder.path;
+import static io.javalin.apibuilder.ApiBuilder.post;
 
 public class Application {
   private static final Logger LOG = LoggerFactory.getLogger(Application.class);
@@ -25,7 +31,61 @@ public class Application {
 
     Javalin app = createServer();
 
-    app.get("/", context -> context.result("server is running"));
+    app.get("/", context -> {
+      throw new ForbiddenResponse();
+    });
+
+    app.get("/healthcheck", context -> context.result("OK").status(200));
+
+    app.before(context -> {
+      LOG.info("{}: {}", context.req.getMethod(), context.req.getRequestURI());
+    });
+
+    //TODO #1: expose accounts repo and transaction repo via API below
+    //TODO #2: move code, which will be created to the separate classes (controllers)
+
+    app.routes(() -> {
+      path("account", () -> {
+        path(":id", () -> {
+          get(context -> {
+            context.result("get account with id: ".concat(context.pathParam("id")));
+          });
+        });
+
+        get(context -> {
+          context.result("get all accounts");
+        });
+
+        post(context -> {
+          context.result("create new account");
+        });
+
+        delete(context -> {
+          context.result("delete account");
+        });
+      });
+
+      path("transaction", () -> {
+        path(":id", () -> {
+          get(context -> {
+            context.result("get transaction with id: ".concat(context.pathParam("id")));
+          });
+        });
+
+        get(context -> {
+          context.result("get all transactions");
+        });
+
+        post(context -> {
+          context.result("transaction committed");
+        });
+      });
+    });
+
+    app.exception(Exception.class, (exception, context) -> {
+      context.status(500);
+      LOG.error("error occurred", exception);
+    });
   }
 
   private static Javalin createServer() {
