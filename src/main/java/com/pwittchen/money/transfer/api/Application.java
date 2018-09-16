@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.pwittchen.money.transfer.api.configuration.component.ApplicationComponent;
 import com.pwittchen.money.transfer.api.configuration.component.DaggerApplicationComponent;
-import com.pwittchen.money.transfer.api.configuration.module.RepositoryModule;
-import com.pwittchen.money.transfer.api.configuration.module.ValidationModule;
 import com.pwittchen.money.transfer.api.controller.AccountController;
 import com.pwittchen.money.transfer.api.controller.TransactionController;
 import com.pwittchen.money.transfer.api.model.Response;
@@ -26,12 +24,18 @@ public class Application {
   private static final int PORT = 8000;
 
   public static void main(String args[]) {
-    final ApplicationComponent component = createApplicationComponent();
-
+    final ApplicationComponent component = DaggerApplicationComponent.create();
     final AccountController accountController = component.accountController();
     final TransactionController transactionController = component.transactionController();
 
-    Javalin app = createServer();
+    Gson gson = new GsonBuilder().create();
+    JavalinJson.setFromJsonMapper(gson::fromJson);
+    JavalinJson.setToJsonMapper(gson::toJson);
+
+    Javalin app = Javalin.create()
+        .event(JavalinEvent.SERVER_STARTED, () -> LOG.info("server started"))
+        .event(JavalinEvent.SERVER_START_FAILED, () -> LOG.error("server start failed"))
+        .start(PORT);
 
     app.before(context -> {
       LOG.info("{}\t {}", context.req.getMethod(), context.req.getRequestURI());
@@ -66,27 +70,5 @@ public class Application {
       context.status(500);
       LOG.error("error occurred", exception);
     });
-  }
-
-  private static ApplicationComponent createApplicationComponent() {
-    return DaggerApplicationComponent.builder()
-        .repositoryModule(new RepositoryModule())
-        .validationModule(new ValidationModule())
-        .build();
-  }
-
-  private static Javalin createServer() {
-    initializeJsonMapping();
-
-    return Javalin.create()
-        .event(JavalinEvent.SERVER_STARTED, () -> LOG.info("server started"))
-        .event(JavalinEvent.SERVER_START_FAILED, () -> LOG.error("server start failed"))
-        .start(PORT);
-  }
-
-  private static void initializeJsonMapping() {
-    Gson gson = new GsonBuilder().create();
-    JavalinJson.setFromJsonMapper(gson::fromJson);
-    JavalinJson.setToJsonMapper(gson::toJson);
   }
 }
