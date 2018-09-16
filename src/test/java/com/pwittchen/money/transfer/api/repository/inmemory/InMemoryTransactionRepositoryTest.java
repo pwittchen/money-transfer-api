@@ -7,13 +7,14 @@ import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import com.pwittchen.money.transfer.api.validation.TransactionValidation;
 import com.pwittchen.money.transfer.api.validation.exception.NotEnoughMoneyException;
-import io.reactivex.observers.TestObserver;
 import java.util.Optional;
 import java.util.UUID;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -34,6 +35,9 @@ public class InMemoryTransactionRepositoryTest {
   @Mock
   private TransactionValidation transactionValidation;
 
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
+
   @Before
   public void setUp() {
     transactionRepository = new InMemoryTransactionRepository(
@@ -42,9 +46,8 @@ public class InMemoryTransactionRepositoryTest {
   }
 
   @Test
-  public void shouldNotCommitTransactionWhenValidationDetectedError() {
+  public void shouldNotCommitTransactionWhenValidationDetectedError() throws Exception {
     // given
-    TestObserver testObserver = new TestObserver();
     Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50));
 
@@ -61,19 +64,17 @@ public class InMemoryTransactionRepositoryTest {
     );
 
     // when
-    transactionRepository.commit(transaction).subscribe(testObserver);
+    expectedException.expect(NotEnoughMoneyException.class);
+    expectedException.expectMessage(new NotEnoughMoneyException(sender.number()).getMessage());
 
     // then
-    testObserver.assertError(NotEnoughMoneyException.class);
-    testObserver.assertErrorMessage(new NotEnoughMoneyException(sender.number()).getMessage());
-    assertThat(transactionRepository.get().isEmpty()).isTrue();
+    transactionRepository.commit(transaction);
   }
 
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent") // it's not relevant for this test
-  public void shouldCommitTransaction() {
+  public void shouldCommitTransaction() throws Exception {
     // given
-    TestObserver testObserver = new TestObserver();
     Account sender = spy(createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100)));
     Account receiver = spy(createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50)));
 
@@ -90,18 +91,17 @@ public class InMemoryTransactionRepositoryTest {
     when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     // when
-    transactionRepository.commit(transaction).subscribe(testObserver);
+    transactionRepository.commit(transaction);
 
     // then
     verify(sender).withdraw(transaction.money());
     verify(receiver).put(transaction.money());
     assertThat(transactionRepository.get().isEmpty()).isFalse();
-    testObserver.assertComplete();
   }
 
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent") // it's not relevant for this test
-  public void shouldGetCreatedTransaction() {
+  public void shouldGetCreatedTransaction() throws Exception {
     // given
     Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50));
@@ -119,7 +119,7 @@ public class InMemoryTransactionRepositoryTest {
     when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     // when
-    transactionRepository.commit(transaction).subscribe();
+    transactionRepository.commit(transaction);
 
     // then
     Transaction createdTransaction = transactionRepository.get(transaction.id()).get();
@@ -131,7 +131,7 @@ public class InMemoryTransactionRepositoryTest {
   }
 
   @Test
-  public void shouldGetAllTransactions() {
+  public void shouldGetAllTransactions() throws Exception {
     // given
     Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50));
@@ -158,8 +158,8 @@ public class InMemoryTransactionRepositoryTest {
     when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     // when
-    transactionRepository.commit(transactionOne).subscribe();
-    transactionRepository.commit(transactionTwo).subscribe();
+    transactionRepository.commit(transactionOne);
+    transactionRepository.commit(transactionTwo);
 
     // then
     assertThat(transactionRepository.get().size()).isEqualTo(2);

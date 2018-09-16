@@ -93,27 +93,23 @@ public class Application {
               )
               .build();
 
-          accountRepository
-              .create(account)
-              .subscribe(() -> {
-                context.json(Response.builder().message("account created").build());
-              }, throwable -> {
-                context.json(Response.builder().message(throwable.getMessage()).build());
-              });
+          try {
+            accountRepository.create(account);
+            context.json(account);
+          } catch (Exception exception) {
+            context.json(Response.builder().message(exception.getMessage()).build());
+          }
         });
 
         delete(context -> {
-          accountRepository
-              .delete(context.formParam("id"))
-              .subscribe(() -> {
-                    context.json(Response.builder().message(
-                        String.format("account with id %s deleted", context.formParam("id"))
-                    ).build());
-                  },
-                  throwable -> {
-                    context.json(Response.builder().message(throwable.getMessage()).build());
-                  }
-              );
+          try {
+            accountRepository.delete(context.formParam("id"));
+            context.json(Response.builder().message(
+                String.format("account with id %s deleted", context.formParam("id"))
+            ).build());
+          } catch (Exception exception) {
+            context.json(Response.builder().message(exception.getMessage()).build());
+          }
         });
       });
 
@@ -158,14 +154,12 @@ public class Application {
                 )
                 .build();
 
-            transactionRepository
-                .commit(transaction)
-                .subscribe(() -> {
-                  context.json(Response.builder().message("transaction committed").build());
-                }, throwable -> {
-                  LOG.error("error", throwable);
-                  context.json(Response.builder().message(throwable.getMessage()).build());
-                });
+            try {
+              transactionRepository.commit(transaction);
+              context.json(transaction);
+            } catch (Exception exception) {
+              context.json(Response.builder().message(exception.getMessage()).build());
+            }
           } else {
             context.json(Response.builder()
                 .message("Trying to transfer money from or to account, which does not exist")

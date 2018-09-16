@@ -4,7 +4,6 @@ import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
-import io.reactivex.Completable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -27,37 +26,31 @@ public class InMemoryAccountRepository implements AccountRepository {
 
   //TODO: add validation for money
   //TODO: consider moving whole validation to separate class like in transactions
-  @Override public Completable create(Account account) {
-    return Completable.create(emitter -> {
-      if (accounts.containsKey(account.number())) {
-        emitter.onError(new AccountAlreadyExistsException(account.number()));
-      } else {
-        accounts.put(account.number(), account);
-        emitter.onComplete();
-      }
-    });
+
+  @Override public Account create(Account account) {
+    if (accounts.containsKey(account.number())) {
+      throw new AccountAlreadyExistsException(account.number());
+    } else {
+      accounts.put(account.number(), account);
+      return account;
+    }
   }
 
-  @Override public Completable update(String number, Account account) {
-    return Completable.create(emitter -> {
-      if (accounts.containsKey(number)) {
-        accounts.remove(number);
-        accounts.put(account.number(), account);
-        emitter.onComplete();
-      } else {
-        emitter.onError(new AccountNotExistsException(account.number()));
-      }
-    });
+  @Override public Account update(String number, Account account) {
+    if (accounts.containsKey(number)) {
+      accounts.remove(number);
+      accounts.put(account.number(), account);
+      return account;
+    } else {
+      throw new AccountNotExistsException(account.number());
+    }
   }
 
-  @Override public Completable delete(String number) {
-    return Completable.create(emitter -> {
-      if (number != null && !number.isEmpty() && accounts.containsKey(number)) {
-        accounts.remove(number);
-        emitter.onComplete();
-      } else {
-        emitter.onError(new AccountNotExistsException(number));
-      }
-    });
+  @Override public void delete(String number) {
+    if (number != null && !number.isEmpty() && accounts.containsKey(number)) {
+      accounts.remove(number);
+    } else {
+      throw new AccountNotExistsException(number);
+    }
   }
 }

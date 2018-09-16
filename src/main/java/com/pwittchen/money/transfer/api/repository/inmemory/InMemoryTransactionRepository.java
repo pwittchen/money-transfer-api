@@ -5,7 +5,6 @@ import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import com.pwittchen.money.transfer.api.validation.TransactionValidation;
-import io.reactivex.Completable;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
@@ -36,24 +35,20 @@ public class InMemoryTransactionRepository implements TransactionRepository {
   }
 
   @Override
-  @SuppressWarnings("OptionalGetWithoutIsPresent") // transactionValidation verifies it earlier
-  public Completable commit(Transaction transaction) {
-    return Completable.create(emitter -> {
-      Optional<Exception> error = transactionValidation.validate(transaction);
+  public Transaction commit(Transaction transaction) throws Exception {
+    Optional<Exception> error = transactionValidation.validate(transaction);
 
-      if (error.isPresent()) {
-        emitter.onError(error.get());
-        return;
-      }
+    if (error.isPresent()) {
+      throw error.get();
+    }
 
-      Account sender = accountRepository.get(transaction.from().number()).get();
-      sender.withdraw(transaction.money());
+    Account sender = accountRepository.get(transaction.from().number()).get();
+    sender.withdraw(transaction.money());
 
-      Account receiver = accountRepository.get(transaction.to().number()).get();
-      receiver.put(transaction.money());
+    Account receiver = accountRepository.get(transaction.to().number()).get();
+    receiver.put(transaction.money());
 
-      transactions.add(transaction);
-      emitter.onComplete();
-    });
+    transactions.add(transaction);
+    return transaction;
   }
 }
