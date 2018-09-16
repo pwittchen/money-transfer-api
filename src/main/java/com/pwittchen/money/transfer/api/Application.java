@@ -28,6 +28,7 @@ public class Application {
   private static final Logger LOG = LoggerFactory.getLogger(Application.class);
   private static final int PORT = 8000;
 
+  @SuppressWarnings("ResultOfMethodCallIgnored") // subscriptions don't need to be disposed now
   public static void main(String args[]) {
     final ApplicationComponent component = createApplicationComponent();
     final AccountRepository accountRepository = component.accountRepository();
@@ -64,7 +65,7 @@ public class Application {
               context
                   .status(404)
                   .json(Response.builder().message(String.format(
-                      "transaction with id %s does not exist", context.pathParam("id")
+                      "account with id %s does not exist", context.pathParam("id")
                   )));
             }
           });
@@ -79,7 +80,19 @@ public class Application {
         });
 
         delete(context -> {
-          context.result("delete account");
+          accountRepository
+              .delete(context.formParam("id"))
+              .subscribe(() -> {
+                    context.json(Response.builder().message(
+                        String.format("account with id %s deleted", context.formParam("id"))
+                    ));
+                  },
+                  throwable -> {
+                    context
+                        .status(404)
+                        .json(Response.builder().message(throwable.getMessage()));
+                  }
+              );
         });
       });
 

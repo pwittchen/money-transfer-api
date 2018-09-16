@@ -50,7 +50,7 @@ public class InMemoryAccountRepository implements AccountRepository {
 
   @Override public Completable delete(String number) {
     return Completable.create(emitter -> {
-      if (accounts.containsKey(number)) {
+      if (number != null && !number.isEmpty() && accounts.containsKey(number)) {
         accounts.remove(number);
         emitter.onComplete();
       } else {
