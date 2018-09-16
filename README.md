@@ -4,21 +4,21 @@ HTTP server with REST API for money transfer between bank accounts
 Contents
 --------
 - [Usage](#usage)
-- [Tech Stack](#tech-stack)
+- [Tech stack](#tech-stack)
 - [Building and running application](#building-and-running-application)
 - [Tests](#tests)
-- [Code Style](#code-style)
-- [Static Code Analysis](#static-code-analysis)
+- [Code style](#code-style)
+- [Static code analysis](#static-code-analysis)
 
 Usage
 -----
 
 TBD.
 
-Tech Stack
+Tech stack
 ----------
 
-Tech Stack used in this project is as follows:
+Tech stack used in this project is as follows:
 
 - **Application**: Java 8, Gradle, Javalin, Slf4J, Dagger, Joda Money, RxJava, Gson
 - **Tests**: JUnit, Truth, Mockito, REST Assured
@@ -38,7 +38,7 @@ To start application, execute:
 ./gradlew run
 ```
 
-### Fat Jar
+### Fat jar
 
 To generate fat jar file with all dependencies, execute:
 
@@ -69,15 +69,15 @@ In order to generate test coverage report run the following command:
 
 Generated test can be found in `build/reports/jacoco/` directory
 
-Code Style
+Code style
 ----------
 
 Code style used in the project is called `Square` from [Java Code Styles repository by Square](https://github.com/square/java-code-styles).
 
-Static Code Analysis
+Static code analysis
 --------------------
 
-Static Code Analysis runs CheckStyle, PMD and FindBugs. It can be executed with command:
+Static code analysis runs CheckStyle, PMD and FindBugs. It can be executed with command:
 
 ```
 ./gradlew check
