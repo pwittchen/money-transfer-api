@@ -32,20 +32,20 @@ public class Application {
     Javalin app = createServer();
 
     app.before(context -> {
-      LOG.info("{}: {}", context.req.getMethod(), context.req.getRequestURI());
+      LOG.info("{}\t {}", context.req.getMethod(), context.req.getRequestURI());
     });
 
     app.get("/", context -> {
       throw new ForbiddenResponse();
     });
 
-    app.get("/healthcheck", context -> context.result("OK").status(200));
+    app.get("/health", context -> context.result("OK").status(200));
 
     //TODO #1: expose accounts repo and transaction repo via API below
     //TODO #2: move code, which will be created to separate classes (controllers)
 
     app.routes(() -> {
-      path("account", () -> {
+      path("/account", () -> {
         path(":id", () -> {
           get(context -> {
             context.result("get account with id: ".concat(context.pathParam("id")));
@@ -65,7 +65,7 @@ public class Application {
         });
       });
 
-      path("transaction", () -> {
+      path("/transaction", () -> {
         path(":id", () -> {
           get(context -> {
             context.result("get transaction with id: ".concat(context.pathParam("id")));
