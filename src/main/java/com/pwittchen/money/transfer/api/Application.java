@@ -42,7 +42,7 @@ public class Application {
     app.get("/healthcheck", context -> context.result("OK").status(200));
 
     //TODO #1: expose accounts repo and transaction repo via API below
-    //TODO #2: move code, which will be created to the separate classes (controllers)
+    //TODO #2: move code, which will be created to separate classes (controllers)
 
     app.routes(() -> {
       path("account", () -> {
