@@ -56,8 +56,8 @@ jacocoTestReport {
     classDirectories = files(classDirectories.files.collect {
       fileTree(dir: it,
               excludes: [
-                      '**/*Factory*/**',
-                      '**/*Provide*/**',
+                      '**/*_Provide*/**',
+                      '**/*_Factory*/**',
                       '**/*_MembersInjector.class',
                       '**/*Dagger*'
               ])
