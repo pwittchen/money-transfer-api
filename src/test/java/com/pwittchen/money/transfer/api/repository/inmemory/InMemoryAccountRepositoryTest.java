@@ -16,7 +16,6 @@ import org.junit.rules.ExpectedException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@SuppressWarnings("unchecked") // these warnings are not relevant for unit tests below
 public class InMemoryAccountRepositoryTest {
 
   private AccountRepository accountRepository = new InMemoryAccountRepository();
