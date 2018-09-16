@@ -3,17 +3,12 @@ HTTP server with REST API for money transfer between bank accounts
 
 Contents
 --------
-- [Usage](#usage)
 - [Tech stack](#tech-stack)
 - [Building and running application](#building-and-running-application)
+- [Endpoints](#endpoints)
 - [Tests](#tests)
 - [Code style](#code-style)
 - [Static code analysis](#static-code-analysis)
-
-Usage
------
-
-TBD.
 
 Tech stack
 ----------
@@ -51,6 +46,11 @@ Assuming you have executed command above, to run server as a standalone fat jar,
 ```
 java -jar build/libs/app-1.0-all.jar
 ```
+
+Endpoints
+---------
+
+TBD.
 
 Tests
 -----
