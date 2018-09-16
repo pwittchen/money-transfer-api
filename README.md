@@ -26,7 +26,7 @@ Tech Stack used in this project is as follows:
 Building and running application
 --------------------------------
 
-To build application, execute::
+To build application, execute:
 
 ```
 ./gradlew build
@@ -38,7 +38,7 @@ To start application, execute:
 ./gradlew run
 ```
 
-### Fat jar
+### Fat Jar
 
 To generate fat jar file with all dependencies, execute:
 
@@ -46,7 +46,7 @@ To generate fat jar file with all dependencies, execute:
 ./gradlew shadowJar
 ```
 
-Assuming you have generated fat jar, to run server as a standalone fat jar, execute:
+Assuming you have executed command above, to run server as a standalone fat jar, execute:
 
 ```
 java -jar build/libs/app-1.0-all.jar
