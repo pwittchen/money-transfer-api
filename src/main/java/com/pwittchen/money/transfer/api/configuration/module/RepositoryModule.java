@@ -8,11 +8,13 @@ import com.pwittchen.money.transfer.api.validation.TransactionValidation;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Module
 public class RepositoryModule {
 
   @Provides
+  @Singleton
   AccountRepository provideAccountRepository() {
     return new InMemoryAccountRepository();
   }

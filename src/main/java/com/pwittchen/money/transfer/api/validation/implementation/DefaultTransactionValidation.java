@@ -2,11 +2,11 @@ package com.pwittchen.money.transfer.api.validation.implementation;
 
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
+import com.pwittchen.money.transfer.api.validation.TransactionValidation;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.DifferentCurrencyException;
 import com.pwittchen.money.transfer.api.validation.exception.NotEnoughMoneyException;
 import com.pwittchen.money.transfer.api.validation.exception.TransferToTheSameAccountException;
-import com.pwittchen.money.transfer.api.validation.TransactionValidation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 public class DefaultTransactionValidation implements TransactionValidation {
 
-  private final AccountRepository accountRepository;
+  private AccountRepository accountRepository;
 
   @Inject
   public DefaultTransactionValidation(final AccountRepository accountRepository) {

@@ -14,8 +14,8 @@ import javax.inject.Inject;
 public class InMemoryTransactionRepository implements TransactionRepository {
 
   private final Queue<Transaction> transactions = new LinkedList<>();
-  private final AccountRepository accountRepository;
-  private final TransactionValidation transactionValidation;
+  private AccountRepository accountRepository;
+  private TransactionValidation transactionValidation;
 
   @Inject
   public InMemoryTransactionRepository(final AccountRepository accountRepository,

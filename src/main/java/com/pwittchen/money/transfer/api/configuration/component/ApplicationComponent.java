@@ -5,7 +5,9 @@ import com.pwittchen.money.transfer.api.configuration.module.ValidationModule;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import dagger.Component;
+import javax.inject.Singleton;
 
+@Singleton
 @Component(modules = {
     RepositoryModule.class,
     ValidationModule.class

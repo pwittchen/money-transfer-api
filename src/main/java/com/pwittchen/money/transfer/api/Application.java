@@ -68,7 +68,7 @@ public class Application {
                   .status(404)
                   .json(Response.builder().message(String.format(
                       "account with id %s does not exist", context.pathParam("id")
-                  )));
+                  )).build());
             }
           });
         });
@@ -96,9 +96,9 @@ public class Application {
           accountRepository
               .create(account)
               .subscribe(() -> {
-                context.json(Response.builder().message("account created"));
+                context.json(Response.builder().message("account created").build());
               }, throwable -> {
-                context.json(Response.builder().message(throwable.getMessage()));
+                context.json(Response.builder().message(throwable.getMessage()).build());
               });
         });
 
@@ -108,10 +108,10 @@ public class Application {
               .subscribe(() -> {
                     context.json(Response.builder().message(
                         String.format("account with id %s deleted", context.formParam("id"))
-                    ));
+                    ).build());
                   },
                   throwable -> {
-                    context.json(Response.builder().message(throwable.getMessage()));
+                    context.json(Response.builder().message(throwable.getMessage()).build());
                   }
               );
         });
@@ -129,7 +129,7 @@ public class Application {
                   .status(404)
                   .json(Response.builder().message(String.format(
                       "transaction with id %s does not exist", context.pathParam("id")
-                  )));
+                  )).build());
             }
           });
         });
@@ -139,7 +139,38 @@ public class Application {
         });
 
         post(context -> {
-          context.result("transaction committed"); //TODO: implement
+          final String senderAccountNumber = context.formParam("from");
+          final String receiverAccountNumber = context.formParam("to");
+
+          Optional<Account> senderAccount = accountRepository.get(senderAccountNumber);
+          Optional<Account> receiverAccount = accountRepository.get(receiverAccountNumber);
+
+          if (senderAccount.isPresent() && receiverAccount.isPresent()) {
+
+            Transaction transaction = Transaction.builder()
+                .id(UUID.randomUUID().toString())
+                .from(senderAccount.get())
+                .to(receiverAccount.get())
+                .money(Money.parse(
+                    String.format("%s %s",
+                        context.formParam("currency"),
+                        context.formParam("money")))
+                )
+                .build();
+
+            transactionRepository
+                .commit(transaction)
+                .subscribe(() -> {
+                  context.json(Response.builder().message("transaction committed").build());
+                }, throwable -> {
+                  LOG.error("error", throwable);
+                  context.json(Response.builder().message(throwable.getMessage()).build());
+                });
+          } else {
+            context.json(Response.builder()
+                .message("Trying to transfer money from or to account, which does not exist")
+                .build());
+          }
         });
       });
     });
