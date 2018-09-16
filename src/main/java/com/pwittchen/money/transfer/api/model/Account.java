@@ -30,24 +30,12 @@ public class Account {
     return number;
   }
 
-  public static Builder number(final String number) {
-    return builder().number(number);
-  }
-
   public User user() {
     return user;
   }
 
-  public static Builder user(final User user) {
-    return builder().user(user);
-  }
-
   public Money money() {
     return money;
-  }
-
-  public static Builder money(final Money money) {
-    return builder().money(money);
   }
 
   public void put(final Money moneyToPut) {

@@ -32,32 +32,16 @@ public class Transaction {
     return id;
   }
 
-  public static Builder id(final String id) {
-    return builder().id(id);
-  }
-
   public Account from() {
     return from;
-  }
-
-  public static Builder from(final Account from) {
-    return builder().from(from);
   }
 
   public Account to() {
     return to;
   }
 
-  public static Builder to(final Account to) {
-    return builder().to(to);
-  }
-
   public Money money() {
     return money;
-  }
-
-  public static Builder money(final Money money) {
-    return builder().money(money);
   }
 
   @Override public boolean equals(Object o) {

@@ -1,0 +1,79 @@
+package com.pwittchen.money.transfer.api.model;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
+import org.junit.Test;
+
+import static com.google.common.truth.Truth.assertThat;
+
+public class AccountTest {
+
+  @Test
+  public void constructorShouldBePrivate() throws NoSuchMethodException, IllegalAccessException,
+      InvocationTargetException, InstantiationException {
+
+    // when
+    Constructor<Account> constructor = Account.class.getDeclaredConstructor();
+
+    // then
+    assertThat(Modifier.isPrivate(constructor.getModifiers())).isTrue();
+
+    constructor.setAccessible(true);
+    constructor.newInstance();
+  }
+
+  @Test
+  public void objectsShouldBeEqual() {
+    // when
+    Account accountOne = createAccount();
+    Account accountTwo = createAccount();
+
+    // then
+    assertThat(accountOne.equals(accountTwo)).isTrue();
+  }
+
+  @Test
+  public void objectsShouldBeEqualWhenTheyAreTheSameInstance() {
+    // when
+    Account account = createAccount();
+
+    // then
+    assertThat(account.equals(account)).isTrue();
+  }
+
+  @Test
+  public void objectsShouldNotBeEqualWhenOneIsNull() {
+    // when
+    Account account = createAccount();
+
+    // then
+    assertThat(account.equals(null)).isFalse();
+  }
+
+  @Test
+  public void objectsShouldBeInTheSameBucket() {
+    // when
+    Account accountOne = createAccount();
+    Account accountTwo = createAccount();
+
+    // then
+    assertThat(accountOne.hashCode() == accountTwo.hashCode()).isTrue();
+  }
+
+  private Account createAccount() {
+    User user = User.builder()
+        .id("1")
+        .name("John")
+        .surname("Doe")
+        .build();
+
+    return Account.builder()
+        .number("1")
+        .user(user)
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+  }
+}

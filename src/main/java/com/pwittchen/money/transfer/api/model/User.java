@@ -29,24 +29,12 @@ public class User {
     return id;
   }
 
-  public static Builder id(final String id) {
-    return builder().id(id);
-  }
-
   public String name() {
     return name;
   }
 
-  public static Builder name(final String name) {
-    return builder().name(name);
-  }
-
   public String surname() {
     return surname;
-  }
-
-  public static Builder surname(final String surname) {
-    return builder().surname(surname);
   }
 
   @Override public boolean equals(Object o) {
