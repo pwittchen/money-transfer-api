@@ -89,7 +89,6 @@ public class Application {
                   },
                   throwable -> {
                     context
-                        .status(404)
                         .json(Response.builder().message(throwable.getMessage()));
                   }
               );
