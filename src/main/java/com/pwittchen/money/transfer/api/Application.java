@@ -28,11 +28,11 @@ public class Application {
     final AccountController accountController = component.accountController();
     final TransactionController transactionController = component.transactionController();
 
-    Gson gson = new GsonBuilder().create();
+    final Gson gson = new GsonBuilder().create();
     JavalinJson.setFromJsonMapper(gson::fromJson);
     JavalinJson.setToJsonMapper(gson::toJson);
 
-    Javalin app = Javalin.create()
+    final Javalin app = Javalin.create()
         .event(JavalinEvent.SERVER_STARTED, () -> LOG.info("server started"))
         .event(JavalinEvent.SERVER_START_FAILED, () -> LOG.error("server start failed"))
         .start(PORT);
