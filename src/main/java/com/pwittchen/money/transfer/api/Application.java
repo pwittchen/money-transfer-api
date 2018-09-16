@@ -1,5 +1,7 @@
 package com.pwittchen.money.transfer.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.pwittchen.money.transfer.api.configuration.component.ApplicationComponent;
 import com.pwittchen.money.transfer.api.configuration.component.DaggerApplicationComponent;
 import com.pwittchen.money.transfer.api.configuration.modules.RepositoryModule;
@@ -7,6 +9,8 @@ import com.pwittchen.money.transfer.api.configuration.modules.ValidationModule;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import io.javalin.Javalin;
+import io.javalin.JavalinEvent;
+import io.javalin.json.JavalinJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,9 +23,21 @@ public class Application {
     final AccountRepository accountRepository = component.accountRepository();
     final TransactionRepository transactionRepository = component.transactionRepository();
 
-    Javalin app = Javalin.create().start(PORT);
+    initializeJsonMapping();
+
+    Javalin app = Javalin
+        .create()
+        .event(JavalinEvent.SERVER_STARTED, () -> LOG.info("server started"))
+        .event(JavalinEvent.SERVER_START_FAILED, () -> LOG.error("server start failed"))
+        .start(PORT);
+
     app.get("/", context -> context.result("server is running"));
-    LOG.info("server is running");
+  }
+
+  private static void initializeJsonMapping() {
+    Gson gson = new GsonBuilder().create();
+    JavalinJson.setFromJsonMapper(gson::fromJson);
+    JavalinJson.setToJsonMapper(gson::toJson);
   }
 
   private static ApplicationComponent createApplicationComponent() {

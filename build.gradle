@@ -75,6 +75,7 @@ dependencies {
   implementation 'org.slf4j:slf4j-simple:1.7.25'
   implementation 'org.joda:joda-money:1.0.1'
   implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
+  implementation 'com.google.code.gson:gson:2.8.5'
   implementation 'com.google.dagger:dagger:2.17'
   apt 'com.google.dagger:dagger-compiler:2.17'
 
