@@ -3,7 +3,7 @@ package com.pwittchen.money.transfer.api.model;
 import java.util.Objects;
 import org.joda.money.Money;
 
-public final class Transaction {
+public class Transaction {
   private final String id;
   private final Account from;
   private final Account to;

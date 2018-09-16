@@ -2,7 +2,7 @@ package com.pwittchen.money.transfer.api.model;
 
 import java.util.Objects;
 
-public final class User {
+public class User {
   private final String id;
   private final String name;
   private final String surname;
