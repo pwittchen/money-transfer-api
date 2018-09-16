@@ -26,8 +26,8 @@ public class ResponseTest {
   @Test
   public void objectsShouldBeEqual() {
     // when
-    Response responseOne = Response.builder().message("test").build();
-    Response responseTwo = Response.builder().message("test").build();
+    Response responseOne = Response.builder().message("test").object("obj").build();
+    Response responseTwo = Response.builder().message("test").object("obj").build();
 
     // then
     assertThat(responseOne.message()).isEqualTo(responseTwo.message());
@@ -37,7 +37,7 @@ public class ResponseTest {
   @Test
   public void objectsShouldBeEqualWhenTheyAreTheSameInstance() {
     // when
-    Response response = Response.builder().message("test").build();
+    Response response = Response.builder().message("test").object(new Object()).build();
 
     // then
     assertThat(response.equals(response)).isTrue();
@@ -46,7 +46,7 @@ public class ResponseTest {
   @Test
   public void objectsShouldNotBeEqualWhenOneIsNull() {
     // when
-    Response response = Response.builder().message("test").build();
+    Response response = Response.builder().message("test").object(new Object()).build();
 
     // then
     assertThat(response.equals(null)).isFalse();
@@ -55,8 +55,8 @@ public class ResponseTest {
   @Test
   public void objectsShouldBeInTheSameBucket() {
     // when
-    Response responseOne = Response.builder().message("test").build();
-    Response responseTwo = Response.builder().message("test").build();
+    Response responseOne = Response.builder().message("test").object("obj").build();
+    Response responseTwo = Response.builder().message("test").object("obj").build();
 
     // then
     assertThat(responseOne.hashCode() == responseTwo.hashCode()).isTrue();
