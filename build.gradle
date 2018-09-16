@@ -59,8 +59,7 @@ jacocoTestReport {
                       '**/*Factory*/**',
                       '**/*Provide*/**',
                       '**/*_MembersInjector.class',
-                      '**/*Dagger*',
-                      '**/*Application.class'
+                      '**/*Dagger*'
               ])
     })
   }
