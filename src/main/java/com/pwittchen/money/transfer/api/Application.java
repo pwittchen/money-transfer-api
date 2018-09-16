@@ -23,15 +23,18 @@ public class Application {
     final AccountRepository accountRepository = component.accountRepository();
     final TransactionRepository transactionRepository = component.transactionRepository();
 
+    Javalin app = createServer();
+
+    app.get("/", context -> context.result("server is running"));
+  }
+
+  private static Javalin createServer() {
     initializeJsonMapping();
 
-    Javalin app = Javalin
-        .create()
+    return Javalin.create()
         .event(JavalinEvent.SERVER_STARTED, () -> LOG.info("server started"))
         .event(JavalinEvent.SERVER_START_FAILED, () -> LOG.error("server start failed"))
         .start(PORT);
-
-    app.get("/", context -> context.result("server is running"));
   }
 
   private static void initializeJsonMapping() {
