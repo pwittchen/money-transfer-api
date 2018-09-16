@@ -67,7 +67,7 @@ In order to generate test coverage report run the following command:
 ./gradlew test jacocoTestReport
 ```
 
-Generated test can be found in `build/reports/jacoco/` directory
+Generated test report can be found in `build/reports/jacoco/` directory
 
 Code style
 ----------
