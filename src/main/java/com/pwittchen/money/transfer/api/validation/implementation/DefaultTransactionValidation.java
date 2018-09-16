@@ -21,7 +21,7 @@ public class DefaultTransactionValidation implements TransactionValidation {
     this.accountRepository = accountRepository;
   }
 
-  @Override public Optional<Exception> getCommitError(Transaction transaction) {
+  @Override public Optional<Exception> validate(Transaction transaction) {
     return createCommitValidationRules(transaction)
         .entrySet()
         .stream()

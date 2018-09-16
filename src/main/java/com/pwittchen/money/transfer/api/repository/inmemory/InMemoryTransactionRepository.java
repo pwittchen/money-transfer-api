@@ -28,7 +28,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
   @SuppressWarnings("OptionalGetWithoutIsPresent") // transactionValidation verifies it earlier
   public Completable commit(Transaction transaction) {
     return Completable.create(emitter -> {
-      Optional<Exception> error = transactionValidation.getCommitError(transaction);
+      Optional<Exception> error = transactionValidation.validate(transaction);
 
       if (error.isPresent()) {
         emitter.onError(error.get());

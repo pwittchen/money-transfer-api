@@ -53,7 +53,7 @@ public class DefaultTransactionValidationTest {
         .build();
 
     // when
-    Optional<Exception> error = transactionValidation.getCommitError(transaction);
+    Optional<Exception> error = transactionValidation.validate(transaction);
 
     // then
     assertThat(error.isPresent()).isFalse();
@@ -77,7 +77,7 @@ public class DefaultTransactionValidationTest {
         .build();
 
     // when
-    Optional<Exception> error = transactionValidation.getCommitError(transaction);
+    Optional<Exception> error = transactionValidation.validate(transaction);
 
     // then
     assertThat(error.isPresent()).isTrue();
@@ -107,7 +107,7 @@ public class DefaultTransactionValidationTest {
         .build();
 
     // when
-    Optional<Exception> error = transactionValidation.getCommitError(transaction);
+    Optional<Exception> error = transactionValidation.validate(transaction);
 
     // then
     assertThat(error.isPresent()).isTrue();
@@ -137,7 +137,7 @@ public class DefaultTransactionValidationTest {
         .build();
 
     // when
-    Optional<Exception> error = transactionValidation.getCommitError(transaction);
+    Optional<Exception> error = transactionValidation.validate(transaction);
 
     // then
     assertThat(error.isPresent()).isTrue();
@@ -167,7 +167,7 @@ public class DefaultTransactionValidationTest {
         .build();
 
     // when
-    Optional<Exception> error = transactionValidation.getCommitError(transaction);
+    Optional<Exception> error = transactionValidation.validate(transaction);
 
     // then
     assertThat(error.isPresent()).isTrue();
@@ -197,7 +197,7 @@ public class DefaultTransactionValidationTest {
         .build();
 
     // when
-    Optional<Exception> error = transactionValidation.getCommitError(transaction);
+    Optional<Exception> error = transactionValidation.validate(transaction);
 
     // then
     assertThat(error.isPresent()).isTrue();

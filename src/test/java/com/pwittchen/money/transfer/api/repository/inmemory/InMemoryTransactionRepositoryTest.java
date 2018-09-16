@@ -56,7 +56,7 @@ public class InMemoryTransactionRepositoryTest {
         .money(Money.of(CurrencyUnit.EUR, 600))
         .build();
 
-    when(transactionValidation.getCommitError(transaction)).thenReturn(
+    when(transactionValidation.validate(transaction)).thenReturn(
         Optional.of(new NotEnoughMoneyException(sender.number()))
     );
 
@@ -85,7 +85,7 @@ public class InMemoryTransactionRepositoryTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    when(transactionValidation.getCommitError(transaction)).thenReturn(Optional.empty());
+    when(transactionValidation.validate(transaction)).thenReturn(Optional.empty());
     when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
     when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
@@ -114,7 +114,7 @@ public class InMemoryTransactionRepositoryTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    when(transactionValidation.getCommitError(transaction)).thenReturn(Optional.empty());
+    when(transactionValidation.validate(transaction)).thenReturn(Optional.empty());
     when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
     when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
@@ -152,8 +152,8 @@ public class InMemoryTransactionRepositoryTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    when(transactionValidation.getCommitError(transactionOne)).thenReturn(Optional.empty());
-    when(transactionValidation.getCommitError(transactionTwo)).thenReturn(Optional.empty());
+    when(transactionValidation.validate(transactionOne)).thenReturn(Optional.empty());
+    when(transactionValidation.validate(transactionTwo)).thenReturn(Optional.empty());
     when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
     when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
