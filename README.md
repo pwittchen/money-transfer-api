@@ -20,8 +20,8 @@ Tech stack
 
 Tech stack used in this project is as follows:
 
-- **Application**: Java 8, Gradle, Javalin, Slf4J, Dagger, Joda Money, RxJava, Gson
-- **Tests**: JUnit, Truth, Mockito, REST Assured
+- **Application**: Java 8, [Gradle](https://gradle.org/), [Javalin](https://javalin.io), [Slf4J](https://www.slf4j.org/), [Dagger](https://github.com/google/dagger), [Joda Money](http://www.joda.org/joda-money/), [RxJava](https://github.com/ReactiveX/RxJava), [Gson](https://github.com/google/gson)
+- **Tests**: [JUnit](https://junit.org/), [Truth](https://github.com/google/truth), [Mockito](https://github.com/mockito/mockito), [REST Assured](https://github.com/rest-assured/rest-assured)
 
 Building and running application
 --------------------------------
