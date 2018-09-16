@@ -51,6 +51,19 @@ jacocoTestReport {
     xml.enabled = true
     html.enabled = true
   }
+
+  //TODO: fix excluded classes
+  afterEvaluate {
+    classDirectories = files(classDirectories.files.collect {
+      fileTree(dir: it,
+              excludes: [
+                      '**/*Factory*/**',
+                      '**/*Provide*/**',
+                      '**/*_MembersInjector.class',
+                      '**/*Dagger*'
+              ])
+    })
+  }
 }
 
 checkstyle {
