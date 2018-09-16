@@ -9,9 +9,11 @@ import java.util.UUID;
 import org.joda.money.Money;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InMemoryTransactionRepositoryTest {
 
   private TransactionRepository transactionRepository;
@@ -24,8 +26,7 @@ public class InMemoryTransactionRepositoryTest {
 
   @Before
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
-    this.transactionRepository = new InMemoryTransactionRepository(
+    transactionRepository = new InMemoryTransactionRepository(
         accountRepository, transactionValidation
     );
   }
