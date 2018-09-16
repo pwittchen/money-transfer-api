@@ -2,6 +2,7 @@ package com.pwittchen.money.transfer.api.model;
 
 import java.util.Objects;
 
+//TODO: update this model to hold generic objects
 public class Response {
   private final String message;
 
