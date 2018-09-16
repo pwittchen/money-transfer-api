@@ -44,4 +44,9 @@ public class DefaultTransactionValidationTest {
   public void shouldGetErrorWhenTwoAccountsHaveFundsInDifferentCurrencies() {
     //TODO: implement
   }
+
+  @Test
+  public void shouldGetErrorWhenSenderAndReceiverHasTheSameAccountNumber() {
+    //TODO: implement
+  }
 }

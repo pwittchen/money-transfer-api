@@ -2,8 +2,8 @@ package com.pwittchen.money.transfer.api.repository.inmemory;
 
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
-import com.pwittchen.money.transfer.api.repository.exception.AccountAlreadyExistsException;
-import com.pwittchen.money.transfer.api.repository.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
+import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import io.reactivex.Completable;
 import java.util.HashMap;
 import java.util.Map;
