@@ -19,8 +19,10 @@ public class RepositoryModule {
 
   @Inject
   @Provides
-  TransactionRepository provideTransactionRepository(final AccountRepository accountRepository,
-      final TransactionValidation transactionValidation) {
+  TransactionRepository provideTransactionRepository(
+      final AccountRepository accountRepository,
+      final TransactionValidation transactionValidation
+  ) {
     return new InMemoryTransactionRepository(accountRepository, transactionValidation);
   }
 }
