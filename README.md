@@ -20,10 +20,8 @@ Tech Stack
 
 Tech Stack used in this project is as follows:
 
-- Application
-  - Java 8, Gradle, Javalin, Slf4J, Dagger, Joda Money, RxJava, Gson
-- Tests
-  - JUnit, Truth, Mockito, REST Assured
+- **Application**: Java 8, Gradle, Javalin, Slf4J, Dagger, Joda Money, RxJava, Gson
+- **Tests**: JUnit, Truth, Mockito, REST Assured
 
 Building and running application
 --------------------------------
