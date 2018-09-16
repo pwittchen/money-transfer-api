@@ -17,10 +17,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultTransactionValidationTest {
@@ -41,8 +41,8 @@ public class DefaultTransactionValidationTest {
     Account sender = createSenderAccount("PL1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("PL2", Money.of(CurrencyUnit.EUR, 0));
 
-    Mockito.when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
-    Mockito.when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
+    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
+    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     Transaction transaction = Transaction
         .builder()
@@ -65,8 +65,8 @@ public class DefaultTransactionValidationTest {
     Account sender = createSenderAccount("PL1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("PL2", Money.of(CurrencyUnit.EUR, 0));
 
-    Mockito.when(accountRepository.get(sender.number())).thenReturn(Optional.empty());
-    Mockito.when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
+    when(accountRepository.get(sender.number())).thenReturn(Optional.empty());
+    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     Transaction transaction = Transaction
         .builder()
@@ -95,8 +95,8 @@ public class DefaultTransactionValidationTest {
     Account sender = createSenderAccount("PL1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("PL2", Money.of(CurrencyUnit.EUR, 0));
 
-    Mockito.when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
-    Mockito.when(accountRepository.get(receiver.number())).thenReturn(Optional.empty());
+    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
+    when(accountRepository.get(receiver.number())).thenReturn(Optional.empty());
 
     Transaction transaction = Transaction
         .builder()
@@ -125,8 +125,8 @@ public class DefaultTransactionValidationTest {
     Account sender = createSenderAccount("PL1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("PL2", Money.of(CurrencyUnit.EUR, 0));
 
-    Mockito.when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
-    Mockito.when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
+    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
+    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     Transaction transaction = Transaction
         .builder()
@@ -155,8 +155,8 @@ public class DefaultTransactionValidationTest {
     Account sender = createSenderAccount("PL1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("PL2", Money.of(CurrencyUnit.GBP, 0));
 
-    Mockito.when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
-    Mockito.when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
+    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
+    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     Transaction transaction = Transaction
         .builder()
@@ -185,8 +185,8 @@ public class DefaultTransactionValidationTest {
     Account sender = createSenderAccount("PL1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("PL1", Money.of(CurrencyUnit.EUR, 0));
 
-    Mockito.when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
-    Mockito.when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
+    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
+    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     Transaction transaction = Transaction
         .builder()
