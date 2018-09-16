@@ -24,7 +24,6 @@ public class InMemoryAccountRepository implements AccountRepository {
     return accounts;
   }
 
-  //TODO: add validation for money
   //TODO: consider moving whole validation to separate class like in transactions
 
   @Override public Account create(Account account) {

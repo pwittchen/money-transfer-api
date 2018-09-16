@@ -12,6 +12,7 @@ import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
+import io.javalin.Context;
 import io.javalin.ForbiddenResponse;
 import io.javalin.Javalin;
 import io.javalin.JavalinEvent;
@@ -31,7 +32,6 @@ public class Application {
   private static final Logger LOG = LoggerFactory.getLogger(Application.class);
   private static final int PORT = 8000;
 
-  @SuppressWarnings("ResultOfMethodCallIgnored") // subscriptions don't need to be disposed now
   public static void main(String args[]) {
     final ApplicationComponent component = createApplicationComponent();
     final AccountRepository accountRepository = component.accountRepository();
@@ -143,22 +143,29 @@ public class Application {
 
           if (senderAccount.isPresent() && receiverAccount.isPresent()) {
 
-            Transaction transaction = Transaction.builder()
-                .id(UUID.randomUUID().toString())
-                .from(senderAccount.get())
-                .to(receiverAccount.get())
-                .money(Money.parse(
-                    String.format("%s %s",
-                        context.formParam("currency"),
-                        context.formParam("money")))
-                )
-                .build();
+            Optional<Money> money = parseMoney(context);
+            final boolean currencyFormatIsInvalid = money.isPresent();
 
-            try {
-              transactionRepository.commit(transaction);
-              context.json(transaction);
-            } catch (Exception exception) {
-              context.json(Response.builder().message(exception.getMessage()).build());
+            if (currencyFormatIsInvalid) {
+              Transaction transaction = Transaction.builder()
+                  .id(UUID.randomUUID().toString())
+                  .from(senderAccount.get())
+                  .to(receiverAccount.get())
+                  .money(money.get())
+                  .build();
+
+              try {
+                transactionRepository.commit(transaction);
+                context.json(transaction);
+              } catch (Exception exception) {
+                context.json(Response.builder().message(exception.getMessage()).build());
+              }
+            } else {
+              context.json(Response.builder()
+                  .message(String.format(
+                      "%s is invalid currency format", context.formParam("currency"))
+                  )
+                  .build());
             }
           } else {
             context.json(Response.builder()
@@ -173,6 +180,17 @@ public class Application {
       context.status(500);
       LOG.error("error occurred", exception);
     });
+  }
+
+  private static Optional<Money> parseMoney(Context context) {
+    try {
+      return Optional.of(Money.parse(String.format("%s %s",
+          context.formParam("currency"),
+          context.formParam("money"))
+      ));
+    } catch (Exception e) {
+      return Optional.empty();
+    }
   }
 
   private static Javalin createServer() {
