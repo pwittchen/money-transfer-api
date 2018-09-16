@@ -9,6 +9,7 @@ import com.pwittchen.money.transfer.api.configuration.module.ValidationModule;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.model.Transaction;
+import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import io.javalin.ForbiddenResponse;
@@ -16,6 +17,8 @@ import io.javalin.Javalin;
 import io.javalin.JavalinEvent;
 import io.javalin.json.JavalinJson;
 import java.util.Optional;
+import java.util.UUID;
+import org.joda.money.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +78,28 @@ public class Application {
         });
 
         post(context -> {
-          context.result("create new account"); //TODO: implement
+          User user = User.builder()
+              .id(UUID.randomUUID().toString())
+              .name(context.formParam("name"))
+              .surname(context.formParam("surname"))
+              .build();
+
+          Account account = Account.builder()
+              .number(UUID.randomUUID().toString())
+              .user(user)
+              .money(Money.parse(String.format("%s %s",
+                  context.formParam("currency"),
+                  context.formParam("money")))
+              )
+              .build();
+
+          accountRepository
+              .create(account)
+              .subscribe(() -> {
+                context.json(Response.builder().message("account created"));
+              }, throwable -> {
+                context.json(Response.builder().message(throwable.getMessage()));
+              });
         });
 
         delete(context -> {
@@ -87,8 +111,7 @@ public class Application {
                     ));
                   },
                   throwable -> {
-                    context
-                        .json(Response.builder().message(throwable.getMessage()));
+                    context.json(Response.builder().message(throwable.getMessage()));
                   }
               );
         });
