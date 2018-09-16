@@ -50,8 +50,7 @@ public class Application {
             .status(200)
     );
 
-    //TODO #1: expose accounts repo and transaction repo via API below
-    //TODO #2: move code, which will be created to separate classes (controllers)
+    //TODO: move code, which will be created below to separate classes (controllers)
 
     app.routes(() -> {
       path("/account", () -> {
@@ -76,7 +75,7 @@ public class Application {
         });
 
         post(context -> {
-          context.result("create new account");
+          context.result("create new account"); //TODO: implement
         });
 
         delete(context -> {
@@ -117,7 +116,7 @@ public class Application {
         });
 
         post(context -> {
-          context.result("transaction committed");
+          context.result("transaction committed"); //TODO: implement
         });
       });
     });
