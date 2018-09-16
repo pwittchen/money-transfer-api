@@ -6,12 +6,16 @@ import com.pwittchen.money.transfer.api.configuration.component.ApplicationCompo
 import com.pwittchen.money.transfer.api.configuration.component.DaggerApplicationComponent;
 import com.pwittchen.money.transfer.api.configuration.module.RepositoryModule;
 import com.pwittchen.money.transfer.api.configuration.module.ValidationModule;
+import com.pwittchen.money.transfer.api.model.Account;
+import com.pwittchen.money.transfer.api.model.Response;
+import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import io.javalin.ForbiddenResponse;
 import io.javalin.Javalin;
 import io.javalin.JavalinEvent;
 import io.javalin.json.JavalinJson;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +43,11 @@ public class Application {
       throw new ForbiddenResponse();
     });
 
-    app.get("/health", context -> context.result("OK").status(200));
+    app.get("/health", context ->
+        context
+            .json(Response.builder().message("OK").build())
+            .status(200)
+    );
 
     //TODO #1: expose accounts repo and transaction repo via API below
     //TODO #2: move code, which will be created to separate classes (controllers)
@@ -48,12 +56,22 @@ public class Application {
       path("/account", () -> {
         path(":id", () -> {
           get(context -> {
-            context.result("get account with id: ".concat(context.pathParam("id")));
+            Optional<Account> account = accountRepository.get(context.pathParam("id"));
+
+            if (account.isPresent()) {
+              context.json(account);
+            } else {
+              context
+                  .status(404)
+                  .json(Response.builder().message(String.format(
+                      "transaction with id %s does not exist", context.pathParam("id")
+                  )));
+            }
           });
         });
 
         get(context -> {
-          context.result("get all accounts");
+          context.json(accountRepository.get());
         });
 
         post(context -> {
@@ -68,12 +86,22 @@ public class Application {
       path("/transaction", () -> {
         path(":id", () -> {
           get(context -> {
-            context.result("get transaction with id: ".concat(context.pathParam("id")));
+            Optional<Transaction> transaction = transactionRepository.get(context.pathParam("id"));
+
+            if (transaction.isPresent()) {
+              context.json(transaction);
+            } else {
+              context
+                  .status(404)
+                  .json(Response.builder().message(String.format(
+                      "transaction with id %s does not exist", context.pathParam("id")
+                  )));
+            }
           });
         });
 
         get(context -> {
-          context.result("get all transactions");
+          context.json(transactionRepository.get());
         });
 
         post(context -> {
