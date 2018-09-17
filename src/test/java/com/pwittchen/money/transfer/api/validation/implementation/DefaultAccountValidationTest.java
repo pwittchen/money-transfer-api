@@ -1,7 +1,19 @@
 package com.pwittchen.money.transfer.api.validation.implementation;
 
+import com.pwittchen.money.transfer.api.model.Account;
+import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.validation.AccountValidation;
+import com.pwittchen.money.transfer.api.validation.exception.EmptyAccountNumberException;
+import com.pwittchen.money.transfer.api.validation.exception.EmptyUserIdException;
+import com.pwittchen.money.transfer.api.validation.exception.EmptyUserNameException;
+import com.pwittchen.money.transfer.api.validation.exception.EmptyUserSurnameException;
+import java.util.Optional;
+import java.util.UUID;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.junit.Test;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public class DefaultAccountValidationTest {
 
@@ -9,46 +21,216 @@ public class DefaultAccountValidationTest {
 
   @Test
   public void shouldNotCreateAnyErrorsIfAccountIsValid() {
-    //TODO: implement
+    // given
+    User user = User.builder()
+        .id(UUID.randomUUID().toString())
+        .name("testName")
+        .surname("testSurname")
+        .build();
+
+    Account account = Account
+        .builder()
+        .user(user)
+        .number(UUID.randomUUID().toString())
+        .money(Money.of(CurrencyUnit.EUR, 10.00))
+        .build();
+
+    // when
+    Optional<Exception> error = accountValidation.validate(account);
+
+    // then
+    assertThat(error.isPresent()).isFalse();
   }
 
   @Test
   public void shouldCreateErrorIfAccountNumberIsNull() {
-    //TODO: implement
+    // given
+    User user = User.builder()
+        .id(UUID.randomUUID().toString())
+        .name("testName")
+        .surname("testSurname")
+        .build();
+
+    Account account = Account
+        .builder()
+        .user(user)
+        .number(null)
+        .money(Money.of(CurrencyUnit.EUR, 10.00))
+        .build();
+
+    // when
+    Optional<Exception> error = accountValidation.validate(account);
+
+    // then
+    assertThat(error.isPresent()).isTrue();
+    error.ifPresent(e -> assertThat(e).isInstanceOf(EmptyAccountNumberException.class));
   }
 
   @Test
   public void shouldCreateErrorIfAccountNumberIsEmpty() {
-    //TODO: implement
+    // given
+    User user = User.builder()
+        .id(UUID.randomUUID().toString())
+        .name("testName")
+        .surname("testSurname")
+        .build();
+
+    Account account = Account
+        .builder()
+        .user(user)
+        .number("")
+        .money(Money.of(CurrencyUnit.EUR, 10.00))
+        .build();
+
+    // when
+    Optional<Exception> error = accountValidation.validate(account);
+
+    // then
+    assertThat(error.isPresent()).isTrue();
+    error.ifPresent(e -> assertThat(e).isInstanceOf(EmptyAccountNumberException.class));
   }
 
   @Test
   public void shouldCreateErrorIfUserIdIsNull() {
-    //TODO: implement
+    // given
+    User user = User.builder()
+        .id(null)
+        .name("testName")
+        .surname("testSurname")
+        .build();
+
+    Account account = Account
+        .builder()
+        .user(user)
+        .number(UUID.randomUUID().toString())
+        .money(Money.of(CurrencyUnit.EUR, 10.00))
+        .build();
+
+    // when
+    Optional<Exception> error = accountValidation.validate(account);
+
+    // then
+    assertThat(error.isPresent()).isTrue();
+    error.ifPresent(e -> assertThat(e).isInstanceOf(EmptyUserIdException.class));
   }
 
   @Test
   public void shouldCreateErrorIfUserIdIsEmpty() {
-    //TODO: implement
+    // given
+    User user = User.builder()
+        .id("")
+        .name("testName")
+        .surname("testSurname")
+        .build();
+
+    Account account = Account
+        .builder()
+        .user(user)
+        .number(UUID.randomUUID().toString())
+        .money(Money.of(CurrencyUnit.EUR, 10.00))
+        .build();
+
+    // when
+    Optional<Exception> error = accountValidation.validate(account);
+
+    // then
+    assertThat(error.isPresent()).isTrue();
+    error.ifPresent(e -> assertThat(e).isInstanceOf(EmptyUserIdException.class));
   }
 
   @Test
   public void shouldCreateErrorIfUserNameIsNull() {
-    //TODO: implement
+    // given
+    User user = User.builder()
+        .id(UUID.randomUUID().toString())
+        .name(null)
+        .surname("testSurname")
+        .build();
+
+    Account account = Account
+        .builder()
+        .user(user)
+        .number(UUID.randomUUID().toString())
+        .money(Money.of(CurrencyUnit.EUR, 10.00))
+        .build();
+
+    // when
+    Optional<Exception> error = accountValidation.validate(account);
+
+    // then
+    assertThat(error.isPresent()).isTrue();
+    error.ifPresent(e -> assertThat(e).isInstanceOf(EmptyUserNameException.class));
   }
 
   @Test
   public void shouldCreateErrorIfUserNameIsEmpty() {
-    //TODO: implement
+    // given
+    User user = User.builder()
+        .id(UUID.randomUUID().toString())
+        .name("")
+        .surname("testSurname")
+        .build();
+
+    Account account = Account
+        .builder()
+        .user(user)
+        .number(UUID.randomUUID().toString())
+        .money(Money.of(CurrencyUnit.EUR, 10.00))
+        .build();
+
+    // when
+    Optional<Exception> error = accountValidation.validate(account);
+
+    // then
+    assertThat(error.isPresent()).isTrue();
+    error.ifPresent(e -> assertThat(e).isInstanceOf(EmptyUserNameException.class));
   }
 
   @Test
   public void shouldCreateErrorIfUserSurnameIsNull() {
-    //TODO: implement
+    // given
+    User user = User.builder()
+        .id(UUID.randomUUID().toString())
+        .name("testName")
+        .surname(null)
+        .build();
+
+    Account account = Account
+        .builder()
+        .user(user)
+        .number(UUID.randomUUID().toString())
+        .money(Money.of(CurrencyUnit.EUR, 10.00))
+        .build();
+
+    // when
+    Optional<Exception> error = accountValidation.validate(account);
+
+    // then
+    assertThat(error.isPresent()).isTrue();
+    error.ifPresent(e -> assertThat(e).isInstanceOf(EmptyUserSurnameException.class));
   }
 
   @Test
   public void shouldCreateErrorIfUserSurnameIsEmpty() {
-    //TODO: implement
+    // given
+    User user = User.builder()
+        .id(UUID.randomUUID().toString())
+        .name("testName")
+        .surname("")
+        .build();
+
+    Account account = Account
+        .builder()
+        .user(user)
+        .number(UUID.randomUUID().toString())
+        .money(Money.of(CurrencyUnit.EUR, 10.00))
+        .build();
+
+    // when
+    Optional<Exception> error = accountValidation.validate(account);
+
+    // then
+    assertThat(error.isPresent()).isTrue();
+    error.ifPresent(e -> assertThat(e).isInstanceOf(EmptyUserSurnameException.class));
   }
 }
