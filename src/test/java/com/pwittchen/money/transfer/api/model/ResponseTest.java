@@ -31,6 +31,7 @@ public class ResponseTest {
 
     // then
     assertThat(responseOne.message()).isEqualTo(responseTwo.message());
+    assertThat(responseOne.object()).isEqualTo(responseTwo.object());
     assertThat(responseOne.equals(responseTwo)).isTrue();
   }
 

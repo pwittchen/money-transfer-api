@@ -1,5 +1,6 @@
 package com.pwittchen.money.transfer.api.controller;
 
+import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.model.User;
@@ -13,53 +14,68 @@ import org.joda.money.Money;
 public class AccountController {
 
   private AccountRepository accountRepository;
+  private ContextWrapper contextWrapper;
 
   @Inject
-  public AccountController(final AccountRepository accountRepository) {
+  public AccountController(
+      final AccountRepository accountRepository,
+      final ContextWrapper contextWrapper) {
     this.accountRepository = accountRepository;
+    this.contextWrapper = contextWrapper;
   }
 
   public void getOne(final Context context) {
-    Optional<Account> account = accountRepository.get(context.pathParam("id"));
+    Optional<Account> account = accountRepository.get(contextWrapper.pathParam(context, "id"));
 
     if (account.isPresent()) {
-      context.json(account);
+      contextWrapper.json(context, account.get());
     } else {
-      context
-          .status(404)
-          .json(Response.builder().message(String.format(
-              "account with id %s does not exist", context.pathParam("id")
-          )).build());
+      String message = String.format(
+          "account with id %s does not exist",
+          contextWrapper.pathParam(context, "id")
+      );
+
+      Response response = Response.builder()
+          .message(message)
+          .build();
+
+      contextWrapper.json(context, response, 404);
     }
   }
 
   public void getAll(final Context context) {
-    context.json(accountRepository.get());
+    contextWrapper.json(context, accountRepository.get());
   }
 
   public void create(final Context context) {
-    final User user = createUser(context);
-
+    User user = createUser(context);
     Optional<Account> account = createAccount(context, user);
 
     if (!account.isPresent()) {
-      context.json(Response.builder().message("Invalid currency format").build());
+      Response response = Response.builder().message("Invalid currency format").build();
+      contextWrapper.json(context, response);
       return;
     }
 
     try {
       accountRepository.create(account.get());
-      context.json(Response.builder().message("account created").object(account).build());
+      Response response = Response.builder()
+          .message("account created")
+          .object(account.get())
+          .build();
+
+      contextWrapper.json(context, response);
     } catch (Exception exception) {
-      context.json(Response.builder().message(exception.getMessage()).build());
+      Response response = Response.builder().message(exception.getMessage()).build();
+      contextWrapper.json(context, response);
     }
   }
 
   User createUser(Context context) {
     return User.builder()
         .id(UUID.randomUUID().toString())
-        .name(context.formParam("name"))
-        .surname(context.formParam("surname"))
+        .name(contextWrapper.formParam(context, "name"))
+        .surname(contextWrapper.formParam(context, "surname"))
         .build();
   }
 
@@ -76,8 +92,8 @@ public class AccountController {
   Optional<Money> parseMoney(Context context) {
     try {
       return Optional.of(Money.parse(String.format("%s %s",
-          context.formParam("currency"),
-          context.formParam("money"))
+          contextWrapper.formParam(context, "currency"),
+          contextWrapper.formParam(context, "money"))
       ));
     } catch (Exception exception) {
       return Optional.empty();
@@ -86,12 +102,21 @@ public class AccountController {
 
   public void delete(Context context) {
     try {
-      accountRepository.delete(context.formParam("id"));
-      context.json(Response.builder().message(
-          String.format("account with id %s deleted", context.formParam("id"))
-      ).build());
+      accountRepository.delete(contextWrapper.formParam(context, "id"));
+
+      String message = String.format(
+          "account with id %s deleted",
+          contextWrapper.formParam(context, "id")
+      );
+
+      Response response = Response.builder()
+          .message(message)
+          .build();
+
+      contextWrapper.json(context, response);
     } catch (Exception exception) {
-      context.json(Response.builder().message(exception.getMessage()).build());
+      Response response = Response.builder().message(exception.getMessage()).build();
+      contextWrapper.json(context, response);
     }
   }
 }
