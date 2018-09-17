@@ -52,7 +52,7 @@ Server will start running on port `8000`
 Endpoints
 ---------
 
-### HealthCheck
+### Health check
 
 ```
 GET /health
