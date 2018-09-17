@@ -47,8 +47,8 @@ public class Application {
 
     app.get("/health", context ->
         context
-            .json(Response.builder().message("OK").build())
             .status(200)
+            .json(Response.builder().message("OK").build())
     );
 
     app.routes(() -> {
