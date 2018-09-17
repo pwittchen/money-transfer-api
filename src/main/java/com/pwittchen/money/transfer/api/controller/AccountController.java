@@ -49,6 +49,14 @@ public class AccountController {
     }
   }
 
+  User createUser(Context context) {
+    return User.builder()
+        .id(UUID.randomUUID().toString())
+        .name(context.formParam("name"))
+        .surname(context.formParam("surname"))
+        .build();
+  }
+
   Account createAccount(Context context, User user) {
     return Account.builder()
         .number(UUID.randomUUID().toString())
@@ -57,14 +65,6 @@ public class AccountController {
             context.formParam("currency"),
             context.formParam("money")))
         )
-        .build();
-  }
-
-  User createUser(Context context) {
-    return User.builder()
-        .id(UUID.randomUUID().toString())
-        .name(context.formParam("name"))
-        .surname(context.formParam("surname"))
         .build();
   }
 

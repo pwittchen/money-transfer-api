@@ -53,40 +53,13 @@ public class TransactionController {
     }
 
     Optional<Money> money = parseMoney(context);
-    final boolean currencyFormatIsValid = money.isPresent();
 
-    if (!currencyFormatIsValid) {
+    if (!money.isPresent()) {
       createInvalidCurrencyFormatResponse(context);
       return;
     }
 
     commit(context, createTransaction(senderAccount.get(), receiverAccount.get(), money.get()));
-  }
-
-  void commit(final Context context, final Transaction transaction) {
-    try {
-      transactionRepository.commit(transaction);
-      context.json(Response.builder().message("transaction committed").object(transaction).build());
-    } catch (Exception exception) {
-      context.json(Response.builder().message(exception.getMessage()).build());
-    }
-  }
-
-  Transaction createTransaction(Account sender, Account receiver, Money money) {
-    return Transaction.builder()
-        .id(UUID.randomUUID().toString())
-        .from(sender)
-        .to(receiver)
-        .money(money)
-        .build();
-  }
-
-  void createInvalidCurrencyFormatResponse(Context context) {
-    context.json(Response.builder()
-        .message(String.format(
-            "%s is invalid currency format", context.formParam("currency"))
-        )
-        .build());
   }
 
   void createInvalidAccountResponse(Context context) {
@@ -103,6 +76,32 @@ public class TransactionController {
       ));
     } catch (Exception e) {
       return Optional.empty();
+    }
+  }
+
+  void createInvalidCurrencyFormatResponse(Context context) {
+    context.json(Response.builder()
+        .message(String.format(
+            "%s is invalid currency format", context.formParam("currency"))
+        )
+        .build());
+  }
+
+  Transaction createTransaction(Account sender, Account receiver, Money money) {
+    return Transaction.builder()
+        .id(UUID.randomUUID().toString())
+        .from(sender)
+        .to(receiver)
+        .money(money)
+        .build();
+  }
+
+  void commit(final Context context, final Transaction transaction) {
+    try {
+      transactionRepository.commit(transaction);
+      context.json(Response.builder().message("transaction committed").object(transaction).build());
+    } catch (Exception exception) {
+      context.json(Response.builder().message(exception.getMessage()).build());
     }
   }
 }
