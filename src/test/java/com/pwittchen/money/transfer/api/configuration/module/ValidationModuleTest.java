@@ -1,7 +1,9 @@
 package com.pwittchen.money.transfer.api.configuration.module;
 
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
+import com.pwittchen.money.transfer.api.validation.AccountValidation;
 import com.pwittchen.money.transfer.api.validation.TransactionValidation;
+import com.pwittchen.money.transfer.api.validation.implementation.DefaultAccountValidation;
 import com.pwittchen.money.transfer.api.validation.implementation.DefaultTransactionValidation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,5 +30,15 @@ public class ValidationModuleTest {
     // then
     assertThat(validation).isNotNull();
     assertThat(validation).isInstanceOf(DefaultTransactionValidation.class);
+  }
+
+  @Test
+  public void shouldProvideAccountValidation() {
+    // when
+    AccountValidation validation = validationModule.provideAccountValidation();
+
+    // then
+    assertThat(validation).isNotNull();
+    assertThat(validation).isInstanceOf(DefaultAccountValidation.class);
   }
 }
