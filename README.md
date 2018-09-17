@@ -175,6 +175,12 @@ In order to execute tests run the following command:
 ./gradlew test
 ```
 
+In order to execute unit tests and **integration tests** written with REST Assured, execute:
+
+```
+./gradlew test -Dtest.profile=integration
+```
+
 In order to generate test coverage report run the following command:
 
 ```
