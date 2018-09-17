@@ -47,6 +47,8 @@ Assuming you have executed command above, to run server as a standalone fat jar,
 java -jar build/libs/app-1.0-all.jar
 ```
 
+Server will start running on port `8000`
+
 Endpoints
 ---------
 
@@ -65,6 +67,8 @@ Endpoints
 ...
 
 #### Getting all accounts
+
+...
 
 ### Transactions
 
