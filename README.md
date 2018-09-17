@@ -50,7 +50,35 @@ java -jar build/libs/app-1.0-all.jar
 Endpoints
 ---------
 
-TBD.
+### Accounts
+
+#### Creating account
+
+...
+
+#### Deleting account
+
+...
+
+#### Getting one account
+
+...
+
+#### Getting all accounts
+
+### Transactions
+
+#### Committing transaction
+
+...
+
+### Getting one transaction
+
+...
+
+### Getting all transactions
+
+...
 
 Tests
 -----
