@@ -71,7 +71,7 @@ public class AccountController {
     }
   }
 
-  User createUser(Context context) {
+  private User createUser(Context context) {
     return User.builder()
         .id(UUID.randomUUID().toString())
         .name(contextWrapper.formParam(context, "name"))
@@ -79,7 +79,7 @@ public class AccountController {
         .build();
   }
 
-  Optional<Account> createAccount(Context context, User user) {
+  private Optional<Account> createAccount(Context context, User user) {
     return parseMoney(context)
         .map(money -> Account.builder()
             .number(UUID.randomUUID().toString())
@@ -89,7 +89,7 @@ public class AccountController {
         );
   }
 
-  Optional<Money> parseMoney(Context context) {
+  private Optional<Money> parseMoney(Context context) {
     try {
       return Optional.of(Money.parse(String.format("%s %s",
           contextWrapper.formParam(context, "currency"),

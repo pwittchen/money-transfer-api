@@ -69,7 +69,7 @@ public class TransactionController {
     commit(context, createTransaction(senderAccount.get(), receiverAccount.get(), money.get()));
   }
 
-  void createInvalidAccountResponse(Context context) {
+  private void createInvalidAccountResponse(Context context) {
     Response response = Response.builder()
         .message("Trying to transfer money from or to account, which does not exist")
         .build();
@@ -77,7 +77,7 @@ public class TransactionController {
     contextWrapper.json(context, response);
   }
 
-  Optional<Money> parseMoney(Context context) {
+  private Optional<Money> parseMoney(Context context) {
     try {
       Money money = Money.parse(String.format("%s %s",
           contextWrapper.formParam(context, "currency"),
@@ -89,7 +89,7 @@ public class TransactionController {
     }
   }
 
-  void createInvalidMoneyFormatResponse(Context context) {
+  private void createInvalidMoneyFormatResponse(Context context) {
     Response response = Response.builder()
         .message("invalid money format")
         .build();
@@ -97,7 +97,7 @@ public class TransactionController {
     contextWrapper.json(context, response);
   }
 
-  Transaction createTransaction(Account sender, Account receiver, Money money) {
+  private Transaction createTransaction(Account sender, Account receiver, Money money) {
     return Transaction.builder()
         .id(UUID.randomUUID().toString())
         .from(sender)
@@ -106,7 +106,7 @@ public class TransactionController {
         .build();
   }
 
-  void commit(final Context context, final Transaction transaction) {
+  private void commit(final Context context, final Transaction transaction) {
     try {
       transactionRepository.commit(transaction);
       Response response = Response.builder()
