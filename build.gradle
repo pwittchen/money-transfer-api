@@ -81,6 +81,8 @@ tasks.withType(FindBugs) {
 test {
   if (System.properties['test.profile'] != 'integration') {
     exclude '**/*integration*'
+  } else {
+    exclude '**/*com/*'
   }
 }
 

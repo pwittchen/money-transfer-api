@@ -182,13 +182,13 @@ curl -X GET \
 Tests
 -----
 
-In order to execute tests run the following command:
+In order to execute **unit tests** run the following command:
 
 ```
 ./gradlew test
 ```
 
-In order to execute unit tests and **integration tests** written with REST Assured, execute:
+In order to execute **integration tests** written with REST Assured, execute:
 
 ```
 ./gradlew test -Dtest.profile=integration
