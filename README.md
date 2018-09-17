@@ -181,7 +181,7 @@ In order to execute unit tests and **integration tests** written with REST Assur
 ./gradlew test -Dtest.profile=integration
 ```
 
-In order to generate test coverage report run the following command:
+In order to generate test coverage report, run the following command:
 
 ```
 ./gradlew test jacocoTestReport
