@@ -76,11 +76,11 @@ Endpoints
 
 ...
 
-### Getting one transaction
+#### Getting one transaction
 
 ...
 
-### Getting all transactions
+#### Getting all transactions
 
 ...
 
