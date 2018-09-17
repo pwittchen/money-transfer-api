@@ -34,7 +34,7 @@ public class TransactionController {
     Optional<Transaction> transaction = transactionRepository.get(id);
 
     if (transaction.isPresent()) {
-      contextWrapper.json(context, transaction);
+      contextWrapper.json(context, transaction.get());
     } else {
       Response response = Response.builder()
           .message(String.format("transaction with id %s does not exist", id))

@@ -46,9 +46,8 @@ public class AccountControllerTest {
   @Test
   public void shouldGetOneAccount() {
     // given
-    String id = "1";
-    when(contextWrapper.pathParam(context, "id")).thenReturn(id);
-    when(accountRepository.get(id)).thenReturn(Optional.of(account));
+    when(contextWrapper.pathParam(context, "id")).thenReturn("1");
+    when(accountRepository.get("1")).thenReturn(Optional.of(account));
 
     // when
     controller.getOne(context);
