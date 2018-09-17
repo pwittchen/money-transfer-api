@@ -5,11 +5,13 @@ import io.restassured.RestAssured;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 /**
- * This test class contains integration test for the REST API
+ * This test class contains integration tests for the REST API
  */
 public class ApplicationTest {
 
@@ -32,9 +34,9 @@ public class ApplicationTest {
   private static void configurePort() {
     String port = System.getProperty("server.port");
     if (port == null) {
-      RestAssured.port = Integer.valueOf(8000);
+      RestAssured.port = Integer.parseInt("8000");
     } else {
-      RestAssured.port = Integer.valueOf(port);
+      RestAssured.port = Integer.parseInt(port);
     }
   }
 
@@ -66,61 +68,132 @@ public class ApplicationTest {
 
   @Test
   public void shouldCreateAccount() {
-    //TODO: implement
+    given()
+        .param("name", "testName")
+        .and().param("surname", "testSurname")
+        .and().param("currency", "EUR")
+        .and().param("money", "10.00")
+        .when().post("/account")
+        .then().body("message", equalTo("account created")).statusCode(200);
   }
 
   @Test
-  public void shouldNotCreateAccountWhenInputDataIsInvalid() {
-    //TODO: implement
+  public void shouldNotCreateAccountWhenCurrencyIsInvalid() {
+    given()
+        .param("name", "testName")
+        .and().param("surname", "testSurname")
+        .and().param("currency", "INVALID")
+        .and().param("money", "10.00")
+        .when().post("/account")
+        .then().body("message", equalTo("Invalid money format")).statusCode(200);
   }
 
   @Test
-  public void shouldDeleteAccount() {
-    //TODO: implement
+  public void shouldNotCreateAccountWhenMoneyIsInvalid() {
+    given()
+        .param("name", "testName")
+        .and().param("surname", "testSurname")
+        .and().param("currency", "EUR")
+        .and().param("money", "INVALID")
+        .when().post("/account")
+        .then().body("message", equalTo("Invalid money format")).statusCode(200);
   }
 
   @Test
-  public void shouldNotDeleteAccountIfItDoesNotExist() {
-    //TODO: implement
+  public void shouldNotCreateAccountWhenUserNameIsEmpty() {
+    given()
+        .param("name", "")
+        .and().param("surname", "testSurname")
+        .and().param("currency", "EUR")
+        .and().param("money", "10.00")
+        .when().post("/account")
+        .then().body("message", equalTo("User name is empty")).statusCode(200);
+  }
+
+  @Test
+  public void shouldNotCreateAccountWhenUserSurnameIsEmpty() {
+    given()
+        .param("name", "testName")
+        .and().param("surname", "")
+        .and().param("currency", "EUR")
+        .and().param("money", "10.00")
+        .when().post("/account")
+        .then().body("message", equalTo("User surname is empty")).statusCode(200);
+  }
+
+  @Test
+  public void shouldTryToDeleteEmptyAccount() {
+    given()
+        .param("number", "")
+        .when().delete("/account")
+        .then().body(
+        "message", equalTo("Empty account number")).statusCode(200);
   }
 
   @Test
   public void shouldGetOneAccount() {
-    //TODO: implement
+    String number = given()
+        .param("name", "testName")
+        .and().param("surname", "testSurname")
+        .and().param("currency", "EUR")
+        .and().param("money", "10.00")
+        .when().post("/account")
+        .then().extract().path("object.number");
+
+    get("/account/".concat(number)).then().body("number", equalTo(number));
   }
 
   @Test
   public void shouldNotGetOneAccountIfItDoesNotExist() {
-    //TODO: implement
+    get("/account/invalid")
+        .then().body("message", equalTo("account with id invalid does not exist"));
   }
 
   @Test
   public void shouldGetAllAccounts() {
-    //TODO: implement
+    String number = given()
+        .param("name", "testName")
+        .and().param("surname", "testSurname")
+        .and().param("currency", "EUR")
+        .and().param("money", "10.00")
+        .when().post("/account")
+        .then().extract().path("object.number");
+
+    get("/account")
+        .then().body(number.concat(".number"), equalTo(number)).statusCode(200);
   }
 
   @Test
-  public void shouldCommitTransaction() {
-    //TODO: implement
+  public void shouldTryToCommitTransaction() {
+    given()
+        .param("from", "senderNo")
+        .and().param("to", "receiverNo")
+        .and().param("currency", "EUR")
+        .and().param("money", "10.00")
+        .when()
+        .post("/transaction")
+        .then()
+        .body(
+            "message",
+            equalTo("Trying to transfer money from or to account, which does not exist")
+        )
+        .statusCode(200);
   }
 
   @Test
-  public void shouldNotCommitTransactionWhenInputDataIsInvalid() {
-    //TODO: implement
+  public void shouldTryToGetOneTransaction() {
+    get("/transaction/invalid")
+        .then()
+        .body("message", equalTo("transaction with id invalid does not exist"));
   }
 
   @Test
-  public void shouldGetOneTransaction() {
-    //TODO: implement
+  public void shouldGetAllTransactions() {
+    get("/transaction").then().statusCode(200);
   }
 
   @Test
-  public void shouldNotGetOneTransactionIfItDoesNotExist() {
-    //TODO: implement
-  }
-
-  @Test
-  public void shouldGetManyTransactions() {
-    //TODO: implement
+  public void shouldGetNotFoundStatusForInvalidEndpoint() {
+    get("/invalid").then().statusCode(404);
   }
 }
