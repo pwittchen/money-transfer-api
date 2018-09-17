@@ -52,6 +52,19 @@ Server will start running on port `8000`
 Endpoints
 ---------
 
+### HealthCheck
+
+```
+GET /health
+```
+
+Exemplary curl request:
+
+```
+curl -X GET \
+  http://localhost:8000/health
+```
+
 ### Accounts
 
 #### Creating account
