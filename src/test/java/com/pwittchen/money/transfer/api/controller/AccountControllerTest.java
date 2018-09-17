@@ -5,6 +5,7 @@ import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
+import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import io.javalin.Context;
 import java.util.HashMap;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -131,11 +133,42 @@ public class AccountControllerTest {
 
   @Test
   public void shouldDeleteAccount() {
-    //TODO: implement
+    // given
+    String id = "1";
+    when(contextWrapper.formParam(context, "id")).thenReturn(id);
+    String message = String.format(
+        "account with id %s deleted",
+        contextWrapper.formParam(context, "id")
+    );
+
+    Response response = Response.builder()
+        .message(message)
+        .build();
+
+    // when
+    controller.delete(context);
+
+    // then
+    verify(accountRepository).delete(id);
+    verify(contextWrapper).json(context, response);
   }
 
   @Test
   public void shouldNotDeleteAccountIfErrorOccurred() {
-    //TODO: implement
+    // given
+    String id = "1";
+    AccountNotExistsException exception = new AccountNotExistsException(id);
+    when(contextWrapper.formParam(context, "id")).thenReturn(id);
+    doThrow(exception).when(accountRepository).delete(id);
+
+    Response response = Response.builder()
+        .message(exception.getMessage())
+        .build();
+
+    // when
+    controller.delete(context);
+
+    // then
+    verify(contextWrapper).json(context, response);
   }
 }
