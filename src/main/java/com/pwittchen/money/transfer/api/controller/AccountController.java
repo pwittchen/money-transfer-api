@@ -102,11 +102,11 @@ public class AccountController {
 
   public void delete(Context context) {
     try {
-      accountRepository.delete(contextWrapper.formParam(context, "id"));
+      accountRepository.delete(contextWrapper.formParam(context, "number"));
 
       String message = String.format(
-          "account with id %s deleted",
-          contextWrapper.formParam(context, "id")
+          "account with number %s deleted",
+          contextWrapper.formParam(context, "number")
       );
 
       Response response = Response.builder()

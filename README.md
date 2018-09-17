@@ -56,33 +56,115 @@ Endpoints
 
 #### Creating account
 
-...
+```
+POST /account
+```
+
+form params: `name`, `surname`, `currency` , `money`
+
+Exemplary curl request:
+
+```
+curl -X POST \
+  http://localhost:8000/account \
+  -F name=John \
+  -F surname=Doe \
+  -F currency=EUR \
+  -F money=100.00
+```
 
 #### Deleting account
 
-...
+```
+DELETE /account
+```
+
+form params: `number`
+
+Exemplary curl request:
+
+```
+curl -X DELETE \
+  http://localhost:8000/account \
+  -F id=f1ba2431-8aae-495b-bffe-0c76ea4357e7
+```
 
 #### Getting one account
 
-...
+```
+GET /account/{number}
+```
+
+path params: `number`
+
+Exemplary curl request:
+
+```
+curl -X GET \
+  http://localhost:8000/account/03732e1a-0c5b-4818-86f7-e6adca4d0ed8
+```
 
 #### Getting all accounts
 
-...
+```
+GET /account
+```
+
+Exemplary curl request:
+
+```
+curl -X GET \
+  http://localhost:8000/account
+```
 
 ### Transactions
 
 #### Committing transaction
 
-...
+```
+POST /transaction
+```
+
+form params: `from`, `to`, `currency`, `money`
+
+Exemplary curl request:
+
+```
+curl -X POST \
+  http://localhost:8000/transaction \
+  -F from=25b9dae9-abac-42c5-9c21-67e96033c7c3 \
+  -F to=620e3ec8-a352-49cb-be06-52704321a657 \
+  -F currency=EUR \
+  -F money=10.00
+```
 
 #### Getting one transaction
 
-...
+```
+GET /transaction/{id}
+```
+
+path params: `id`
+
+Exemplary curl request:
+
+```
+curl -X GET \
+  http://localhost:8000/transaction/5eaadd76-8faf-48c7-bc72-5cdec35a385e
+```
 
 #### Getting all transactions
 
-...
+```
+GET /transaction
+```
+
+Exemplary curl request:
+
+```
+curl -X GET \
+  http://localhost:8000/transaction
+```
 
 Tests
 -----
