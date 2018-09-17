@@ -63,4 +63,64 @@ public class ApplicationTest {
         .when().get("/health")
         .then().body(containsString("OK")).statusCode(200);
   }
+
+  @Test
+  public void shouldCreateAccount() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldNotCreateAccountWhenInputDataIsInvalid() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldDeleteAccount() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldNotDeleteAccountIfItDoesNotExist() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldGetOneAccount() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldNotGetOneAccountIfItDoesNotExist() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldGetAllAccounts() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldCommitTransaction() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldNotCommitTransactionWhenInputDataIsInvalid() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldGetOneTransaction() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldNotGetOneTransactionIfItDoesNotExist() {
+    //TODO: implement
+  }
+
+  @Test
+  public void shouldGetManyTransactions() {
+    //TODO: implement
+  }
 }
