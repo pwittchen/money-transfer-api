@@ -33,8 +33,8 @@ public class Application {
     JavalinJson.setToJsonMapper(gson::toJson);
 
     final Javalin app = Javalin.create()
-        .event(JavalinEvent.SERVER_STARTED, () -> LOG.info("server started"))
-        .event(JavalinEvent.SERVER_START_FAILED, () -> LOG.error("server start failed"))
+        .event(JavalinEvent.SERVER_STARTED, () -> LOG.info("server has started"))
+        .event(JavalinEvent.SERVER_START_FAILED, () -> LOG.error("server start has failed"))
         .start(PORT);
 
     app.before(context -> {
