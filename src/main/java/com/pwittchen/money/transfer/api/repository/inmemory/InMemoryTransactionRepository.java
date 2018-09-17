@@ -35,6 +35,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
   }
 
   @Override
+  @SuppressWarnings("OptionalGetWithoutIsPresent") // accounts are checked in transactionValidation
   public Transaction commit(Transaction transaction) throws Exception {
     Optional<Exception> error = transactionValidation.validate(transaction);
 

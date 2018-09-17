@@ -39,10 +39,16 @@ public class AccountController {
 
   public void create(final Context context) {
     final User user = createUser(context);
-    final Account account = createAccount(context, user);
+
+    Optional<Account> account = createAccount(context, user);
+
+    if (!account.isPresent()) {
+      context.json(Response.builder().message("Invalid currency format").build());
+      return;
+    }
 
     try {
-      accountRepository.create(account);
+      accountRepository.create(account.get());
       context.json(Response.builder().message("account created").object(account).build());
     } catch (Exception exception) {
       context.json(Response.builder().message(exception.getMessage()).build());
@@ -57,15 +63,25 @@ public class AccountController {
         .build();
   }
 
-  Account createAccount(Context context, User user) {
-    return Account.builder()
-        .number(UUID.randomUUID().toString())
-        .user(user)
-        .money(Money.parse(String.format("%s %s",
-            context.formParam("currency"),
-            context.formParam("money")))
-        )
-        .build();
+  Optional<Account> createAccount(Context context, User user) {
+    return parseMoney(context)
+        .map(money -> Account.builder()
+            .number(UUID.randomUUID().toString())
+            .user(user)
+            .money(money)
+            .build()
+        );
+  }
+
+  Optional<Money> parseMoney(Context context) {
+    try {
+      return Optional.of(Money.parse(String.format("%s %s",
+          context.formParam("currency"),
+          context.formParam("money"))
+      ));
+    } catch (Exception exception) {
+      return Optional.empty();
+    }
   }
 
   public void delete(Context context) {

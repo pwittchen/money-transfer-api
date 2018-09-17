@@ -9,9 +9,9 @@ public interface AccountRepository {
 
   Map<String, Account> get();
 
-  Account create(Account account);
+  Account create(Account account) throws Exception;
 
-  Account update(String number, Account account);
+  Account update(String number, Account account) throws Exception;
 
   void delete(String number);
 }

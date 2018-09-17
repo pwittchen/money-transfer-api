@@ -1,5 +1,11 @@
 package com.pwittchen.money.transfer.api.controller;
 
+import org.junit.Test;
+
 public class AccountControllerTest {
-  //TODO: implement
+
+  @Test
+  public void shouldGetOneAccount() {
+
+  }
 }

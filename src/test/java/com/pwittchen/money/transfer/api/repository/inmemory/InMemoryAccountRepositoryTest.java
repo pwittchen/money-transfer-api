@@ -3,6 +3,7 @@ package com.pwittchen.money.transfer.api.repository.inmemory;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
+import com.pwittchen.money.transfer.api.validation.AccountValidation;
 import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import java.util.Map;
@@ -10,18 +11,32 @@ import java.util.Optional;
 import java.util.UUID;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InMemoryAccountRepositoryTest {
 
-  private AccountRepository accountRepository = new InMemoryAccountRepository();
+  private AccountRepository accountRepository;
+
+  @Mock
+  private AccountValidation accountValidation;
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
+
+  @Before
+  public void setUp() {
+    accountRepository = new InMemoryAccountRepository(accountValidation);
+  }
 
   @Test
   public void shouldGetEmptyResultWhenAccountDoesNotExist() {
@@ -36,7 +51,7 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test
-  public void shouldGetAccountWhenItExists() {
+  public void shouldGetAccountWhenItExists() throws Exception {
     // given
     Account account = createAccount();
     String accountNumber = account.number();
@@ -50,7 +65,7 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test
-  public void shouldGetAllAccounts() {
+  public void shouldGetAllAccounts() throws Exception {
     // given
     accountRepository.create(createAccount());
     accountRepository.create(createAccount());
@@ -64,9 +79,10 @@ public class InMemoryAccountRepositoryTest {
 
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
-  public void shouldCreateNewAccount() {
+  public void shouldCreateNewAccount() throws Exception {
     // given
     Account account = createAccount();
+    when(accountValidation.validate(account)).thenReturn(Optional.empty());
 
     // when
     accountRepository.create(account);
@@ -84,7 +100,7 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test
-  public void shouldNotCreateNewAccountWithNumberWhichAlreadyExists() {
+  public void shouldNotCreateNewAccountWithNumberWhichAlreadyExists() throws Exception {
     // given
     Account account = createAccount();
     accountRepository.create(account);
@@ -101,7 +117,7 @@ public class InMemoryAccountRepositoryTest {
 
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
-  public void shouldUpdateAccount() {
+  public void shouldUpdateAccount() throws Exception {
     // given
     Account account = createAccount();
     Account anotherAccount = createAnotherAccount(account.number());
@@ -116,7 +132,7 @@ public class InMemoryAccountRepositoryTest {
 
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
-  public void shouldUpdateAccountAndItsNumber() {
+  public void shouldUpdateAccountAndItsNumber() throws Exception {
     // given
     Account account = createAccount();
     String newAccountNumber = UUID.randomUUID().toString();
@@ -132,7 +148,7 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test
-  public void shouldNotUpdateAccountIfItDoesNotExist() {
+  public void shouldNotUpdateAccountIfItDoesNotExist() throws Exception {
     // given
     Account account = createAccount();
 
@@ -145,7 +161,7 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test
-  public void shouldDeleteAccount() {
+  public void shouldDeleteAccount() throws Exception {
     // given
     Account account = createAccount();
     accountRepository.create(account);

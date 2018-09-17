@@ -74,7 +74,7 @@ public class TransactionController {
           context.formParam("currency"),
           context.formParam("money"))
       ));
-    } catch (Exception e) {
+    } catch (Exception exception) {
       return Optional.empty();
     }
   }
