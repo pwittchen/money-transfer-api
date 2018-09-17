@@ -16,7 +16,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 public class ApplicationTest {
 
   @BeforeClass
-  public static void setup() {
+  public static void setUp() {
     configureHost();
     configurePort();
     configureBasePath();
