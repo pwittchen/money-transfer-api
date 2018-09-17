@@ -6,6 +6,8 @@ import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.validation.AccountValidation;
 import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.validation.exception.EmptyAccountNumberException;
+import com.pwittchen.money.transfer.api.validation.exception.EmptyUserIdException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,6 +38,7 @@ public class InMemoryAccountRepositoryTest {
   @Before
   public void setUp() {
     accountRepository = new InMemoryAccountRepository(accountValidation);
+    accountRepository.clear();
   }
 
   @Test
@@ -115,17 +118,20 @@ public class InMemoryAccountRepositoryTest {
     accountRepository.create(account);
   }
 
-  public void shouldNotCreateAccountIfItHasEmptyNumber() {
-    //TODO: implement
+  @Test
+  public void shouldNotCreateAccountIfItErrorOccurred() throws Exception {
+    // given
+    Account account = createAccount();
+    when(accountValidation.validate(account)).thenReturn(Optional.of(new EmptyUserIdException()));
 
-  }
+    // then
+    expectedException.expect(EmptyUserIdException.class);
+    expectedException.expectMessage(
+        new EmptyUserIdException().getMessage()
+    );
 
-  public void shouldNotCreateAccountIfItHasEmptyUserName() {
-    //TODO: implement
-  }
-
-  public void shouldNotCreateAccountIfItHasEmptyUserSurname() {
-    //TODO: implement
+    // then
+    accountRepository.create(account);
   }
 
   @Test
@@ -173,17 +179,19 @@ public class InMemoryAccountRepositoryTest {
     accountRepository.update(account.number(), account);
   }
 
-  public void shouldNotUpdateAccountIfItHasEmptyNumber() {
-    //TODO: implement
+  @Test
+  public void shouldNotUpdateAccountIfErrorOccurred() throws Exception {
+    // given
+    Account account = createAccount();
+    when(accountValidation.validate(account)).thenReturn(Optional.of(new EmptyUserIdException()));
 
-  }
+    // when
+    expectedException.expect(EmptyUserIdException.class);
+    expectedException.expectMessage(new EmptyUserIdException().getMessage());
 
-  public void shouldNotUpdateAccountIfItHasEmptyUserName() {
-    //TODO: implement
-  }
-
-  public void shouldNotUpdateAccountIfItHasEmptyUserSurname() {
-    //TODO: implement
+    // then
+    accountRepository.create(account);
+    accountRepository.update(account.number(), account);
   }
 
   @Test
@@ -212,6 +220,36 @@ public class InMemoryAccountRepositoryTest {
 
     // then
     accountRepository.delete(numberWhichDoesNotExist);
+  }
+
+  @Test
+  public void shouldNotDeleteAccountIfItIsEmpty() {
+    // given
+    String emptyNumber = "";
+
+    // when
+    expectedException.expect(EmptyAccountNumberException.class);
+    expectedException.expectMessage(
+        new EmptyAccountNumberException().getMessage()
+    );
+
+    // then
+    accountRepository.delete(emptyNumber);
+  }
+
+  @Test
+  public void shouldClearAccounts() throws Exception {
+    // given
+    accountRepository.create(createAccount());
+    accountRepository.create(createAccount());
+
+    assertThat(accountRepository.get().size()).isEqualTo(2);
+
+    // when
+    accountRepository.clear();
+
+    // then
+    assertThat(accountRepository.get().isEmpty()).isTrue();
   }
 
   private Account createAccount() {

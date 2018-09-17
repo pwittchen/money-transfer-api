@@ -52,4 +52,8 @@ public class InMemoryTransactionRepository implements TransactionRepository {
     transactions.add(transaction);
     return transaction;
   }
+
+  @Override public void clear() {
+    transactions.clear();
+  }
 }

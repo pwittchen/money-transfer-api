@@ -14,4 +14,6 @@ public interface AccountRepository {
   Account update(String number, Account account) throws Exception;
 
   void delete(String number);
+
+  void clear();
 }

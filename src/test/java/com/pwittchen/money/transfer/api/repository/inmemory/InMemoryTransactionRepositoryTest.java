@@ -165,6 +165,36 @@ public class InMemoryTransactionRepositoryTest {
     assertThat(transactionRepository.get().size()).isEqualTo(2);
   }
 
+  @Test
+  @SuppressWarnings("OptionalGetWithoutIsPresent") // it's not relevant for this test
+  public void shouldClearTransactions() throws Exception {
+    // given
+    Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));
+    Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50));
+
+    Transaction transaction = Transaction
+        .builder()
+        .id("TR1")
+        .from(sender)
+        .to(receiver)
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    when(transactionValidation.validate(transaction)).thenReturn(Optional.empty());
+    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
+    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
+
+    // when
+    transactionRepository.commit(transaction);
+    transactionRepository.commit(transaction);
+
+    assertThat(transactionRepository.get().size()).isEqualTo(2);
+    transactionRepository.clear();
+
+    // then
+    assertThat(transactionRepository.get().isEmpty()).isTrue();
+  }
+
   private Account createSenderAccount(final String number, final Money money) {
     return Account
         .builder()

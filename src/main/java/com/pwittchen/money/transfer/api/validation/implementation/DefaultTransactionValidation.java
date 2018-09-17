@@ -31,7 +31,7 @@ public class DefaultTransactionValidation implements TransactionValidation {
   }
 
   private Map<Boolean, Exception> createCommitValidationRules(final Transaction transaction) {
-    Map<Boolean, Exception> rules = new HashMap<>();
+    final Map<Boolean, Exception> rules = new HashMap<>();
 
     rules.put(
         !accountRepository.get(transaction.from().number()).isPresent(),

@@ -2,7 +2,7 @@ package com.pwittchen.money.transfer.api.validation.implementation;
 
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.validation.AccountValidation;
-import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.validation.exception.EmptyAccountNumberException;
 import com.pwittchen.money.transfer.api.validation.exception.EmptyUserIdException;
 import com.pwittchen.money.transfer.api.validation.exception.EmptyUserNameException;
 import com.pwittchen.money.transfer.api.validation.exception.EmptyUserSurnameException;
@@ -22,11 +22,11 @@ public class DefaultAccountValidation implements AccountValidation {
   }
 
   private Map<Boolean, Exception> createAccountValidationRules(final Account account) {
-    Map<Boolean, Exception> rules = new HashMap<>();
+    final Map<Boolean, Exception> rules = new HashMap<>();
 
     rules.put(
         account.number() == null || account.number().isEmpty(),
-        new AccountNotExistsException("null")
+        new EmptyAccountNumberException()
     );
 
     rules.put(

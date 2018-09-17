@@ -10,4 +10,6 @@ public interface TransactionRepository {
   Queue<Transaction> get();
 
   Transaction commit(Transaction transaction) throws Exception;
+
+  void clear();
 }

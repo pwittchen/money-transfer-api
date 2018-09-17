@@ -5,6 +5,7 @@ import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.validation.AccountValidation;
 import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.validation.exception.EmptyAccountNumberException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -64,10 +65,18 @@ public class InMemoryAccountRepository implements AccountRepository {
   }
 
   @Override public void delete(String number) {
-    if (number == null || number.isEmpty() || !accounts.containsKey(number)) {
+    if (number == null || number.isEmpty()) {
+      throw new EmptyAccountNumberException();
+    }
+
+    if (!accounts.containsKey(number)) {
       throw new AccountNotExistsException(number);
     }
 
     accounts.remove(number);
+  }
+
+  @Override public void clear() {
+    accounts.clear();
   }
 }
