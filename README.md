@@ -187,7 +187,7 @@ curl -X GET \
 Tests
 -----
 
-In order to execute **unit tests** run the following command:
+In order to execute **unit tests**, run the following command:
 
 ```
 ./gradlew test
