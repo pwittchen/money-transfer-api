@@ -115,6 +115,19 @@ public class InMemoryAccountRepositoryTest {
     accountRepository.create(account);
   }
 
+  public void shouldNotCreateAccountIfItHasEmptyNumber() {
+    //TODO: implement
+
+  }
+
+  public void shouldNotCreateAccountIfItHasEmptyUserName() {
+    //TODO: implement
+  }
+
+  public void shouldNotCreateAccountIfItHasEmptyUserSurname() {
+    //TODO: implement
+  }
+
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
   public void shouldUpdateAccount() throws Exception {
@@ -158,6 +171,19 @@ public class InMemoryAccountRepositoryTest {
 
     // then
     accountRepository.update(account.number(), account);
+  }
+
+  public void shouldNotUpdateAccountIfItHasEmptyNumber() {
+    //TODO: implement
+
+  }
+
+  public void shouldNotUpdateAccountIfItHasEmptyUserName() {
+    //TODO: implement
+  }
+
+  public void shouldNotUpdateAccountIfItHasEmptyUserSurname() {
+    //TODO: implement
   }
 
   @Test
