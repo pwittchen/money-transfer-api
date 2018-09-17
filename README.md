@@ -24,6 +24,8 @@ Tech stack used in this project is as follows:
 Building and running application
 --------------------------------
 
+Please note: If you're on Windows, use `gradlew.bat` instead of `./gradlew` script
+
 To build application, execute:
 
 ```
