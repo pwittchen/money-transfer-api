@@ -24,19 +24,20 @@ public class ControllerModule {
   @Provides
   @Singleton
   AccountController provideAccountController(
-      final AccountRepository accountRepository,
-      final ContextWrapper contextWrapper
+      final ContextWrapper contextWrapper,
+      final AccountRepository accountRepository
   ) {
-    return new AccountController(accountRepository, contextWrapper);
+    return new AccountController(contextWrapper, accountRepository);
   }
 
   @Inject
   @Provides
   @Singleton
   TransactionController provideTransactionController(
+      final ContextWrapper contextWrapper,
       final TransactionRepository transactionRepository,
       final AccountRepository accountRepository
   ) {
-    return new TransactionController(transactionRepository, accountRepository);
+    return new TransactionController(contextWrapper, transactionRepository, accountRepository);
   }
 }

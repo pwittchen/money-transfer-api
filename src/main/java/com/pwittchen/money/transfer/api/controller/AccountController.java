@@ -13,15 +13,15 @@ import org.joda.money.Money;
 
 public class AccountController {
 
-  private AccountRepository accountRepository;
   private ContextWrapper contextWrapper;
+  private AccountRepository accountRepository;
 
   @Inject
   public AccountController(
-      final AccountRepository accountRepository,
-      final ContextWrapper contextWrapper) {
-    this.accountRepository = accountRepository;
+      final ContextWrapper contextWrapper,
+      final AccountRepository accountRepository) {
     this.contextWrapper = contextWrapper;
+    this.accountRepository = accountRepository;
   }
 
   public void getOne(final Context context) {
@@ -52,7 +52,7 @@ public class AccountController {
     Optional<Account> account = createAccount(context, user);
 
     if (!account.isPresent()) {
-      Response response = Response.builder().message("Invalid currency format").build();
+      Response response = Response.builder().message("Invalid money format").build();
       contextWrapper.json(context, response);
       return;
     }

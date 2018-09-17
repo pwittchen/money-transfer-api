@@ -30,7 +30,7 @@ public class ControllerModuleTest {
   public void shouldProvideAccountController() {
     // when
     AccountController controller = controllerModule.provideAccountController(
-        accountRepository, contextWrapper
+        contextWrapper, accountRepository
     );
 
     // then
@@ -41,7 +41,7 @@ public class ControllerModuleTest {
   public void shouldProvideTransactionController() {
     // when
     TransactionController transactionController = controllerModule.provideTransactionController(
-        transactionRepository, accountRepository
+        contextWrapper, transactionRepository, accountRepository
     );
 
     // then

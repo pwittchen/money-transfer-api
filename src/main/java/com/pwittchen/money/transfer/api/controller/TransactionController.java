@@ -1,5 +1,6 @@
 package com.pwittchen.money.transfer.api.controller;
 
+import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.model.Transaction;
@@ -13,39 +14,45 @@ import org.joda.money.Money;
 
 public class TransactionController {
 
+  private ContextWrapper contextWrapper;
   private TransactionRepository transactionRepository;
   private AccountRepository accountRepository;
 
   @Inject
   public TransactionController(
+      ContextWrapper contextWrapper,
       TransactionRepository transactionRepository,
       AccountRepository accountRepository
   ) {
+    this.contextWrapper = contextWrapper;
     this.transactionRepository = transactionRepository;
     this.accountRepository = accountRepository;
   }
 
   public void getOne(final Context context) {
-    Optional<Transaction> transaction = transactionRepository.get(context.pathParam("id"));
+    String id = contextWrapper.pathParam(context, "id");
+    Optional<Transaction> transaction = transactionRepository.get(id);
 
     if (transaction.isPresent()) {
-      context.json(transaction);
+      contextWrapper.json(context, transaction);
     } else {
-      context
-          .status(404)
-          .json(Response.builder().message(String.format(
-              "transaction with id %s does not exist", context.pathParam("id")
-          )).build());
+      Response response = Response.builder()
+          .message(String.format("transaction with id %s does not exist", id))
+          .build();
+
+      contextWrapper.json(context, response, 404);
     }
   }
 
   public void getAll(final Context context) {
-    context.json(transactionRepository.get());
+    contextWrapper.json(context, transactionRepository.get());
   }
 
   public void commit(final Context context) {
-    Optional<Account> senderAccount = accountRepository.get(context.formParam("from"));
-    Optional<Account> receiverAccount = accountRepository.get(context.formParam("to"));
+    String from = contextWrapper.formParam(context, "from");
+    String to = contextWrapper.formParam(context, "to");
+    Optional<Account> senderAccount = accountRepository.get(from);
+    Optional<Account> receiverAccount = accountRepository.get(to);
 
     if (!senderAccount.isPresent() || !receiverAccount.isPresent()) {
       createInvalidAccountResponse(context);
@@ -55,7 +62,7 @@ public class TransactionController {
     Optional<Money> money = parseMoney(context);
 
     if (!money.isPresent()) {
-      createInvalidCurrencyFormatResponse(context);
+      createInvalidMoneyFormatResponse(context);
       return;
     }
 
@@ -63,28 +70,31 @@ public class TransactionController {
   }
 
   void createInvalidAccountResponse(Context context) {
-    context.json(Response.builder()
+    Response response = Response.builder()
         .message("Trying to transfer money from or to account, which does not exist")
-        .build());
+        .build();
+
+    contextWrapper.json(context, response);
   }
 
   Optional<Money> parseMoney(Context context) {
     try {
-      return Optional.of(Money.parse(String.format("%s %s",
-          context.formParam("currency"),
-          context.formParam("money"))
-      ));
+      Money money = Money.parse(String.format("%s %s",
+          contextWrapper.formParam(context, "currency"),
+          contextWrapper.formParam(context, "money"))
+      );
+      return Optional.of(money);
     } catch (Exception exception) {
       return Optional.empty();
     }
   }
 
-  void createInvalidCurrencyFormatResponse(Context context) {
-    context.json(Response.builder()
-        .message(String.format(
-            "%s is invalid currency format", context.formParam("currency"))
-        )
-        .build());
+  void createInvalidMoneyFormatResponse(Context context) {
+    Response response = Response.builder()
+        .message("invalid money format")
+        .build();
+
+    contextWrapper.json(context, response);
   }
 
   Transaction createTransaction(Account sender, Account receiver, Money money) {
@@ -99,9 +109,18 @@ public class TransactionController {
   void commit(final Context context, final Transaction transaction) {
     try {
       transactionRepository.commit(transaction);
-      context.json(Response.builder().message("transaction committed").object(transaction).build());
+      Response response = Response.builder()
+          .message("transaction committed")
+          .object(transaction)
+          .build();
+
+      contextWrapper.json(context, response);
     } catch (Exception exception) {
-      context.json(Response.builder().message(exception.getMessage()).build());
+      Response response = Response.builder()
+          .message(exception.getMessage())
+          .build();
+
+      contextWrapper.json(context, response);
     }
   }
 }

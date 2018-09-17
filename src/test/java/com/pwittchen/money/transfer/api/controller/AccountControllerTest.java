@@ -40,7 +40,7 @@ public class AccountControllerTest {
 
   @Before
   public void setUp() {
-    controller = new AccountController(accountRepository, contextWrapper);
+    controller = new AccountController(contextWrapper, accountRepository);
   }
 
   @Test
@@ -103,9 +103,24 @@ public class AccountControllerTest {
   @Test
   public void shouldNotCreateAccountIfCurrencyFormatIsInvalid() throws Exception {
     // given
-    Response response = Response.builder().message("Invalid currency format").build();
+    Response response = Response.builder().message("Invalid money format").build();
     when(contextWrapper.formParam(context, "currency")).thenReturn("INVALID");
     when(contextWrapper.formParam(context, "money")).thenReturn("100.00");
+
+    // when
+    controller.create(context);
+
+    // then
+    verify(accountRepository, times(0)).create(any(Account.class));
+    verify(contextWrapper).json(context, response);
+  }
+
+  @Test
+  public void shouldNotCreateAccountIfMoneyFormatIsInvalid() throws Exception {
+    // given
+    Response response = Response.builder().message("Invalid money format").build();
+    when(contextWrapper.formParam(context, "currency")).thenReturn("EUR");
+    when(contextWrapper.formParam(context, "money")).thenReturn("INVALID");
 
     // when
     controller.create(context);
