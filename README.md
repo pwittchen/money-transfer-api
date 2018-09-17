@@ -1,4 +1,7 @@
 # money-transfer-api
+
+[![Build Status](https://travis-ci.org/pwittchen/money-transfer-api.svg?branch=master)](https://travis-ci.org/pwittchen/money-transfer-api)
+
 HTTP server with REST API for money transfer between bank accounts
 
 Contents
