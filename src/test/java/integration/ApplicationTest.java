@@ -53,7 +53,7 @@ public class ApplicationTest {
   }
 
   @Test
-  public void shouldResponseWithForbiddenStatus() {
+  public void shouldRespondWithForbiddenStatus() {
     given()
         .when().get("/")
         .then().statusCode(403);
