@@ -122,6 +122,27 @@ public class ApplicationTest {
   }
 
   @Test
+  public void shouldDeleteAccount() {
+    String number = given()
+        .param("name", "testName")
+        .and().param("surname", "testSurname")
+        .and().param("currency", "EUR")
+        .and().param("money", "10.00")
+        .when().post("/account")
+        .then().extract().path("object.number");
+
+    given()
+        .formParam("number", number)
+        .when()
+        .delete("/account")
+        .then()
+        .body("message", equalTo(
+            String.format("account with number %s deleted", number)
+        ))
+        .statusCode(200);
+  }
+
+  @Test
   public void shouldTryToDeleteEmptyAccount() {
     given()
         .param("number", "")
