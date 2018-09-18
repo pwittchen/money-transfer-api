@@ -185,7 +185,40 @@ public class ApplicationTest {
   }
 
   @Test
-  public void shouldTryToCommitTransaction() {
+  public void shouldCommitTransaction() {
+    String numberOne = given()
+        .param("name", "testName1")
+        .and().param("surname", "testSurname1")
+        .and().param("currency", "EUR")
+        .and().param("money", "100.00")
+        .when().post("/account")
+        .then().extract().path("object.number");
+
+    String numberTwo = given()
+        .param("name", "testName2")
+        .and().param("surname", "testSurname2")
+        .and().param("currency", "EUR")
+        .and().param("money", "50.00")
+        .when().post("/account")
+        .then().extract().path("object.number");
+
+    given()
+        .param("from", numberOne)
+        .and().param("to", numberTwo)
+        .and().param("currency", "EUR")
+        .and().param("money", "10.00")
+        .when()
+        .post("/transaction")
+        .then()
+        .body(
+            "message",
+            equalTo("transaction committed")
+        )
+        .statusCode(200);
+  }
+
+  @Test
+  public void shouldTryToCommitTransactionForInvalidAccounts() {
     given()
         .param("from", "senderNo")
         .and().param("to", "receiverNo")
