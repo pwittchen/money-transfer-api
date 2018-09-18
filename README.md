@@ -97,7 +97,7 @@ curl -X POST \
 DELETE /account/{id}
 ```
 
-form params: `number`
+path param: `id`
 
 Exemplary curl request:
 
@@ -112,7 +112,7 @@ curl -X DELETE \
 GET /account/{id}
 ```
 
-path params: `number`
+path param: `id`
 
 Exemplary curl request:
 
@@ -161,7 +161,7 @@ curl -X POST \
 GET /transaction/{id}
 ```
 
-path params: `id`
+path param: `id`
 
 Exemplary curl request:
 
