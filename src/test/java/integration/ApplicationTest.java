@@ -235,7 +235,40 @@ public class ApplicationTest {
   }
 
   @Test
-  public void shouldTryToGetOneTransaction() {
+  public void shouldGetOneTransaction() {
+    String numberOne = given()
+        .param("name", "testName1")
+        .and().param("surname", "testSurname1")
+        .and().param("currency", "EUR")
+        .and().param("money", "100.00")
+        .when().post("/account")
+        .then().extract().path("object.number");
+
+    String numberTwo = given()
+        .param("name", "testName2")
+        .and().param("surname", "testSurname2")
+        .and().param("currency", "EUR")
+        .and().param("money", "50.00")
+        .when().post("/account")
+        .then().extract().path("object.number");
+
+    String transactionId = given()
+        .param("from", numberOne)
+        .and().param("to", numberTwo)
+        .and().param("currency", "EUR")
+        .and().param("money", "10.00")
+        .when()
+        .post("/transaction")
+        .then()
+        .extract().path("object.id");
+
+    get("/transaction/".concat(transactionId))
+        .then()
+        .body("id", equalTo(transactionId));
+  }
+
+  @Test
+  public void shouldTryToGetOneTransactionForInvalidId() {
     get("/transaction/invalid")
         .then()
         .body("message", equalTo("transaction with id invalid does not exist"));
