@@ -149,10 +149,10 @@ public class AccountControllerTest {
   public void shouldDeleteAccount() {
     // given
     String id = "1";
-    when(contextWrapper.formParam(context, "number")).thenReturn(id);
+    when(contextWrapper.pathParam(context, "id")).thenReturn(id);
     String message = String.format(
         "account with number %s deleted",
-        contextWrapper.formParam(context, "number")
+        contextWrapper.pathParam(context, "id")
     );
 
     Response response = Response.builder()
@@ -172,7 +172,7 @@ public class AccountControllerTest {
     // given
     String id = "1";
     AccountNotExistsException exception = new AccountNotExistsException(id);
-    when(contextWrapper.formParam(context, "number")).thenReturn(id);
+    when(contextWrapper.pathParam(context, "id")).thenReturn(id);
     doThrow(exception).when(accountRepository).delete(id);
 
     Response response = Response.builder()

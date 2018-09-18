@@ -5,6 +5,7 @@ import io.restassured.RestAssured;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static io.restassured.RestAssured.delete;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -131,24 +132,23 @@ public class ApplicationTest {
         .when().post("/account")
         .then().extract().path("object.number");
 
-    given()
-        .formParam("number", number)
-        .when()
-        .delete("/account")
+    delete("/account/".concat(number))
         .then()
         .body("message", equalTo(
             String.format("account with number %s deleted", number)
-        ))
+        )).statusCode(200);
+  }
+
+  @Test
+  public void shouldTryToDeleteInvalidAccount() {
+    delete("/account/invalid")
+        .then().body("message", equalTo("account with number invalid does not exist"))
         .statusCode(200);
   }
 
   @Test
   public void shouldTryToDeleteEmptyAccount() {
-    given()
-        .param("number", "")
-        .when().delete("/account")
-        .then().body(
-        "message", equalTo("Empty account number")).statusCode(200);
+    delete("/account").then().statusCode(404);
   }
 
   @Test

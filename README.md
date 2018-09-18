@@ -94,7 +94,7 @@ curl -X POST \
 #### Deleting account
 
 ```
-DELETE /account
+DELETE /account/{id}
 ```
 
 form params: `number`
@@ -103,14 +103,13 @@ Exemplary curl request:
 
 ```
 curl -X DELETE \
-  http://localhost:8000/account \
-  -F id=f1ba2431-8aae-495b-bffe-0c76ea4357e7
+  http://localhost:8000/account/f1ba2431-8aae-495b-bffe-0c76ea4357e7
 ```
 
 #### Getting one account
 
 ```
-GET /account/{number}
+GET /account/{id}
 ```
 
 path params: `number`

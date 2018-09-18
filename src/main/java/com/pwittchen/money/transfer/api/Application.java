@@ -53,10 +53,12 @@ public class Application {
 
     app.routes(() -> {
       path("/account", () -> {
-        path(":id", () -> get(accountController::getOne));
+        path(":id", () -> {
+          get(accountController::getOne);
+          delete(accountController::delete);
+        });
         get(accountController::getAll);
         post(accountController::create);
-        delete(accountController::delete);
       });
 
       path("/transaction", () -> {
