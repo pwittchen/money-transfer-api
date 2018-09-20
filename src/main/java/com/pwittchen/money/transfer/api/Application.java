@@ -35,11 +35,14 @@ public class Application {
     final Javalin app = Javalin.create()
         .event(JavalinEvent.SERVER_STARTED, () -> LOG.info("server has started"))
         .event(JavalinEvent.SERVER_START_FAILED, () -> LOG.error("server start has failed"))
+        .requestLogger((context, executionTimeMs) ->
+            LOG.info("{} ms\t {}\t {} {}",
+                executionTimeMs,
+                context.req.getMethod(),
+                context.req.getRequestURI(),
+                context.req.getParameterMap().toString().replaceAll("^.|.$", "")
+            ))
         .start(PORT);
-
-    app.before(context -> {
-      LOG.info("{}\t {}", context.req.getMethod(), context.req.getRequestURI());
-    });
 
     app.get("/", context -> {
       throw new ForbiddenResponse();
