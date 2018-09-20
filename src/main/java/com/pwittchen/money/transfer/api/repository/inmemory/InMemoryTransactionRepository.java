@@ -44,12 +44,16 @@ public class InMemoryTransactionRepository implements TransactionRepository {
     }
 
     Account sender = accountRepository.get(transaction.from().number()).get();
-    sender.withdraw(transaction.money());
-
     Account receiver = accountRepository.get(transaction.to().number()).get();
-    receiver.put(transaction.money());
 
-    transactions.add(transaction);
+    synchronized (sender) {
+      sender.withdraw(transaction.money());
+      synchronized (receiver) {
+        receiver.put(transaction.money());
+        transactions.add(transaction);
+      }
+    }
+
     return transaction;
   }
 
