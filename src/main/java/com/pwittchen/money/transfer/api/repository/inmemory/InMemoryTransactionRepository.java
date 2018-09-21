@@ -43,7 +43,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
         if (error.isPresent()) {
           throw error.get();
         }
-        
+
         final Account sender = accountRepository.get(transaction.from().number()).get();
         final Account receiver = accountRepository.get(transaction.to().number()).get();
 
