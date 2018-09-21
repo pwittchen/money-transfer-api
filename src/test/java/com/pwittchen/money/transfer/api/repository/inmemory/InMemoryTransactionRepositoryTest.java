@@ -195,6 +195,31 @@ public class InMemoryTransactionRepositoryTest {
     assertThat(transactionRepository.get().isEmpty()).isTrue();
   }
 
+  @Test
+  public void shouldGetErrorWhenSenderBalanceIsLessThanMoneyToBeSend() throws Exception {
+    // given
+    Account sender = createSenderAccount("PL1", Money.of(CurrencyUnit.EUR, 100));
+    Account receiver = createReceiverAccount("PL2", Money.of(CurrencyUnit.EUR, 0));
+
+    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
+    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
+
+    Transaction transaction = Transaction
+        .builder()
+        .id("TR1")
+        .from(sender)
+        .to(receiver)
+        .money(Money.of(CurrencyUnit.EUR, 120))
+        .build();
+
+    // when
+    expectedException.expect(NotEnoughMoneyException.class);
+    expectedException.expectMessage(new NotEnoughMoneyException(sender.number()).getMessage());
+
+    // then
+    transactionRepository.commit(transaction);
+  }
+
   private Account createSenderAccount(final String number, final Money money) {
     return Account
         .builder()

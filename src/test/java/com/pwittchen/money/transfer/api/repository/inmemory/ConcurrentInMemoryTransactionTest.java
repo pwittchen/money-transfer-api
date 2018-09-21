@@ -102,6 +102,48 @@ public class ConcurrentInMemoryTransactionTest {
     assertThat(receiverMoney).isEqualTo(Money.of(CurrencyUnit.EUR, 64));
   }
 
+  @Test
+  @SuppressWarnings("OptionalGetWithoutIsPresent")
+  public void shouldPassOnlyOneTransaction() throws Exception {
+    // given
+    final Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 10));
+    final Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 0));
+    accountRepository.create(sender);
+    accountRepository.create(receiver);
+
+    // send 10 EUR: AC1 -> AC2
+    final Transaction transaction1 = Transaction
+        .builder()
+        .id("transaction_1")
+        .from(sender)
+        .to(receiver)
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    // send 10 EUR: AC1 -> AC2
+    final Transaction transaction2 = Transaction
+        .builder()
+        .id("transaction_2")
+        .from(sender)
+        .to(receiver)
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    // when
+    executorService.submit(() -> commitTransaction(transaction1));
+    executorService.submit(() -> commitTransaction(transaction2));
+
+    executorService.awaitTermination(5, TimeUnit.SECONDS);
+
+    // then
+    Money senderMoney = accountRepository.get(sender.number()).get().money();
+    Money receiverMoney = accountRepository.get(receiver.number()).get().money();
+
+    assertThat(transactionRepository.get().size()).isEqualTo(1);
+    assertThat(senderMoney).isEqualTo(Money.of(CurrencyUnit.EUR, 0));
+    assertThat(receiverMoney).isEqualTo(Money.of(CurrencyUnit.EUR, 10));
+  }
+
   private void commitTransaction(Transaction transaction) {
     try {
       Thread.sleep(ThreadLocalRandom.current().nextInt(3000));

@@ -5,7 +5,6 @@ import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.validation.TransactionValidation;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.DifferentCurrencyException;
-import com.pwittchen.money.transfer.api.validation.exception.NotEnoughMoneyException;
 import com.pwittchen.money.transfer.api.validation.exception.TransferToTheSameAccountException;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +20,7 @@ public class DefaultTransactionValidation implements TransactionValidation {
     this.accountRepository = accountRepository;
   }
 
-  @Override public Optional<Exception> validate(Transaction transaction) {
+  @Override public Optional<Exception> validate(final Transaction transaction) {
     return createCommitValidationRules(transaction)
         .entrySet()
         .stream()
@@ -41,11 +40,6 @@ public class DefaultTransactionValidation implements TransactionValidation {
     rules.put(
         !accountRepository.get(transaction.to().number()).isPresent(),
         new AccountNotExistsException(transaction.to().number())
-    );
-
-    rules.put(
-        transaction.from().money().isLessThan(transaction.money()),
-        new NotEnoughMoneyException(transaction.from().number())
     );
 
     rules.put(

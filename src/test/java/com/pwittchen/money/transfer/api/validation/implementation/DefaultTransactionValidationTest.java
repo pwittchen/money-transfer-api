@@ -7,7 +7,6 @@ import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.validation.TransactionValidation;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.DifferentCurrencyException;
-import com.pwittchen.money.transfer.api.validation.exception.NotEnoughMoneyException;
 import com.pwittchen.money.transfer.api.validation.exception.TransferToTheSameAccountException;
 import java.util.Optional;
 import java.util.UUID;
@@ -115,36 +114,6 @@ public class DefaultTransactionValidationTest {
       assertThat(exception).isInstanceOf(AccountNotExistsException.class);
       assertThat(exception.getMessage()).isEqualTo(
           new AccountNotExistsException(receiver.number()).getMessage()
-      );
-    });
-  }
-
-  @Test
-  public void shouldGetErrorWhenSenderBalanceIsLessThanMoneyToBeSend() {
-    // given
-    Account sender = createSenderAccount("PL1", Money.of(CurrencyUnit.EUR, 100));
-    Account receiver = createReceiverAccount("PL2", Money.of(CurrencyUnit.EUR, 0));
-
-    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
-    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
-
-    Transaction transaction = Transaction
-        .builder()
-        .id("TR1")
-        .from(sender)
-        .to(receiver)
-        .money(Money.of(CurrencyUnit.EUR, 120))
-        .build();
-
-    // when
-    Optional<Exception> error = transactionValidation.validate(transaction);
-
-    // then
-    assertThat(error.isPresent()).isTrue();
-    error.ifPresent(exception -> {
-      assertThat(exception).isInstanceOf(NotEnoughMoneyException.class);
-      assertThat(exception.getMessage()).isEqualTo(
-          new NotEnoughMoneyException(sender.number()).getMessage()
       );
     });
   }
