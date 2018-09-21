@@ -1,5 +1,6 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
+import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
@@ -33,23 +34,22 @@ public class InMemoryTransactionRepository implements TransactionRepository {
     return transactions;
   }
 
-  @Override
+  @SuppressWarnings("OptionalGetWithoutIsPresent") @Override
   public Transaction commit(final Transaction transaction) throws Exception {
-    Optional<Exception> error = transactionValidation.validate(transaction);
-
-    if (error.isPresent()) {
-      throw error.get();
-    }
-
     synchronized (transaction.from()) {
-      accountRepository.withdrawMoney(transaction.from(), transaction.money());
+      Optional<Exception> error = transactionValidation.validate(transaction);
+      if (error.isPresent()) {
+        throw error.get();
+      }
+      final Account sender = accountRepository.get(transaction.from().number()).get();
+      accountRepository.withdrawMoney(sender, transaction.money());
       synchronized (transaction.to()) {
-        accountRepository.putMoney(transaction.to(), transaction.money());
+        final Account receiver = accountRepository.get(transaction.to().number()).get();
+        accountRepository.putMoney(receiver, transaction.money());
         transactions.add(transaction);
+        return transaction;
       }
     }
-
-    return transaction;
   }
 
   @Override public void clear() {

@@ -72,6 +72,7 @@ public class InMemoryAccountRepository implements AccountRepository {
 
     final Account updatedAccount = Account
         .builder()
+        .number(account.number())
         .user(account.user())
         .money(account.money().minus(money))
         .build();
@@ -79,13 +80,14 @@ public class InMemoryAccountRepository implements AccountRepository {
     accounts.put(account.number(), updatedAccount);
   }
 
-  @Override public void putMoney(Account account, Money money) {
+  @Override public void putMoney(final Account account, Money money) {
     if (!accounts.containsKey(account.number())) {
       throw new AccountNotExistsException(account.number());
     }
 
     final Account updatedAccount = Account
         .builder()
+        .number(account.number())
         .user(account.user())
         .money(account.money().plus(money))
         .build();
