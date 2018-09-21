@@ -195,6 +195,96 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test
+  public void shouldWithdrawMoney() throws Exception {
+    // given
+    Account account = createAccount();
+    Money moneyToWithdraw = Money.of(CurrencyUnit.EUR, 1);
+    Money expectedAmount = account.money().minus(moneyToWithdraw);
+
+    // when
+    accountRepository.create(account);
+    accountRepository.withdrawMoney(account, moneyToWithdraw);
+
+    // then
+    //noinspection OptionalGetWithoutIsPresent
+    Money actualAmount = accountRepository.get(account.number()).get().money();
+    assertThat(actualAmount).isEqualTo(expectedAmount);
+  }
+
+  @Test(expected = AccountNotExistsException.class)
+  public void shouldNotWithdrawMoneyIfAccountDoesNotExist() {
+    // given
+    Account account = createAccount();
+    Money money = Money.of(CurrencyUnit.EUR, 1);
+
+    // when
+    accountRepository.withdrawMoney(account, money);
+
+    // then exception is thrown
+  }
+
+  @Test(expected = EmptyAccountNumberException.class)
+  public void shouldNotWithdrawMoneyIfErrorOccurred() throws Exception {
+    // given
+    Account account = createAccount();
+    Money money = Money.of(CurrencyUnit.EUR, 1);
+    when(accountValidation.validate(account)).thenReturn(
+        Optional.of(new EmptyAccountNumberException())
+    );
+
+    // when
+    accountRepository.create(account);
+    accountRepository.withdrawMoney(account, money);
+
+    // then exception is thrown
+  }
+
+  @Test
+  public void shouldPutMoney() throws Exception {
+    // given
+    Account account = createAccount();
+    Money moneyToPut = Money.of(CurrencyUnit.EUR, 1);
+    Money expectedAmount = account.money().plus(moneyToPut);
+
+    // when
+    accountRepository.create(account);
+    accountRepository.putMoney(account, moneyToPut);
+
+    // then
+    //noinspection OptionalGetWithoutIsPresent
+    Money actualAmount = accountRepository.get(account.number()).get().money();
+    assertThat(actualAmount).isEqualTo(expectedAmount);
+  }
+
+  @Test(expected = AccountNotExistsException.class)
+  public void shouldNotPutMoneyIfAccountDoesNotExist() {
+    // given
+    Account account = createAccount();
+    Money money = Money.of(CurrencyUnit.EUR, 1);
+
+    // when
+    accountRepository.putMoney(account, money);
+
+    // then exception is thrown
+  }
+
+  @Test(expected = EmptyAccountNumberException.class)
+  public void shouldNotPutMoneyIfErrorOccurred() throws Exception {
+    // given
+    Account account = createAccount();
+    Money money = Money.of(CurrencyUnit.EUR, 1);
+    when(accountValidation.validate(account)).thenReturn(
+        Optional.of(new EmptyAccountNumberException())
+    );
+
+    // when
+    accountRepository.create(account);
+    accountRepository.putMoney(account, money);
+
+    // then exception is thrown
+  }
+
+  @Test
   public void shouldDeleteAccount() throws Exception {
     // given
     Account account = createAccount();

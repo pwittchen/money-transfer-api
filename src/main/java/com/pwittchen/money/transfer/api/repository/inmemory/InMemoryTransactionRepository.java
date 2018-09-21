@@ -1,6 +1,5 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
-import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
@@ -23,7 +22,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
     this.transactionValidation = transactionValidation;
   }
 
-  @Override public Optional<Transaction> get(String id) {
+  @Override public Optional<Transaction> get(final String id) {
     return transactions
         .stream()
         .filter(transaction -> transaction.id().equals(id))
@@ -35,21 +34,17 @@ public class InMemoryTransactionRepository implements TransactionRepository {
   }
 
   @Override
-  @SuppressWarnings("OptionalGetWithoutIsPresent") // accounts are checked in transactionValidation
-  public Transaction commit(Transaction transaction) throws Exception {
+  public Transaction commit(final Transaction transaction) throws Exception {
     Optional<Exception> error = transactionValidation.validate(transaction);
 
     if (error.isPresent()) {
       throw error.get();
     }
 
-    Account sender = accountRepository.get(transaction.from().number()).get();
-    Account receiver = accountRepository.get(transaction.to().number()).get();
-
-    synchronized (sender) {
-      sender.withdraw(transaction.money());
-      synchronized (receiver) {
-        receiver.put(transaction.money());
+    synchronized (transaction.from()) {
+      accountRepository.withdrawMoney(transaction.from(), transaction.money());
+      synchronized (transaction.to()) {
+        accountRepository.putMoney(transaction.to(), transaction.money());
         transactions.add(transaction);
       }
     }

@@ -87,15 +87,13 @@ public class InMemoryTransactionRepositoryTest {
         .build();
 
     when(transactionValidation.validate(transaction)).thenReturn(Optional.empty());
-    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
-    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     // when
     transactionRepository.commit(transaction);
 
     // then
-    verify(sender).withdraw(transaction.money());
-    verify(receiver).put(transaction.money());
+    verify(accountRepository).withdrawMoney(sender, transaction.money());
+    verify(accountRepository).putMoney(receiver, transaction.money());
     assertThat(transactionRepository.get().isEmpty()).isFalse();
   }
 
@@ -115,8 +113,6 @@ public class InMemoryTransactionRepositoryTest {
         .build();
 
     when(transactionValidation.validate(transaction)).thenReturn(Optional.empty());
-    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
-    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     // when
     transactionRepository.commit(transaction);
@@ -154,8 +150,6 @@ public class InMemoryTransactionRepositoryTest {
 
     when(transactionValidation.validate(transactionOne)).thenReturn(Optional.empty());
     when(transactionValidation.validate(transactionTwo)).thenReturn(Optional.empty());
-    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
-    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     // when
     transactionRepository.commit(transactionOne);
@@ -181,8 +175,6 @@ public class InMemoryTransactionRepositoryTest {
         .build();
 
     when(transactionValidation.validate(transaction)).thenReturn(Optional.empty());
-    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
-    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     // when
     transactionRepository.commit(transaction);

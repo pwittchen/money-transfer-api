@@ -38,14 +38,6 @@ public class Account {
     return money;
   }
 
-  public void put(final Money moneyToPut) {
-    this.money = money.plus(moneyToPut);
-  }
-
-  public void withdraw(final Money moneyToWithdraw) {
-    this.money = money.minus(moneyToWithdraw);
-  }
-
   @Override public boolean equals(Object o) {
     if (this == o) {
       return true;

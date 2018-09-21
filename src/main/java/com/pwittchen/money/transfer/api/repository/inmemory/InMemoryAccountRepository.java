@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.inject.Inject;
+import org.joda.money.Money;
 
 public class InMemoryAccountRepository implements AccountRepository {
 
@@ -62,6 +63,34 @@ public class InMemoryAccountRepository implements AccountRepository {
     accounts.remove(number);
     accounts.put(account.number(), account);
     return account;
+  }
+
+  @Override public void withdrawMoney(final Account account, final Money money) {
+    if (!accounts.containsKey(account.number())) {
+      throw new AccountNotExistsException(account.number());
+    }
+
+    final Account updatedAccount = Account
+        .builder()
+        .user(account.user())
+        .money(account.money().minus(money))
+        .build();
+
+    accounts.put(account.number(), updatedAccount);
+  }
+
+  @Override public void putMoney(Account account, Money money) {
+    if (!accounts.containsKey(account.number())) {
+      throw new AccountNotExistsException(account.number());
+    }
+
+    final Account updatedAccount = Account
+        .builder()
+        .user(account.user())
+        .money(account.money().plus(money))
+        .build();
+
+    accounts.put(account.number(), updatedAccount);
   }
 
   @Override public void delete(String number) {
