@@ -63,6 +63,100 @@ public class AccountTest {
     assertThat(accountOne.hashCode() == accountTwo.hashCode()).isTrue();
   }
 
+  @Test
+  public void shouldNotBeTheSameAsOtherObject() {
+    // given
+    Account account = createAccount();
+    Object anotherObject = new Object();
+
+    // when
+    boolean isTheSame = account.equals(anotherObject);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test
+  public void shouldNotBeTheSameWhenComparingToNull() {
+    // given
+    Account account = createAccount();
+
+    // when
+    boolean isTheSame = account.equals(null);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test
+  public void shouldNotBeTheSameWhenUserIsDifferent() {
+    // given
+    Account account = createAccount();
+    User user = User.builder()
+        .id("2")
+        .name("Test")
+        .surname("User")
+        .build();
+
+    Account anotherAccount = Account.builder()
+        .number("1")
+        .user(user)
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    // when
+    boolean isTheSame = account.equals(anotherAccount);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test
+  public void shouldNotBeTheSameWhenNumberIsDifferent() {
+    // given
+    Account account = createAccount();
+    User user = User.builder()
+        .id("1")
+        .name("John")
+        .surname("Doe")
+        .build();
+
+    Account anotherAccount = Account.builder()
+        .number("2")
+        .user(user)
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    // when
+    boolean isTheSame = account.equals(anotherAccount);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test
+  public void shouldNotBeTheSameWhenMoneyDiffers() {
+    // given
+    Account account = createAccount();
+    User user = User.builder()
+        .id("1")
+        .name("John")
+        .surname("Doe")
+        .build();
+
+    Account anotherAccount = Account.builder()
+        .number("2")
+        .user(user)
+        .money(Money.of(CurrencyUnit.EUR, 20))
+        .build();
+
+    // when
+    boolean isTheSame = account.equals(anotherAccount);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
   private Account createAccount() {
     User user = User.builder()
         .id("1")

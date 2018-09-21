@@ -54,6 +54,16 @@ public class ResponseTest {
   }
 
   @Test
+  public void objectsShouldNotBeEqualWhenOneHasDifferentType() {
+    // when
+    Response response = Response.builder().message("test").object(new Object()).build();
+
+    // then
+    assertThat(response.equals(new Object())).isFalse();
+  }
+
+
+  @Test
   public void objectsShouldBeInTheSameBucket() {
     // when
     Response responseOne = Response.builder().message("test").object("obj").build();
@@ -61,5 +71,25 @@ public class ResponseTest {
 
     // then
     assertThat(responseOne.hashCode() == responseTwo.hashCode()).isTrue();
+  }
+
+  @Test
+  public void objectsShouldNotBeEqualWhenMessageIsDifferent() {
+    // when
+    Response responseOne = Response.builder().message("test1").object("obj").build();
+    Response responseTwo = Response.builder().message("test2").object("obj").build();
+
+    // then
+    assertThat(responseOne.equals(responseTwo)).isFalse();
+  }
+
+  @Test
+  public void objectsShouldNotBeEqualWhenObjectIsDifferent() {
+    // when
+    Response responseOne = Response.builder().message("test").object("obj1").build();
+    Response responseTwo = Response.builder().message("test").object("obj2").build();
+
+    // then
+    assertThat(responseOne.equals(responseTwo)).isFalse();
   }
 }

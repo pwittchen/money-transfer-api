@@ -52,6 +52,69 @@ public class UserTest {
   }
 
   @Test
+  public void objectsShouldNotBeEqualWhenOneHasDifferentType() {
+    // when
+    User user = createUser();
+
+    // then
+    assertThat(user.equals(new Object())).isFalse();
+  }
+
+  @Test
+  public void objectsShouldNotBeEqualWhenOneHasDifferentId() {
+    // given
+    User userOne = createUser();
+    User userTwo = User
+        .builder()
+        .id("2  ")
+        .name("John")
+        .surname("Doe")
+        .build();
+
+    // when
+    boolean isTheSame = userOne.equals(userTwo);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test
+  public void objectsShouldNotBeEqualWhenOneHasDifferentName() {
+    // given
+    User userOne = createUser();
+    User userTwo = User
+        .builder()
+        .id("1")
+        .name("Stephen")
+        .surname("Doe")
+        .build();
+
+    // when
+    boolean isTheSame = userOne.equals(userTwo);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test
+  public void objectsShouldNotBeEqualWhenOneHasDifferentSurname() {
+    // given
+    User userOne = createUser();
+    User userTwo = User
+        .builder()
+        .id("1")
+        .name("John")
+        .surname("Test")
+        .build();
+
+    // when
+    boolean isTheSame = userOne.equals(userTwo);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test
   public void objectsShouldBeInTheSameBucket() {
     // when
     User userOne = createUser();
