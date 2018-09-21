@@ -23,9 +23,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class ConcurrentInMemoryTransactionTest {
 
+  private static final int NUMBER_OF_THREADS = 3;
+
   private TransactionRepository transactionRepository;
 
   private AccountRepository accountRepository;
+
   private ExecutorService executorService;
 
   @Before
@@ -39,7 +42,7 @@ public class ConcurrentInMemoryTransactionTest {
         accountRepository, transactionValidation
     );
 
-    executorService = Executors.newFixedThreadPool(3);
+    executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
   }
 
   @After
