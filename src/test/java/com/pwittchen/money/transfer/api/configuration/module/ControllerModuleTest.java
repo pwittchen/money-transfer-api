@@ -49,6 +49,7 @@ public class ControllerModuleTest {
     assertThat(transactionController).isNotNull();
   }
 
+  @Test
   public void shouldProvideContextWrapper() {
     // when
     ContextWrapper contextWrapper = controllerModule.provideContextWrapper();
