@@ -166,7 +166,7 @@ public class TransactionTest {
         .to(createAccount())
         .money(Money.of(CurrencyUnit.EUR, 20))
         .build();
-    
+
     // when
     boolean isTheSame = transactionOne.equals(transactionTwo);
 
