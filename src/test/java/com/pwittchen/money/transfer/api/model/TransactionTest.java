@@ -30,7 +30,7 @@ public class TransactionTest {
   public void objectsShouldBeEqual() {
     // when
     Transaction transactionOne = createTransaction();
-    Transaction transactionTwo = createTransaction();
+    Transaction transactionTwo = transactionOne;
 
     // then
     assertThat(transactionOne.equals(transactionTwo)).isTrue();
@@ -67,7 +67,7 @@ public class TransactionTest {
   public void objectsShouldBeInTheSameBucket() {
     // when
     Transaction transactionOne = createTransaction();
-    Transaction transactionTwo = createTransaction();
+    Transaction transactionTwo = transactionOne;
 
     // then
     assertThat(transactionOne.hashCode() == transactionTwo.hashCode()).isTrue();
