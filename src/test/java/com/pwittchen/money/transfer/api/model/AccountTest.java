@@ -3,6 +3,7 @@ package com.pwittchen.money.transfer.api.model;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.time.LocalDateTime;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Test;
@@ -100,6 +101,8 @@ public class AccountTest {
 
     Account anotherAccount = Account.builder()
         .number("1")
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .user(user)
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
@@ -123,6 +126,8 @@ public class AccountTest {
 
     Account anotherAccount = Account.builder()
         .number("2")
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .user(user)
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
@@ -146,6 +151,8 @@ public class AccountTest {
 
     Account anotherAccount = Account.builder()
         .number("2")
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .user(user)
         .money(Money.of(CurrencyUnit.EUR, 20))
         .build();
@@ -166,6 +173,8 @@ public class AccountTest {
 
     return Account.builder()
         .number("1")
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .user(user)
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();

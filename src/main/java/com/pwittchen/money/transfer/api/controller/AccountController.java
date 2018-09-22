@@ -6,6 +6,7 @@ import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import io.javalin.Context;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -85,6 +86,8 @@ public class AccountController {
             .number(UUID.randomUUID().toString())
             .user(user)
             .money(money)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build()
         );
   }

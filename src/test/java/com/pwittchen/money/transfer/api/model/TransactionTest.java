@@ -3,6 +3,7 @@ package com.pwittchen.money.transfer.api.model;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.time.LocalDateTime;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Test;
@@ -77,6 +78,7 @@ public class TransactionTest {
     // given
     Transaction transactionOne = Transaction.builder()
         .id("TR1")
+        .createdAt(LocalDateTime.now())
         .from(createAccount())
         .to(createAccount())
         .money(Money.of(CurrencyUnit.EUR, 10))
@@ -113,6 +115,7 @@ public class TransactionTest {
     // given
     Transaction transactionOne = Transaction.builder()
         .id("TR1")
+        .createdAt(LocalDateTime.now())
         .from(createAccount())
         .to(createAccount())
         .money(Money.of(CurrencyUnit.EUR, 10))
@@ -132,6 +135,7 @@ public class TransactionTest {
 
     Transaction transactionTwo = Transaction.builder()
         .id("TR2")
+        .createdAt(LocalDateTime.now())
         .from(createAccount())
         .to(accountTwo)
         .money(Money.of(CurrencyUnit.EUR, 10))
@@ -149,6 +153,7 @@ public class TransactionTest {
     // given
     Transaction transactionOne = Transaction.builder()
         .id("TR1")
+        .createdAt(LocalDateTime.now())
         .from(createAccount())
         .to(createAccount())
         .money(Money.of(CurrencyUnit.EUR, 10))
@@ -156,11 +161,12 @@ public class TransactionTest {
 
     Transaction transactionTwo = Transaction.builder()
         .id("TR2")
+        .createdAt(LocalDateTime.now())
         .from(createAccount())
         .to(createAccount())
         .money(Money.of(CurrencyUnit.EUR, 20))
         .build();
-
+    
     // when
     boolean isTheSame = transactionOne.equals(transactionTwo);
 
@@ -171,6 +177,7 @@ public class TransactionTest {
   private Transaction createTransaction() {
     return Transaction.builder()
         .id("TR1")
+        .createdAt(LocalDateTime.now())
         .from(createAccount())
         .to(createAccount())
         .money(Money.of(CurrencyUnit.EUR, 10))

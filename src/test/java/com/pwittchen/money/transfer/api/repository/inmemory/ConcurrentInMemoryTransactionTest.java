@@ -8,6 +8,7 @@ import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import com.pwittchen.money.transfer.api.validation.TransactionValidation;
 import com.pwittchen.money.transfer.api.validation.implementation.DefaultAccountValidation;
 import com.pwittchen.money.transfer.api.validation.implementation.DefaultTransactionValidation;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,6 +65,7 @@ public class ConcurrentInMemoryTransactionTest {
     final Transaction transaction1 = Transaction
         .builder()
         .id("transaction_1")
+        .createdAt(LocalDateTime.now())
         .from(sender)
         .to(receiver)
         .money(Money.of(CurrencyUnit.EUR, 5))
@@ -73,6 +75,7 @@ public class ConcurrentInMemoryTransactionTest {
     final Transaction transaction2 = Transaction
         .builder()
         .id("transaction_2")
+        .createdAt(LocalDateTime.now())
         .from(sender)
         .to(receiver)
         .money(Money.of(CurrencyUnit.EUR, 10))
@@ -82,6 +85,7 @@ public class ConcurrentInMemoryTransactionTest {
     final Transaction transaction3 = Transaction
         .builder()
         .id("transaction_3")
+        .createdAt(LocalDateTime.now())
         .from(receiver)
         .to(sender)
         .money(Money.of(CurrencyUnit.EUR, 1))
@@ -116,6 +120,7 @@ public class ConcurrentInMemoryTransactionTest {
     final Transaction transaction1 = Transaction
         .builder()
         .id("transaction_1")
+        .createdAt(LocalDateTime.now())
         .from(sender)
         .to(receiver)
         .money(Money.of(CurrencyUnit.EUR, 10))
@@ -125,6 +130,7 @@ public class ConcurrentInMemoryTransactionTest {
     final Transaction transaction2 = Transaction
         .builder()
         .id("transaction_2")
+        .createdAt(LocalDateTime.now())
         .from(sender)
         .to(receiver)
         .money(Money.of(CurrencyUnit.EUR, 10))

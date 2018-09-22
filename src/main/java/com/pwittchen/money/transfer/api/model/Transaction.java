@@ -1,5 +1,6 @@
 package com.pwittchen.money.transfer.api.model;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import org.joda.money.Money;
 
@@ -8,20 +9,23 @@ public class Transaction {
   private final Account from;
   private final Account to;
   private final Money money;
+  private final LocalDateTime createdAt;
 
   private Transaction() {
     this(builder());
   }
 
   private Transaction(final Builder builder) {
-    this(builder.id, builder.from, builder.to, builder.money);
+    this(builder.id, builder.from, builder.to, builder.money, builder.createdAt);
   }
 
-  private Transaction(final String id, final Account from, final Account to, final Money money) {
+  private Transaction(final String id, final Account from, final Account to, final Money money,
+      final LocalDateTime createdAt) {
     this.id = id;
     this.from = from;
     this.to = to;
     this.money = money;
+    this.createdAt = createdAt;
   }
 
   public static Builder builder() {
@@ -44,6 +48,10 @@ public class Transaction {
     return money;
   }
 
+  public LocalDateTime createdAt() {
+    return createdAt;
+  }
+
   @Override public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -58,11 +66,12 @@ public class Transaction {
     return Objects.equals(id, that.id)
         && Objects.equals(from, that.from)
         && Objects.equals(to, that.to)
-        && Objects.equals(money, that.money);
+        && Objects.equals(money, that.money)
+        && Objects.equals(createdAt, that.createdAt);
   }
 
   @Override public int hashCode() {
-    return Objects.hash(id, from, to, money);
+    return Objects.hash(id, from, to, money, createdAt);
   }
 
   public static class Builder {
@@ -70,6 +79,7 @@ public class Transaction {
     private Account from;
     private Account to;
     private Money money;
+    private LocalDateTime createdAt;
 
     private Builder() {
     }
@@ -91,6 +101,11 @@ public class Transaction {
 
     public Builder money(final Money money) {
       this.money = money;
+      return this;
+    }
+
+    public Builder createdAt(final LocalDateTime createdAt) {
+      this.createdAt = createdAt;
       return this;
     }
 

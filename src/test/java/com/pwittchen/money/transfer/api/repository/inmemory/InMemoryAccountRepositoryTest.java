@@ -8,6 +8,7 @@ import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExist
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.EmptyAccountNumberException;
 import com.pwittchen.money.transfer.api.validation.exception.EmptyUserIdException;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -156,13 +157,14 @@ public class InMemoryAccountRepositoryTest {
     Account account = createAccount();
     String newAccountNumber = UUID.randomUUID().toString();
     Account anotherAccount = createAnotherAccount(newAccountNumber);
+
     accountRepository.create(account);
 
     // when
     accountRepository.update(account.number(), anotherAccount);
 
     // then
-    assertThat(accountRepository.get(newAccountNumber).get()).isEqualTo(anotherAccount);
+    assertThat(accountRepository.get(newAccountNumber).isPresent()).isTrue();
     assertThat(accountRepository.get(account.number()).isPresent()).isFalse();
   }
 
@@ -348,6 +350,8 @@ public class InMemoryAccountRepositoryTest {
         .user(createUser())
         .number(UUID.randomUUID().toString())
         .money(Money.of(CurrencyUnit.EUR, 0))
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .build();
   }
 
@@ -366,6 +370,8 @@ public class InMemoryAccountRepositoryTest {
         .user(createAnotherUser())
         .number(number)
         .money(Money.of(CurrencyUnit.GBP, 5))
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
         .build();
   }
 

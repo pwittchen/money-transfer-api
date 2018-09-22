@@ -7,6 +7,7 @@ import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import io.javalin.Context;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -100,6 +101,7 @@ public class TransactionController {
   private Transaction createTransaction(Account sender, Account receiver, Money money) {
     return Transaction.builder()
         .id(UUID.randomUUID().toString())
+        .createdAt(LocalDateTime.now())
         .from(sender)
         .to(receiver)
         .money(money)

@@ -6,6 +6,7 @@ import com.pwittchen.money.transfer.api.validation.AccountValidation;
 import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.EmptyAccountNumberException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -60,8 +61,16 @@ public class InMemoryAccountRepository implements AccountRepository {
       throw error.get();
     }
 
+    final Account updatedAccount = Account.builder()
+        .number(number)
+        .user(account.user())
+        .money(account.money())
+        .createdAt(account.createdAt())
+        .updatedAt(LocalDateTime.now())
+        .build();
+
     accounts.remove(number);
-    accounts.put(account.number(), account);
+    accounts.put(account.number(), updatedAccount);
     return account;
   }
 
