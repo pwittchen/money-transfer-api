@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import net.jodah.concurrentunit.Waiter;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.After;
@@ -26,10 +27,9 @@ public class ConcurrentInMemoryTransactionTest {
   private static final int NUMBER_OF_THREADS = 3;
 
   private TransactionRepository transactionRepository;
-
   private AccountRepository accountRepository;
-
   private ExecutorService executorService;
+  private Waiter waiter;
 
   @Before
   public void setUp() {
@@ -42,6 +42,7 @@ public class ConcurrentInMemoryTransactionTest {
         accountRepository, transactionValidation
     );
 
+    waiter = new Waiter();
     executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
   }
 
@@ -91,7 +92,7 @@ public class ConcurrentInMemoryTransactionTest {
     executorService.submit(() -> commitTransaction(transaction2));
     executorService.submit(() -> commitTransaction(transaction3));
 
-    executorService.awaitTermination(5, TimeUnit.SECONDS);
+    waiter.await(5, TimeUnit.SECONDS, 3);
 
     // then
     Money senderMoney = accountRepository.get(sender.number()).get().money();
@@ -133,7 +134,7 @@ public class ConcurrentInMemoryTransactionTest {
     executorService.submit(() -> commitTransaction(transaction1));
     executorService.submit(() -> commitTransaction(transaction2));
 
-    executorService.awaitTermination(5, TimeUnit.SECONDS);
+    waiter.await(5, TimeUnit.SECONDS, 1);
 
     // then
     Money senderMoney = accountRepository.get(sender.number()).get().money();
@@ -148,10 +149,12 @@ public class ConcurrentInMemoryTransactionTest {
     try {
       Thread.sleep(ThreadLocalRandom.current().nextInt(3000));
       transactionRepository.commit(transaction);
+      waiter.assertNotNull(transaction);
       System.out.println(String.format("executing: %s, thread: %s",
           transaction.id(),
           Thread.currentThread().getName())
       );
+      waiter.resume();
     } catch (Exception e) {
       e.printStackTrace();
     }
