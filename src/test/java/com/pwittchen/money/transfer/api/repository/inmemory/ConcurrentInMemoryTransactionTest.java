@@ -150,8 +150,9 @@ public class ConcurrentInMemoryTransactionTest {
       Thread.sleep(ThreadLocalRandom.current().nextInt(3000));
       transactionRepository.commit(transaction);
       waiter.assertNotNull(transaction);
-      System.out.println(String.format("executing: %s, thread: %s",
+      System.out.println(String.format("executing: %s, time: %d ms, thread: %s",
           transaction.id(),
+          TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS),
           Thread.currentThread().getName())
       );
       waiter.resume();
