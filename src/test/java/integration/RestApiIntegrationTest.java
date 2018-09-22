@@ -11,10 +11,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-/**
- * This test class contains integration tests for the REST API
- */
-public class ApplicationTest {
+public class RestApiIntegrationTest {
 
   @BeforeClass
   public static void setUp() {
