@@ -5,7 +5,7 @@ Design and implement a RESTful API (including data model and the backing impleme
 
 **Explicit  requirements**:
 
-1. keep  it  simple  and  to  the  point  (e.g.  no  need  to  implement  any  authentication,  assume  the ` APi  is invoked  by  another internal  system/service)
+1. keep  it  simple  and  to  the  point  (e.g.  no  need  to  implement  any  authentication,  assume  the API is invoked  by  another internal  system/service)
 2. use  whatever  frameworks/libraries  you  like  (except  Spring,  sorry!)  but  don't  forget  about  the requirement  #1
 3. the  datastore  should  run  in-memory  for  the  sake  of  this  test
 4. the  final  result  should  be  executable  as  a   standalone  program  (should  not require a pre-installed container/server)
