@@ -4,6 +4,8 @@
 
 HTTP server with REST API for money transfer between bank accounts
 
+Description of the task can be found in [TASK.md](https://github.com/pwittchen/money-transfer-api/blob/master/TASK.md) file.
+
 Contents
 --------
 - [Tech stack](#tech-stack)
