@@ -187,8 +187,6 @@ public class InMemoryTransactionRepositoryTest {
     // when
     transactionRepository.commit(transaction);
     transactionRepository.commit(transaction);
-
-    assertThat(transactionRepository.get().size()).isEqualTo(2);
     transactionRepository.clear();
 
     // then

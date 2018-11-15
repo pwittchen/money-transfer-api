@@ -9,9 +9,16 @@ import com.pwittchen.money.transfer.api.validation.exception.NotEnoughMoneyExcep
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 public class InMemoryTransactionRepository implements TransactionRepository {
+
+  private static final Random random = new Random();
+  private static final long FIXED_DELAY = 1;
+  private static final long RANDOM_DELAY = 2;
+  private static final long TIMEOUT = TimeUnit.SECONDS.toNanos(2);
 
   private final Queue<Transaction> transactions = new LinkedList<>();
   private AccountRepository accountRepository;
@@ -41,35 +48,50 @@ public class InMemoryTransactionRepository implements TransactionRepository {
     Account sender;
     Account receiver;
 
-    synchronized (this) {
-      final Optional<Exception> error = transactionValidation.validate(transaction);
-      if (error.isPresent()) {
-        throw error.get();
-      }
+    long stopTime = System.nanoTime() + TIMEOUT;
 
-      //noinspection OptionalGetWithoutIsPresent
-      sender = accountRepository.get(transaction.from().number()).get();
-      //noinspection OptionalGetWithoutIsPresent
-      receiver = accountRepository.get(transaction.to().number()).get();
-
-      if (sender.money().isLessThan(transaction.money())) {
-        throw new NotEnoughMoneyException(sender.number());
-      }
-    }
-
-    if (sender.lock().tryLock()) {
-      try {
-        if (receiver.lock().tryLock()) {
-          try {
-            accountRepository.withdrawMoney(sender, transaction.money());
-            accountRepository.putMoney(receiver, transaction.money());
-            transactions.add(transaction);
-          } finally {
-            receiver.lock().unlock();
-          }
+    while (transaction.isRunning().get()) {
+      synchronized (this) {
+        final Optional<Exception> error = transactionValidation.validate(transaction);
+        if (error.isPresent()) {
+          throw error.get();
         }
-      } finally {
-        sender.lock().unlock();
+
+        //noinspection OptionalGetWithoutIsPresent
+        sender = accountRepository.get(transaction.from().number()).get();
+        //noinspection OptionalGetWithoutIsPresent
+        receiver = accountRepository.get(transaction.to().number()).get();
+
+        if (sender.money().isLessThan(transaction.money())) {
+          throw new NotEnoughMoneyException(sender.number());
+        }
+      }
+
+      if (sender.lock().tryLock()) {
+        try {
+          if (receiver.lock().tryLock()) {
+            try {
+              accountRepository.withdrawMoney(sender, transaction.money());
+              accountRepository.putMoney(receiver, transaction.money());
+              transactions.add(transaction);
+              transaction.isRunning().set(false);
+            } finally {
+              receiver.lock().unlock();
+            }
+          }
+        } finally {
+          sender.lock().unlock();
+        }
+      }
+
+      if (System.nanoTime() > stopTime) {
+        transaction.isRunning().set(false);
+      }
+      try {
+        TimeUnit.NANOSECONDS.sleep(FIXED_DELAY + random.nextLong() % RANDOM_DELAY);
+      } catch (InterruptedException exception) {
+        Thread.currentThread().interrupt();
+        throw new RuntimeException(exception);
       }
     }
 

@@ -2,9 +2,11 @@ package com.pwittchen.money.transfer.api.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.joda.money.Money;
 
 public class Transaction {
+  private final transient AtomicBoolean isRunning;
   private final String id;
   private final Account from;
   private final Account to;
@@ -21,6 +23,7 @@ public class Transaction {
 
   private Transaction(final String id, final Account from, final Account to, final Money money,
       final LocalDateTime createdAt) {
+    this.isRunning = new AtomicBoolean(true);
     this.id = id;
     this.from = from;
     this.to = to;
@@ -30,6 +33,10 @@ public class Transaction {
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  public AtomicBoolean isRunning() {
+    return isRunning;
   }
 
   public String id() {
