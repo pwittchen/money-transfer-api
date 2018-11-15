@@ -35,28 +35,45 @@ public class InMemoryTransactionRepository implements TransactionRepository {
     return transactions;
   }
 
-  @SuppressWarnings("OptionalGetWithoutIsPresent") @Override
+  @Override
   public Transaction commit(final Transaction transaction) throws Exception {
-    synchronized (transaction.from()) {
-      synchronized (transaction.to()) {
-        final Optional<Exception> error = transactionValidation.validate(transaction);
-        if (error.isPresent()) {
-          throw error.get();
-        }
 
-        final Account sender = accountRepository.get(transaction.from().number()).get();
-        final Account receiver = accountRepository.get(transaction.to().number()).get();
+    Account sender;
+    Account receiver;
 
-        if (sender.money().isLessThan(transaction.money())) {
-          throw new NotEnoughMoneyException(sender.number());
-        }
+    synchronized (this) {
+      final Optional<Exception> error = transactionValidation.validate(transaction);
+      if (error.isPresent()) {
+        throw error.get();
+      }
 
-        accountRepository.withdrawMoney(sender, transaction.money());
-        accountRepository.putMoney(receiver, transaction.money());
-        transactions.add(transaction);
-        return transaction;
+      //noinspection OptionalGetWithoutIsPresent
+      sender = accountRepository.get(transaction.from().number()).get();
+      //noinspection OptionalGetWithoutIsPresent
+      receiver = accountRepository.get(transaction.to().number()).get();
+
+      if (sender.money().isLessThan(transaction.money())) {
+        throw new NotEnoughMoneyException(sender.number());
       }
     }
+
+    if (sender.lock().tryLock()) {
+      try {
+        if (receiver.lock().tryLock()) {
+          try {
+            accountRepository.withdrawMoney(sender, transaction.money());
+            accountRepository.putMoney(receiver, transaction.money());
+            transactions.add(transaction);
+          } finally {
+            receiver.lock().unlock();
+          }
+        }
+      } finally {
+        sender.lock().unlock();
+      }
+    }
+
+    return transaction;
   }
 
   @Override public void clear() {

@@ -2,9 +2,12 @@ package com.pwittchen.money.transfer.api.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.joda.money.Money;
 
 public class Account {
+  private transient final Lock lock;
   private final String number;
   private final User user;
   private Money money;
@@ -21,6 +24,7 @@ public class Account {
 
   public Account(final String number, final User user, final Money money,
       final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+    this.lock = new ReentrantLock();
     this.number = number;
     this.user = user;
     this.money = money;
@@ -30,6 +34,10 @@ public class Account {
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  public Lock lock() {
+    return lock;
   }
 
   public String number() {
