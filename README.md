@@ -10,7 +10,7 @@ Contents
 --------
 - [Tech stack](#tech-stack)
 - [Building and running application](#building-and-running-application)
-- [Endpoints](#endpoints)
+- [API](#api)
 - [Tests](#tests)
 - [Code style](#code-style)
 
@@ -63,25 +63,25 @@ To generate sample data, type:
 ./generate_sample_data.sh
 ```
 
-Endpoints
----------
+API
+---
 
-### API
+### OpenAPI
 
 Documentation of all endpoints for Open API/Swagger
 
 ```
-GET /api
+GET /openapi
 ```
 
-We can view it in UI with Swagger UI or Redoc. E.g:
+We can view it in UI. E.g with ReDoc:
 
 ```
 sudo docker pull redocly/redoc
-sudo docker run -p 9000:80 -e SPEC_URL=http://localhost:9000/api redocly/redoc
+sudo docker run -p 9000:80 -e SPEC_URL=http://localhost:8000/openapi redocly/redoc
 ```
 
-And then open the following address in web browser: `http://localhost:9000`
+and then we can open the following address in web browser: `http://localhost:9000`
 
 ### Health check
 
@@ -206,19 +206,19 @@ curl -X GET http://localhost:8000/transaction
 Tests
 -----
 
-In order to execute **unit tests**, run the following command:
+running unit tests:
 
 ```
 ./gradlew test
 ```
 
-In order to execute **integration tests** written with REST Assured, execute:
+running integration tests:
 
 ```
 ./gradlew test -Dtest.profile=integration
 ```
 
-In order to generate test coverage report, run the following command:
+creating test coverage report:
 
 ```
 ./gradlew test jacocoTestReport

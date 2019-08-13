@@ -48,7 +48,7 @@ public class Application {
                       new OpenApiOptions(new Info()
                           .version("1.0")
                           .description("Money Transfer API"))
-                          .path("/api")
+                          .path("/openapi")
                   )
               );
             }
