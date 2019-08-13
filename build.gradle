@@ -14,17 +14,15 @@ plugins {
   id 'jacoco'
   id 'checkstyle'
   id 'findbugs'
-  id 'pmd'
+//  id 'pmd'
   id "net.ltgt.apt" version "0.10"
-  id 'com.github.johnrengelman.shadow' version '2.0.4'
+  id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
+mainClassName = 'com.pwittchen.money.transfer.api.Application'
 group 'com.pwittchen'
 version '1.0-SNAPSHOT'
-
 sourceCompatibility = 1.8
-
-mainClassName = 'com.pwittchen.money.transfer.api.Application'
 
 sourceSets {
   main {
@@ -96,7 +94,7 @@ dependencies {
   implementation 'org.joda:joda-money:1.0.1'
   implementation 'com.google.code.gson:gson:2.8.5'
   implementation 'com.google.dagger:dagger:2.24'
-  apt 'com.google.dagger:dagger-compiler:2.24'
+  annotationProcessor 'com.google.dagger:dagger-compiler:2.24'
 
   testImplementation 'junit:junit:4.12'
   testImplementation 'com.google.truth:truth:1.0'

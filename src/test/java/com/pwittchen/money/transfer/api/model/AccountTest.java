@@ -92,7 +92,6 @@ public class AccountTest {
     Account anotherAccount = Account.builder()
         .number("1")
         .createdAt(LocalDateTime.now())
-        .updatedAt(LocalDateTime.now())
         .user(user)
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
@@ -117,7 +116,6 @@ public class AccountTest {
     Account anotherAccount = Account.builder()
         .number("2")
         .createdAt(LocalDateTime.now())
-        .updatedAt(LocalDateTime.now())
         .user(user)
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
@@ -142,7 +140,6 @@ public class AccountTest {
     Account anotherAccount = Account.builder()
         .number("2")
         .createdAt(LocalDateTime.now())
-        .updatedAt(LocalDateTime.now())
         .user(user)
         .money(Money.of(CurrencyUnit.EUR, 20))
         .build();
@@ -164,7 +161,6 @@ public class AccountTest {
     return Account.builder()
         .number("1")
         .createdAt(LocalDateTime.now())
-        .updatedAt(LocalDateTime.now())
         .user(user)
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();

@@ -290,7 +290,6 @@ public class InMemoryAccountRepositoryTest {
         .number(UUID.randomUUID().toString())
         .money(Money.of(CurrencyUnit.EUR, 0))
         .createdAt(LocalDateTime.now())
-        .updatedAt(LocalDateTime.now())
         .build();
   }
 
@@ -310,7 +309,6 @@ public class InMemoryAccountRepositoryTest {
         .number(number)
         .money(Money.of(CurrencyUnit.GBP, 5))
         .createdAt(LocalDateTime.now())
-        .updatedAt(LocalDateTime.now())
         .build();
   }
 

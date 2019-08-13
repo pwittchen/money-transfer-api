@@ -12,24 +12,22 @@ public class Account {
   private final User user;
   private Money money;
   private final LocalDateTime createdAt;
-  private final LocalDateTime updatedAt;
 
   private Account() {
     this(builder());
   }
 
   private Account(final Builder builder) {
-    this(builder.number, builder.user, builder.money, builder.createdAt, builder.updatedAt);
+    this(builder.number, builder.user, builder.money, builder.createdAt);
   }
 
   public Account(final String number, final User user, final Money money,
-      final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+      final LocalDateTime createdAt) {
     this.lock = new ReentrantLock();
     this.number = number;
     this.user = user;
     this.money = money;
     this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
   }
 
   public static Builder builder() {
@@ -56,10 +54,6 @@ public class Account {
     return createdAt;
   }
 
-  public LocalDateTime updatedAt() {
-    return updatedAt;
-  }
-
   @Override public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -67,12 +61,11 @@ public class Account {
     return Objects.equals(number, account.number)
         && Objects.equals(user, account.user)
         && Objects.equals(money, account.money)
-        && Objects.equals(createdAt, account.createdAt)
-        && Objects.equals(updatedAt, account.updatedAt);
+        && Objects.equals(createdAt, account.createdAt);
   }
 
   @Override public int hashCode() {
-    return Objects.hash(number, user, money, createdAt, updatedAt);
+    return Objects.hash(number, user, money, createdAt);
   }
 
   public static class Builder {
@@ -80,7 +73,6 @@ public class Account {
     private User user;
     private Money money;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     private Builder() {
     }
@@ -101,11 +93,6 @@ public class Account {
     }
 
     public Builder createdAt(final LocalDateTime dateTime) {
-      this.createdAt = dateTime;
-      return this;
-    }
-
-    public Builder updatedAt(final LocalDateTime dateTime) {
       this.createdAt = dateTime;
       return this;
     }

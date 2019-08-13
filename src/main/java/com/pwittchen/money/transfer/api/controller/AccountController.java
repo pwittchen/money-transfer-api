@@ -87,7 +87,6 @@ public class AccountController {
             .user(user)
             .money(money)
             .createdAt(LocalDateTime.now())
-            .updatedAt(LocalDateTime.now())
             .build()
         );
   }
