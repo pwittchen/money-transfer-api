@@ -74,6 +74,15 @@ Documentation of all endpoints for Open API/Swagger
 GET /api
 ```
 
+We can view it in UI with Swagger UI or Redoc. E.g:
+
+```
+sudo docker pull redocly/redoc
+sudo docker run -p 9000:80 -e SPEC_URL=http://localhost:9000/api redocly/redoc
+```
+
+And then open the following address in web browser: `http://localhost:9000`
+
 ### Health check
 
 ```
