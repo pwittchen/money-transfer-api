@@ -6,10 +6,10 @@ import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import com.pwittchen.money.transfer.api.validation.TransactionValidation;
 import com.pwittchen.money.transfer.api.validation.exception.NotEnoughMoneyException;
-import java.util.LinkedList;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
@@ -20,7 +20,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
   private static final long RANDOM_DELAY = 2;
   private static final long TIMEOUT = TimeUnit.SECONDS.toNanos(2);
 
-  private final Queue<Transaction> transactions = new LinkedList<>();
+  private final BlockingQueue<Transaction> transactions = new LinkedBlockingQueue<>();
   private AccountRepository accountRepository;
   private TransactionValidation transactionValidation;
 
@@ -38,7 +38,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
         .findFirst();
   }
 
-  @Override public Queue<Transaction> get() {
+  @Override public BlockingQueue<Transaction> get() {
     return transactions;
   }
 

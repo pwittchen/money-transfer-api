@@ -10,6 +10,9 @@ import com.pwittchen.money.transfer.api.validation.exception.TransferToTheSameAc
 import io.javalin.http.Context;
 import java.util.LinkedList;
 import java.util.Optional;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -84,7 +87,7 @@ public class TransactionControllerTest {
   @Test
   public void shouldGetAllTransactions() {
     // given
-    LinkedList<Transaction> transactions = new LinkedList<>();
+    BlockingQueue<Transaction> transactions = new LinkedBlockingQueue<>();
     when(transactionRepository.get()).thenReturn(transactions);
 
     // when
