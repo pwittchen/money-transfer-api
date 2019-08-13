@@ -13,8 +13,6 @@ plugins {
   id 'application'
   id 'jacoco'
   id 'checkstyle'
-  id 'findbugs'
-//  id 'pmd'
   id "net.ltgt.apt" version "0.10"
   id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
@@ -22,7 +20,7 @@ plugins {
 mainClassName = 'com.pwittchen.money.transfer.api.Application'
 group 'com.pwittchen'
 version '1.0-SNAPSHOT'
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
 sourceSets {
   main {

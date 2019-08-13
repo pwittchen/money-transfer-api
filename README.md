@@ -13,14 +13,13 @@ Contents
 - [Endpoints](#endpoints)
 - [Tests](#tests)
 - [Code style](#code-style)
-- [Static code analysis](#static-code-analysis)
 
 Tech stack
 ----------
 
 Tech stack used in this project is as follows:
 
-- **Application**: Java 8, [Gradle](https://gradle.org/), [Javalin](https://javalin.io), [Slf4J](https://www.slf4j.org/), [Dagger](https://github.com/google/dagger), [Joda Money](http://www.joda.org/joda-money/), [Gson](https://github.com/google/gson)
+- **Application**: Java 11, [Gradle](https://gradle.org/), [Javalin](https://javalin.io), [Slf4J](https://www.slf4j.org/), [Dagger](https://github.com/google/dagger), [Joda Money](http://www.joda.org/joda-money/), [Gson](https://github.com/google/gson)
 - **Tests**: [JUnit](https://junit.org/), [Truth](https://github.com/google/truth), [Mockito](https://github.com/mockito/mockito), [Concurrent Unit](https://github.com/jhalterman/concurrentunit), [REST Assured](https://github.com/rest-assured/rest-assured)
 
 Building and running application
@@ -55,6 +54,14 @@ java -jar build/libs/app-1.0-all.jar
 ```
 
 Server will start running on port `8000`
+
+### Sample data
+
+To generate sample data, type:
+
+```
+./generate_sample_data.sh
+```
 
 Endpoints
 ---------
@@ -212,12 +219,3 @@ Code style
 ----------
 
 Code style used in the project is called `Square` from [Java Code Styles repository by Square](https://github.com/square/java-code-styles).
-
-Static code analysis
---------------------
-
-Static code analysis runs CheckStyle, PMD and FindBugs. It can be executed with command:
-
-```
-./gradlew check
-```
