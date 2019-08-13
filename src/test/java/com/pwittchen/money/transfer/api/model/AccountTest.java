@@ -27,16 +27,6 @@ public class AccountTest {
   }
 
   @Test
-  public void objectsShouldBeEqual() {
-    // when
-    Account accountOne = createAccount();
-    Account accountTwo = createAccount();
-
-    // then
-    assertThat(accountOne.equals(accountTwo)).isTrue();
-  }
-
-  @Test
   public void objectsShouldBeEqualWhenTheyAreTheSameInstance() {
     // when
     Account account = createAccount();
