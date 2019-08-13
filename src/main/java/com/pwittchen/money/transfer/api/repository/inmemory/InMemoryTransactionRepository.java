@@ -5,6 +5,7 @@ import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import com.pwittchen.money.transfer.api.validation.TransactionValidation;
+import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.NotEnoughMoneyException;
 import java.util.Optional;
 import java.util.Random;
@@ -57,10 +58,19 @@ public class InMemoryTransactionRepository implements TransactionRepository {
           throw error.get();
         }
 
-        //noinspection OptionalGetWithoutIsPresent
-        sender = accountRepository.get(transaction.from().number()).get();
-        //noinspection OptionalGetWithoutIsPresent
-        receiver = accountRepository.get(transaction.to().number()).get();
+        final Optional<Account> from = accountRepository.get(transaction.from().number());
+        if (from.isPresent()) {
+          sender = from.get();
+        } else {
+          throw new AccountNotExistsException(transaction.from().number());
+        }
+
+        final Optional<Account> to = accountRepository.get(transaction.to().number());
+        if (to.isPresent()) {
+          receiver = to.get();
+        } else {
+          throw new AccountNotExistsException(transaction.to().number());
+        }
 
         if (sender.money().isLessThan(transaction.money())) {
           throw new NotEnoughMoneyException(sender.number());
