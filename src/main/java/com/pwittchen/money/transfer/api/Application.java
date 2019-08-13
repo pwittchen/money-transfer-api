@@ -10,6 +10,9 @@ import com.pwittchen.money.transfer.api.model.Response;
 import io.javalin.Javalin;
 import io.javalin.http.ForbiddenResponse;
 import io.javalin.plugin.json.JavalinJson;
+import io.javalin.plugin.openapi.OpenApiOptions;
+import io.javalin.plugin.openapi.OpenApiPlugin;
+import io.swagger.v3.oas.models.info.Info;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +35,24 @@ public class Application {
     JavalinJson.setToJsonMapper(gson::toJson);
 
     final Javalin app = Javalin
-        .create(config -> config.requestLogger((context, executionTimeMs) ->
-            LOG.info("{} ms\t {}\t {} {}",
-                executionTimeMs,
-                context.req.getMethod(),
-                context.req.getRequestURI(),
-                context.req.getParameterMap().toString().replaceAll("^.|.$", "")
-            )))
+        .create(config -> {
+              config.requestLogger((context, executionTimeMs) ->
+                  LOG.info("{} ms\t {}\t {} {}",
+                      executionTimeMs,
+                      context.req.getMethod(),
+                      context.req.getRequestURI(),
+                      context.req.getParameterMap().toString().replaceAll("^.|.$", "")
+                  ));
+
+              config.registerPlugin(new OpenApiPlugin(
+                      new OpenApiOptions(new Info()
+                          .version("1.0")
+                          .description("Money Transfer API"))
+                          .path("/api")
+                  )
+              );
+            }
+        )
         .events(event -> {
           event.serverStarted(() -> LOG.info("server has started"));
           event.serverStartFailed(() -> LOG.error("server start has failed"));

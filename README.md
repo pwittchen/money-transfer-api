@@ -66,6 +66,14 @@ To generate sample data, type:
 Endpoints
 ---------
 
+### API
+
+Documentation of all endpoints for Open API/Swagger
+
+```
+GET /api
+```
+
 ### Health check
 
 ```
@@ -75,8 +83,7 @@ GET /health
 Exemplary curl request:
 
 ```
-curl -X GET \
-  http://localhost:8000/health
+curl -X GET http://localhost:8000/health
 ```
 
 ### Accounts
@@ -111,8 +118,7 @@ path param: `id`
 Exemplary curl request:
 
 ```
-curl -X DELETE \
-  http://localhost:8000/account/f1ba2431-8aae-495b-bffe-0c76ea4357e7
+curl -X DELETE http://localhost:8000/account/f1ba2431-8aae-495b-bffe-0c76ea4357e7
 ```
 
 #### Getting one account
@@ -126,8 +132,7 @@ path param: `id`
 Exemplary curl request:
 
 ```
-curl -X GET \
-  http://localhost:8000/account/03732e1a-0c5b-4818-86f7-e6adca4d0ed8
+curl -X GET http://localhost:8000/account/03732e1a-0c5b-4818-86f7-e6adca4d0ed8
 ```
 
 #### Getting all accounts
@@ -139,8 +144,7 @@ GET /account
 Exemplary curl request:
 
 ```
-curl -X GET \
-  http://localhost:8000/account
+curl -X GET http://localhost:8000/account
 ```
 
 ### Transactions
@@ -175,8 +179,7 @@ path param: `id`
 Exemplary curl request:
 
 ```
-curl -X GET \
-  http://localhost:8000/transaction/5eaadd76-8faf-48c7-bc72-5cdec35a385e
+curl -X GET http://localhost:8000/transaction/5eaadd76-8faf-48c7-bc72-5cdec35a385e
 ```
 
 #### Getting all transactions
@@ -188,8 +191,7 @@ GET /transaction
 Exemplary curl request:
 
 ```
-curl -X GET \
-  http://localhost:8000/transaction
+curl -X GET http://localhost:8000/transaction
 ```
 
 Tests
