@@ -91,16 +91,16 @@ repositories {
 }
 
 dependencies {
-  implementation 'io.javalin:javalin:2.1.1'
-  implementation 'org.slf4j:slf4j-simple:1.7.25'
+  implementation 'io.javalin:javalin:3.4.1'
+  implementation 'org.slf4j:slf4j-simple:1.7.26'
   implementation 'org.joda:joda-money:1.0.1'
   implementation 'com.google.code.gson:gson:2.8.5'
-  implementation 'com.google.dagger:dagger:2.17'
-  apt 'com.google.dagger:dagger-compiler:2.17'
+  implementation 'com.google.dagger:dagger:2.24'
+  apt 'com.google.dagger:dagger-compiler:2.24'
 
   testImplementation 'junit:junit:4.12'
-  testImplementation 'com.google.truth:truth:0.42'
-  testImplementation 'org.mockito:mockito-core:2.22.0'
-  testImplementation 'io.rest-assured:rest-assured:3.1.1'
-  testImplementation 'net.jodah:concurrentunit:0.4.3'
+  testImplementation 'com.google.truth:truth:1.0'
+  testImplementation 'org.mockito:mockito-core:3.0.0'
+  testImplementation 'io.rest-assured:rest-assured:4.0.0'
+  testImplementation 'net.jodah:concurrentunit:0.4.4'
 }

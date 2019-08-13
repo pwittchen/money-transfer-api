@@ -1,6 +1,6 @@
 package com.pwittchen.money.transfer.api.controller.context;
 
-import io.javalin.Context;
+import io.javalin.http.Context;
 
 public class DefaultContextWrapper implements ContextWrapper {
 

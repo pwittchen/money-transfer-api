@@ -61,20 +61,14 @@ public class Account {
   }
 
   @Override public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
     Account account = (Account) o;
-    return Objects.equals(number, account.number)
-        && Objects.equals(user, account.user)
-        && Objects.equals(money, account.money)
-        && Objects.equals(createdAt, account.createdAt)
-        && Objects.equals(updatedAt, account.updatedAt);
+    return Objects.equals(number, account.number) &&
+        Objects.equals(user, account.user) &&
+        Objects.equals(money, account.money) &&
+        Objects.equals(createdAt, account.createdAt) &&
+        Objects.equals(updatedAt, account.updatedAt);
   }
 
   @Override public int hashCode() {

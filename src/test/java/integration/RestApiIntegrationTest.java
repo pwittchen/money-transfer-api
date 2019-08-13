@@ -5,6 +5,7 @@ import io.restassured.RestAssured;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.restassured.RestAssured.delete;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;

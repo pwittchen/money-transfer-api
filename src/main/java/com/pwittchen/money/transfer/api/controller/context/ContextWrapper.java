@@ -1,6 +1,6 @@
 package com.pwittchen.money.transfer.api.controller.context;
 
-import io.javalin.Context;
+import io.javalin.http.Context;
 
 public interface ContextWrapper {
   String pathParam(Context context, String param);

@@ -12,8 +12,6 @@ public interface AccountRepository {
 
   Account create(Account account) throws Exception;
 
-  Account update(String number, Account account) throws Exception;
-
   void withdrawMoney(Account account, Money money);
 
   void putMoney(Account account, Money money);

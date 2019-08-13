@@ -55,16 +55,6 @@ public class AccountTest {
   }
 
   @Test
-  public void objectsShouldBeInTheSameBucket() {
-    // when
-    Account accountOne = createAccount();
-    Account accountTwo = createAccount();
-
-    // then
-    assertThat(accountOne.hashCode() == accountTwo.hashCode()).isTrue();
-  }
-
-  @Test
   public void shouldNotBeTheSameAsOtherObject() {
     // given
     Account account = createAccount();

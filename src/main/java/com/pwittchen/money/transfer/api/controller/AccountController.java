@@ -5,7 +5,7 @@ import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
-import io.javalin.Context;
+import io.javalin.http.Context;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;

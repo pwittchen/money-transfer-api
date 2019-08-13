@@ -50,30 +50,6 @@ public class InMemoryAccountRepository implements AccountRepository {
     return account;
   }
 
-  @Override public Account update(String number, Account account) throws Exception {
-    if (!accounts.containsKey(number)) {
-      throw new AccountNotExistsException(account.number());
-    }
-
-    Optional<Exception> error = accountValidation.validate(account);
-
-    if (error.isPresent()) {
-      throw error.get();
-    }
-
-    final Account updatedAccount = Account.builder()
-        .number(number)
-        .user(account.user())
-        .money(account.money())
-        .createdAt(account.createdAt())
-        .updatedAt(LocalDateTime.now())
-        .build();
-
-    accounts.remove(number);
-    accounts.put(account.number(), updatedAccount);
-    return account;
-  }
-
   @Override public void withdrawMoney(final Account account, final Money money) {
     if (!accounts.containsKey(account.number())) {
       throw new AccountNotExistsException(account.number());

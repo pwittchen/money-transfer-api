@@ -7,7 +7,7 @@ import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import com.pwittchen.money.transfer.api.validation.exception.TransferToTheSameAccountException;
-import io.javalin.Context;
+import io.javalin.http.Context;
 import java.util.LinkedList;
 import java.util.Optional;
 import org.junit.Before;

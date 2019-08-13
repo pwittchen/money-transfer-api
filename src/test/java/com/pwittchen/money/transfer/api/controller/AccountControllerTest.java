@@ -6,7 +6,7 @@ import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
-import io.javalin.Context;
+import io.javalin.http.Context;
 import java.util.HashMap;
 import java.util.Optional;
 import org.junit.Before;

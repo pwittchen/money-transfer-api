@@ -7,10 +7,9 @@ import com.pwittchen.money.transfer.api.configuration.component.DaggerApplicatio
 import com.pwittchen.money.transfer.api.controller.AccountController;
 import com.pwittchen.money.transfer.api.controller.TransactionController;
 import com.pwittchen.money.transfer.api.model.Response;
-import io.javalin.ForbiddenResponse;
 import io.javalin.Javalin;
-import io.javalin.JavalinEvent;
-import io.javalin.json.JavalinJson;
+import io.javalin.http.ForbiddenResponse;
+import io.javalin.plugin.json.JavalinJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,16 +31,18 @@ public class Application {
     JavalinJson.setFromJsonMapper(gson::fromJson);
     JavalinJson.setToJsonMapper(gson::toJson);
 
-    final Javalin app = Javalin.create()
-        .event(JavalinEvent.SERVER_STARTED, () -> LOG.info("server has started"))
-        .event(JavalinEvent.SERVER_START_FAILED, () -> LOG.error("server start has failed"))
-        .requestLogger((context, executionTimeMs) ->
+    final Javalin app = Javalin
+        .create(config -> config.requestLogger((context, executionTimeMs) ->
             LOG.info("{} ms\t {}\t {} {}",
                 executionTimeMs,
                 context.req.getMethod(),
                 context.req.getRequestURI(),
                 context.req.getParameterMap().toString().replaceAll("^.|.$", "")
-            ))
+            )))
+        .events(event -> {
+          event.serverStarted(() -> LOG.info("server has started"));
+          event.serverStartFailed(() -> LOG.error("server start has failed"));
+        })
         .start(PORT);
 
     app.get("/", context -> {

@@ -136,67 +136,6 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test
-  @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
-  public void shouldUpdateAccount() throws Exception {
-    // given
-    Account account = createAccount();
-    Account anotherAccount = createAnotherAccount(account.number());
-    accountRepository.create(account);
-
-    // when
-    accountRepository.update(account.number(), anotherAccount);
-
-    // then
-    assertThat(accountRepository.get(account.number()).get()).isEqualTo(anotherAccount);
-  }
-
-  @Test
-  @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
-  public void shouldUpdateAccountAndItsNumber() throws Exception {
-    // given
-    Account account = createAccount();
-    String newAccountNumber = UUID.randomUUID().toString();
-    Account anotherAccount = createAnotherAccount(newAccountNumber);
-
-    accountRepository.create(account);
-
-    // when
-    accountRepository.update(account.number(), anotherAccount);
-
-    // then
-    assertThat(accountRepository.get(newAccountNumber).isPresent()).isTrue();
-    assertThat(accountRepository.get(account.number()).isPresent()).isFalse();
-  }
-
-  @Test
-  public void shouldNotUpdateAccountIfItDoesNotExist() throws Exception {
-    // given
-    Account account = createAccount();
-
-    // when
-    expectedException.expect(AccountNotExistsException.class);
-    expectedException.expectMessage(new AccountNotExistsException(account.number()).getMessage());
-
-    // then
-    accountRepository.update(account.number(), account);
-  }
-
-  @Test
-  public void shouldNotUpdateAccountIfErrorOccurred() throws Exception {
-    // given
-    Account account = createAccount();
-    when(accountValidation.validate(account)).thenReturn(Optional.of(new EmptyUserIdException()));
-
-    // when
-    expectedException.expect(EmptyUserIdException.class);
-    expectedException.expectMessage(new EmptyUserIdException().getMessage());
-
-    // then
-    accountRepository.create(account);
-    accountRepository.update(account.number(), account);
-  }
-
-  @Test
   public void shouldWithdrawMoney() throws Exception {
     // given
     Account account = createAccount();
