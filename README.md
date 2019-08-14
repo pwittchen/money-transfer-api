@@ -25,29 +25,16 @@ Tech stack used in this project is as follows:
 Building and running application
 --------------------------------
 
-Please note: If you're on Windows, use `gradlew.bat` instead of `./gradlew` script
+Please note: If we're on Windows, use `gradlew.bat` instead of `./gradlew` script
 
-To build application, execute:
-
-```
-./gradlew build
-```
-
-To start application, execute:
-
-```
-./gradlew run
-```
+- To build application, execute: `./gradlew build`
+- To start application, execute: `./gradlew run`
 
 ### Fat jar
 
-To generate fat jar file with all dependencies, execute:
+To generate fat jar file with all dependencies, execute: `./gradlew shadowJar`
 
-```
-./gradlew shadowJar
-```
-
-Assuming you have executed command above, to run server as a standalone fat jar, execute:
+Assuming we have executed command above, to run server as a standalone fat jar, execute:
 
 ```
 java -jar build/libs/app-1.0-all.jar
@@ -62,7 +49,7 @@ To generate sample data with two accounts, type: `./gradlew sampleData`
 API
 ---
 
-- To use ReDoc, you need to have Docker daemon running and `redocly/redoc` Docker image pulled
+- To use ReDoc, we need to have Docker daemon running and `redocly/redoc` Docker image pulled
 - To view API documentation, start application and run ReDoc: `./gradlew redoc`
 - Now, we can open the following address in web browser: `http://localhost:9000`
 - Moreover, API is also documented by tests in `RestApiIntegrationTest` class
