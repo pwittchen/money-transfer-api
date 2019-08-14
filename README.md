@@ -62,9 +62,10 @@ To generate sample data with two accounts, type: `./gradlew sampleData`
 API
 ---
 
+- To use ReDoc, you need to have Docker daemon running and `redocly/redoc` Docker image pulled
 - To view API documentation, start application and run ReDoc: `./gradlew redoc`
 - Now, we can open the following address in web browser: `http://localhost:9000`
-- Moreover, API is also documented in `RestApiIntegrationTest` class
+- Moreover, API is also documented by tests in `RestApiIntegrationTest` class
 
 Tests
 -----
