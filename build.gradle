@@ -82,6 +82,22 @@ test {
   }
 }
 
+task redoc() {
+  doLast {
+    exec {
+      executable "./redoc.sh"
+    }
+  }
+}
+
+task sampleData() {
+  doLast {
+    exec {
+      executable "./sampledata.sh"
+    }
+  }
+}
+
 repositories {
   mavenCentral()
 }

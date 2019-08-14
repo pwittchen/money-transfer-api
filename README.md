@@ -57,172 +57,21 @@ Server will start running on port `8000`
 
 ### Sample data
 
-To generate sample data, type:
-
-```
-./generate_sample_data.sh
-```
+To generate sample data with two accounts, type: `../gradlew sampleData`
 
 API
 ---
 
-### OpenAPI
-
-Documentation of all endpoints for Open API/Swagger
-
-```
-GET /openapi
-```
-
-We can view it in UI. E.g with ReDoc:
-
-```
-sudo docker pull redocly/redoc
-sudo docker run -p 9000:80 -e SPEC_URL=http://localhost:8000/openapi redocly/redoc
-```
-
-and then we can open the following address in web browser: `http://localhost:9000`
-
-### Health check
-
-```
-GET /health
-```
-
-Exemplary curl request:
-
-```
-curl -X GET http://localhost:8000/health
-```
-
-### Accounts
-
-#### Creating account
-
-```
-POST /account
-```
-
-form params: `name`, `surname`, `currency` , `money`
-
-Exemplary curl request:
-
-```
-curl -X POST \
-  http://localhost:8000/account \
-  -F name=John \
-  -F surname=Doe \
-  -F currency=EUR \
-  -F money=100.00
-```
-
-#### Deleting account
-
-```
-DELETE /account/{id}
-```
-
-path param: `id`
-
-Exemplary curl request:
-
-```
-curl -X DELETE http://localhost:8000/account/f1ba2431-8aae-495b-bffe-0c76ea4357e7
-```
-
-#### Getting one account
-
-```
-GET /account/{id}
-```
-
-path param: `id`
-
-Exemplary curl request:
-
-```
-curl -X GET http://localhost:8000/account/03732e1a-0c5b-4818-86f7-e6adca4d0ed8
-```
-
-#### Getting all accounts
-
-```
-GET /account
-```
-
-Exemplary curl request:
-
-```
-curl -X GET http://localhost:8000/account
-```
-
-### Transactions
-
-#### Committing transaction
-
-```
-POST /transaction
-```
-
-form params: `from`, `to`, `currency`, `money`
-
-Exemplary curl request:
-
-```
-curl -X POST \
-  http://localhost:8000/transaction \
-  -F from=25b9dae9-abac-42c5-9c21-67e96033c7c3 \
-  -F to=620e3ec8-a352-49cb-be06-52704321a657 \
-  -F currency=EUR \
-  -F money=10.00
-```
-
-#### Getting one transaction
-
-```
-GET /transaction/{id}
-```
-
-path param: `id`
-
-Exemplary curl request:
-
-```
-curl -X GET http://localhost:8000/transaction/5eaadd76-8faf-48c7-bc72-5cdec35a385e
-```
-
-#### Getting all transactions
-
-```
-GET /transaction
-```
-
-Exemplary curl request:
-
-```
-curl -X GET http://localhost:8000/transaction
-```
+- To view API documentation, start application and run ReDoc: `./gradlew redoc`
+- Now, we can open the following address in web browser: `http://localhost:9000`
+- Moreover, API is also documented in `RestApiIntegrationTest` class
 
 Tests
 -----
 
-running unit tests:
-
-```
-./gradlew test
-```
-
-running integration tests:
-
-```
-./gradlew test -Dtest.profile=integration
-```
-
-creating test coverage report:
-
-```
-./gradlew test jacocoTestReport
-```
+- running unit tests: `./gradlew test`
+- running integration tests: `./gradlew test -Dtest.profile=integration`
+- creating test coverage report: `./gradlew test jacocoTestReport`
 
 Generated test report can be found in `build/reports/jacoco/` directory
 
