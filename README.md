@@ -10,7 +10,7 @@ Contents
 --------
 - [Tech stack](#tech-stack)
 - [Building and running application](#building-and-running-application)
-- [API](#api)
+- [API documentation](#api-documentation)
 - [Tests](#tests)
 - [Code style](#code-style)
 
@@ -46,10 +46,10 @@ Server will start running on port `8000`
 
 To generate sample data with two accounts, type: `./gradlew sampleData`
 
-API
----
+API documentation
+-----------------
 
-- To use ReDoc, we need to have Docker daemon running and `redocly/redoc` Docker image pulled (`sudo docker pull redocly/redoc`)
+- Start Docker Daemon and type `sudo docker pull redocly/redoc`
 - To view API documentation, start application and run ReDoc: `./gradlew redoc`
 - Now, we can open the following address in web browser: `http://localhost:9000`
 - Moreover, API is also documented by tests in `RestApiIntegrationTest` class
