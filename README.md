@@ -57,7 +57,7 @@ Server will start running on port `8000`
 
 ### Sample data
 
-To generate sample data with two accounts, type: `../gradlew sampleData`
+To generate sample data with two accounts, type: `./gradlew sampleData`
 
 API
 ---
