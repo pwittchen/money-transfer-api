@@ -35,7 +35,10 @@ public class AccountController {
       path = "/account/:id",
       description = "gets single account with a given id",
       pathParams = @OpenApiParam(name = "id", type = Integer.class),
-      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Account.class))
+      responses = {
+          @OpenApiResponse(status = "200", content = @OpenApiContent(from = Account.class)),
+          @OpenApiResponse(status = "404", content = @OpenApiContent(from = String.class))
+      }
   )
   public void getOne(Context context) {
     Optional<Account> account = accountRepository.get(contextWrapper.pathParam(context, "id"));
@@ -75,14 +78,17 @@ public class AccountController {
           @OpenApiParam(name = "currency"),
           @OpenApiParam(name = "money")
       },
-      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Account.class))
+      responses = {
+          @OpenApiResponse(status = "200", content = @OpenApiContent(from = Account.class)),
+          @OpenApiResponse(status = "400", content = @OpenApiContent(from = String.class))
+      }
   )
   public void create(final Context context) {
     User user = createUser(context);
     Optional<Account> account = createAccount(context, user);
 
     if (account.isEmpty()) {
-      contextWrapper.json(context, "Invalid money format", HttpStatus.NOT_ACCEPTABLE_406);
+      contextWrapper.json(context, "Invalid money format", HttpStatus.BAD_REQUEST_400);
       return;
     }
 
@@ -90,7 +96,7 @@ public class AccountController {
       accountRepository.create(account.get());
       contextWrapper.json(context, account, HttpStatus.OK_200);
     } catch (Exception exception) {
-      contextWrapper.json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
+      contextWrapper.json(context, exception.getMessage(), HttpStatus.BAD_REQUEST_400);
     }
   }
 
@@ -129,7 +135,10 @@ public class AccountController {
       path = "/account/:id",
       description = "deletes an account with given id",
       pathParams = @OpenApiParam(name = "id", type = Integer.class),
-      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = String.class))
+      responses = {
+          @OpenApiResponse(status = "200", content = @OpenApiContent(from = String.class)),
+          @OpenApiResponse(status = "400", content = @OpenApiContent(from = String.class))
+      }
   )
   public void delete(Context context) {
     try {
@@ -142,7 +151,7 @@ public class AccountController {
 
       contextWrapper.json(context, message, HttpStatus.OK_200);
     } catch (Exception exception) {
-      contextWrapper.json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
+      contextWrapper.json(context, exception.getMessage(), HttpStatus.BAD_REQUEST_400);
     }
   }
 }

@@ -110,7 +110,7 @@ public class AccountControllerTest {
 
     // then
     verify(accountRepository, times(0)).create(any(Account.class));
-    verify(contextWrapper).json(context, "Invalid money format", HttpStatus.NOT_ACCEPTABLE_406);
+    verify(contextWrapper).json(context, "Invalid money format", HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -124,7 +124,7 @@ public class AccountControllerTest {
 
     // then
     verify(accountRepository, times(0)).create(any(Account.class));
-    verify(contextWrapper).json(context, "Invalid money format", HttpStatus.NOT_ACCEPTABLE_406);
+    verify(contextWrapper).json(context, "Invalid money format", HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -139,7 +139,7 @@ public class AccountControllerTest {
     controller.create(context);
 
     // then
-    verify(contextWrapper).json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
+    verify(contextWrapper).json(context, exception.getMessage(), HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -172,6 +172,6 @@ public class AccountControllerTest {
     controller.delete(context);
 
     // then
-    verify(contextWrapper).json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
+    verify(contextWrapper).json(context, exception.getMessage(), HttpStatus.BAD_REQUEST_400);
   }
 }

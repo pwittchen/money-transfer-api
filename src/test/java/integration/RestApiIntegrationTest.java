@@ -77,7 +77,7 @@ public class RestApiIntegrationTest {
         .post("/account")
         .then()
         .body(equalTo("\"Invalid money format\""))
-        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
+        .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -89,7 +89,7 @@ public class RestApiIntegrationTest {
         .and().param("money", "INVALID")
         .when().post("/account")
         .then().body(equalTo("\"Invalid money format\""))
-        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
+        .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -101,7 +101,7 @@ public class RestApiIntegrationTest {
         .and().param("money", "10.00")
         .when().post("/account")
         .then().body(equalTo("\"User name is empty\""))
-        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
+        .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -118,7 +118,7 @@ public class RestApiIntegrationTest {
         .post("/account")
         .then()
         .body(equalTo("\"User surname is empty\""))
-        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
+        .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -141,7 +141,7 @@ public class RestApiIntegrationTest {
   public void shouldTryToDeleteInvalidAccount() {
     delete("/account/invalid")
         .then().body(equalTo("\"account with number invalid does not exist\""))
-        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
+        .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -226,7 +226,7 @@ public class RestApiIntegrationTest {
         .body(
             equalTo("\"Trying to transfer money from or to account, which does not exist\"")
         )
-        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
+        .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
   @Test

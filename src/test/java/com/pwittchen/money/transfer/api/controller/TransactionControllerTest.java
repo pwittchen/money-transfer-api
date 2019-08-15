@@ -130,7 +130,7 @@ public class TransactionControllerTest {
     verify(transactionRepository, times(0)).commit(any(Transaction.class));
     verify(contextWrapper).json(context,
         "Trying to transfer money from or to account, which does not exist",
-        HttpStatus.NOT_ACCEPTABLE_406);
+        HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -150,7 +150,7 @@ public class TransactionControllerTest {
     verify(transactionRepository, times(0)).commit(any(Transaction.class));
     verify(contextWrapper).json(context,
         "Trying to transfer money from or to account, which does not exist",
-        HttpStatus.NOT_ACCEPTABLE_406);
+        HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -171,7 +171,7 @@ public class TransactionControllerTest {
     // then
     verify(transactionRepository, times(0)).commit(any(Transaction.class));
     verify(contextWrapper).json(context, "invalid money format",
-        HttpStatus.NOT_ACCEPTABLE_406);
+        HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -193,7 +193,7 @@ public class TransactionControllerTest {
     verify(transactionRepository, times(0)).commit(any(Transaction.class));
     verify(contextWrapper).json(context,
         "invalid money format",
-        HttpStatus.NOT_ACCEPTABLE_406);
+        HttpStatus.BAD_REQUEST_400);
   }
 
   @Test
@@ -215,6 +215,6 @@ public class TransactionControllerTest {
     controller.commit(context);
 
     // then
-    verify(contextWrapper).json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
+    verify(contextWrapper).json(context, exception.getMessage(), HttpStatus.BAD_REQUEST_400);
   }
 }

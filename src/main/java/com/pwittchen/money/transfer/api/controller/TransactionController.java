@@ -40,10 +40,10 @@ public class TransactionController {
       path = "/transaction/:id",
       description = "gets single transaction with a given id",
       pathParams = @OpenApiParam(name = "id", type = Integer.class),
-      responses = @OpenApiResponse(
-          status = "200",
-          content = @OpenApiContent(from = Transaction.class)
-      )
+      responses = {
+          @OpenApiResponse(status = "200", content = @OpenApiContent(from = Transaction.class)),
+          @OpenApiResponse(status = "404", content = @OpenApiContent(from = String.class))
+      }
   )
   public void getOne(final Context context) {
     String id = contextWrapper.pathParam(context, "id");
@@ -80,10 +80,10 @@ public class TransactionController {
           @OpenApiParam(name = "currency"),
           @OpenApiParam(name = "money")
       },
-      responses = @OpenApiResponse(
-          status = "200",
-          content = @OpenApiContent(from = Transaction.class)
-      )
+      responses = {
+          @OpenApiResponse(status = "200", content = @OpenApiContent(from = Transaction.class)),
+          @OpenApiResponse(status = "400", content = @OpenApiContent(from = String.class))
+      }
   )
   public void commit(final Context context) {
     String from = contextWrapper.formParam(context, "from");
@@ -109,7 +109,7 @@ public class TransactionController {
   private void createInvalidAccountResponse(Context context) {
     contextWrapper.json(context,
         "Trying to transfer money from or to account, which does not exist",
-        HttpStatus.NOT_ACCEPTABLE_406);
+        HttpStatus.BAD_REQUEST_400);
   }
 
   private Optional<Money> parseMoney(Context context) {
@@ -125,7 +125,7 @@ public class TransactionController {
   }
 
   private void createInvalidMoneyFormatResponse(Context context) {
-    contextWrapper.json(context, "invalid money format", HttpStatus.NOT_ACCEPTABLE_406);
+    contextWrapper.json(context, "invalid money format", HttpStatus.BAD_REQUEST_400);
   }
 
   private Transaction createTransaction(Account sender, Account receiver, Money money) {
@@ -143,7 +143,7 @@ public class TransactionController {
       transactionRepository.commit(transaction);
       contextWrapper.json(context, transaction, HttpStatus.OK_200);
     } catch (Exception exception) {
-      contextWrapper.json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
+      contextWrapper.json(context, exception.getMessage(), HttpStatus.BAD_REQUEST_400);
     }
   }
 }
