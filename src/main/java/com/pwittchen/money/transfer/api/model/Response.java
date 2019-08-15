@@ -3,8 +3,8 @@ package com.pwittchen.money.transfer.api.model;
 import java.util.Objects;
 
 public class Response {
-  private final String message;
-  private final Object object;
+  public final String message;
+  public final Object object;
 
   private Response() {
     this(builder());

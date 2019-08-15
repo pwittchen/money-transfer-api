@@ -6,7 +6,9 @@ import com.pwittchen.money.transfer.api.validation.AccountValidation;
 import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.EmptyAccountNumberException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.inject.Inject;
@@ -30,8 +32,8 @@ public class InMemoryAccountRepository implements AccountRepository {
     return Optional.of(account);
   }
 
-  @Override public Map<String, Account> get() {
-    return accounts;
+  @Override public List<Account> get() {
+    return new ArrayList<>(accounts.values());
   }
 
   @Override public Account create(Account account) throws Exception {

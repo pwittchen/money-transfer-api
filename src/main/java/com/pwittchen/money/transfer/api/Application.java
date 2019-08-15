@@ -49,6 +49,7 @@ public class Application {
                           .version("1.0")
                           .description("Money Transfer API"))
                           .path("/openapi")
+                          .activateAnnotationScanningFor("com.github.pwittchen.money.transfer.api")
                   )
               );
             }
@@ -58,16 +59,6 @@ public class Application {
           event.serverStartFailed(() -> LOG.error("server start has failed"));
         })
         .start(PORT);
-
-    app.get("/", context -> {
-      throw new ForbiddenResponse();
-    });
-
-    app.get("/health", context ->
-        context
-            .status(200)
-            .json(Response.builder().message("OK").build())
-    );
 
     app.routes(() -> {
       path("/account", () -> {

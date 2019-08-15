@@ -6,6 +6,11 @@ import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import io.javalin.http.Context;
+import io.javalin.plugin.openapi.annotations.HttpMethod;
+import io.javalin.plugin.openapi.annotations.OpenApi;
+import io.javalin.plugin.openapi.annotations.OpenApiContent;
+import io.javalin.plugin.openapi.annotations.OpenApiParam;
+import io.javalin.plugin.openapi.annotations.OpenApiResponse;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +30,14 @@ public class AccountController {
     this.accountRepository = accountRepository;
   }
 
-  public void getOne(final Context context) {
+  @OpenApi(
+      method = HttpMethod.GET,
+      path = "/account/:id",
+      description = "gets single account with a given id",
+      pathParams = @OpenApiParam(name = "id", type = Integer.class),
+      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Account.class))
+  )
+  public void getOne(Context context) {
     Optional<Account> account = accountRepository.get(contextWrapper.pathParam(context, "id"));
 
     if (account.isPresent()) {
@@ -44,10 +56,31 @@ public class AccountController {
     }
   }
 
+  @OpenApi(
+      method = HttpMethod.GET,
+      path = "/account",
+      description = "gets all accounts",
+      responses = @OpenApiResponse(
+          status = "200",
+          content = @OpenApiContent(from = Account.class, isArray = true)
+      )
+  )
   public void getAll(final Context context) {
     contextWrapper.json(context, accountRepository.get());
   }
 
+  @OpenApi(
+      method = HttpMethod.POST,
+      path = "/account",
+      description = "creates an account",
+      pathParams = {
+          @OpenApiParam(name = "name"),
+          @OpenApiParam(name = "surname"),
+          @OpenApiParam(name = "currency"),
+          @OpenApiParam(name = "money")
+      },
+      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Response.class))
+  )
   public void create(final Context context) {
     User user = createUser(context);
     Optional<Account> account = createAccount(context, user);
@@ -102,6 +135,13 @@ public class AccountController {
     }
   }
 
+  @OpenApi(
+      method = HttpMethod.DELETE,
+      path = "/account/:id",
+      description = "deletes an account with given id",
+      pathParams = @OpenApiParam(name = "id", type = Integer.class),
+      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Response.class))
+  )
   public void delete(Context context) {
     try {
       accountRepository.delete(contextWrapper.pathParam(context, "id"));

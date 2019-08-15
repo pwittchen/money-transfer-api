@@ -7,11 +7,11 @@ import org.joda.money.Money;
 
 public class Transaction {
   private final transient AtomicBoolean isRunning;
-  private final String id;
-  private final Account from;
-  private final Account to;
-  private final Money money;
-  private final LocalDateTime createdAt;
+  public final String id;
+  public final Account from;
+  public final Account to;
+  public final Money money;
+  public final LocalDateTime createdAt;
 
   private Transaction() {
     this(builder());
