@@ -28,7 +28,7 @@ To generate fat jar file with all dependencies, execute: `./gradlew shadowJar`
 Assuming we have executed command above, to run server as a standalone fat jar, execute:
 
 ```
-java -jar build/libs/app-1.0-all.jar
+java -jar build/libs/app-1.0-SNAPSHOT-all.jar
 ```
 
 Server will start running on port `8000`

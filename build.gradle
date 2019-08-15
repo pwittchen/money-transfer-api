@@ -39,7 +39,6 @@ sourceSets {
 shadowJar {
   baseName = 'app'
   classifier = 'all'
-  version = '1.0'
 }
 
 jacocoTestReport {
