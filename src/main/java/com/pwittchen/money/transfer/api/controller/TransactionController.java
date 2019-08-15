@@ -40,7 +40,10 @@ public class TransactionController {
       path = "/transaction/:id",
       description = "gets single transaction with a given id",
       pathParams = @OpenApiParam(name = "id", type = Integer.class),
-      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Transaction.class))
+      responses = @OpenApiResponse(
+          status = "200",
+          content = @OpenApiContent(from = Transaction.class)
+      )
   )
   public void getOne(final Context context) {
     String id = contextWrapper.pathParam(context, "id");
@@ -77,7 +80,10 @@ public class TransactionController {
           @OpenApiParam(name = "currency"),
           @OpenApiParam(name = "money")
       },
-      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Transaction.class))
+      responses = @OpenApiResponse(
+          status = "200",
+          content = @OpenApiContent(from = Transaction.class)
+      )
   )
   public void commit(final Context context) {
     String from = contextWrapper.formParam(context, "from");
