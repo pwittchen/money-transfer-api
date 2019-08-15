@@ -9,7 +9,7 @@ import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsExc
 import com.pwittchen.money.transfer.api.validation.exception.EmptyAccountNumberException;
 import com.pwittchen.money.transfer.api.validation.exception.EmptyUserIdException;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.joda.money.CurrencyUnit;
@@ -75,7 +75,7 @@ public class InMemoryAccountRepositoryTest {
     accountRepository.create(createAccount());
 
     // when
-    Map<String, Account> accounts = accountRepository.get();
+    List<Account> accounts = accountRepository.get();
 
     // then
     assertThat(accounts.size()).isEqualTo(2);

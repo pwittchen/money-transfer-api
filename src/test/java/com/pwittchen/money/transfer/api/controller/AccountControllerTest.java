@@ -2,13 +2,14 @@ package com.pwittchen.money.transfer.api.controller;
 
 import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
-import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
 import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
 import io.javalin.http.Context;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import org.eclipse.jetty.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +54,7 @@ public class AccountControllerTest {
     controller.getOne(context);
 
     // then
-    verify(contextWrapper).json(context, account);
+    verify(contextWrapper).json(context, account, HttpStatus.OK_200);
   }
 
   @Test
@@ -62,21 +63,20 @@ public class AccountControllerTest {
     String id = "1";
     when(contextWrapper.pathParam(context, "id")).thenReturn(id);
     when(accountRepository.get(id)).thenReturn(Optional.empty());
-    Response response = Response.builder()
-        .message("account with id 1 does not exist")
-        .build();
 
     // when
     controller.getOne(context);
 
     // then
-    verify(contextWrapper).json(context, response, 404);
+    verify(contextWrapper).json(context,
+        "account with id 1 does not exist",
+        HttpStatus.NOT_FOUND_404);
   }
 
   @Test
   public void shouldGetAllAccounts() {
     // given
-    HashMap<String, Account> accounts = new HashMap<>();
+    List<Account> accounts = new ArrayList<>();
     when(accountRepository.get()).thenReturn(accounts);
 
     // when
@@ -102,7 +102,6 @@ public class AccountControllerTest {
   @Test
   public void shouldNotCreateAccountIfCurrencyFormatIsInvalid() throws Exception {
     // given
-    Response response = Response.builder().message("Invalid money format").build();
     when(contextWrapper.formParam(context, "currency")).thenReturn("INVALID");
     when(contextWrapper.formParam(context, "money")).thenReturn("100.00");
 
@@ -111,13 +110,12 @@ public class AccountControllerTest {
 
     // then
     verify(accountRepository, times(0)).create(any(Account.class));
-    verify(contextWrapper).json(context, response);
+    verify(contextWrapper).json(context, "Invalid money format", HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
   public void shouldNotCreateAccountIfMoneyFormatIsInvalid() throws Exception {
     // given
-    Response response = Response.builder().message("Invalid money format").build();
     when(contextWrapper.formParam(context, "currency")).thenReturn("EUR");
     when(contextWrapper.formParam(context, "money")).thenReturn("INVALID");
 
@@ -126,14 +124,13 @@ public class AccountControllerTest {
 
     // then
     verify(accountRepository, times(0)).create(any(Account.class));
-    verify(contextWrapper).json(context, response);
+    verify(contextWrapper).json(context, "Invalid money format", HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
   public void shouldNotCreateAccountIfErrorOccurred() throws Exception {
     // given
     AccountAlreadyExistsException exception = new AccountAlreadyExistsException("1");
-    Response response = Response.builder().message(exception.getMessage()).build();
     when(contextWrapper.formParam(context, "currency")).thenReturn("EUR");
     when(contextWrapper.formParam(context, "money")).thenReturn("100.00");
     when(accountRepository.create(any())).thenThrow(exception);
@@ -142,7 +139,7 @@ public class AccountControllerTest {
     controller.create(context);
 
     // then
-    verify(contextWrapper).json(context, response);
+    verify(contextWrapper).json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
@@ -155,16 +152,12 @@ public class AccountControllerTest {
         contextWrapper.pathParam(context, "id")
     );
 
-    Response response = Response.builder()
-        .message(message)
-        .build();
-
     // when
     controller.delete(context);
 
     // then
     verify(accountRepository).delete(id);
-    verify(contextWrapper).json(context, response);
+    verify(contextWrapper).json(context, message, HttpStatus.OK_200);
   }
 
   @Test
@@ -175,14 +168,10 @@ public class AccountControllerTest {
     when(contextWrapper.pathParam(context, "id")).thenReturn(id);
     doThrow(exception).when(accountRepository).delete(id);
 
-    Response response = Response.builder()
-        .message(exception.getMessage())
-        .build();
-
     // when
     controller.delete(context);
 
     // then
-    verify(contextWrapper).json(context, response);
+    verify(contextWrapper).json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
   }
 }

@@ -6,9 +6,7 @@ import com.pwittchen.money.transfer.api.configuration.component.ApplicationCompo
 import com.pwittchen.money.transfer.api.configuration.component.DaggerApplicationComponent;
 import com.pwittchen.money.transfer.api.controller.AccountController;
 import com.pwittchen.money.transfer.api.controller.TransactionController;
-import com.pwittchen.money.transfer.api.model.Response;
 import io.javalin.Javalin;
-import io.javalin.http.ForbiddenResponse;
 import io.javalin.plugin.json.JavalinJson;
 import io.javalin.plugin.openapi.OpenApiOptions;
 import io.javalin.plugin.openapi.OpenApiPlugin;

@@ -2,6 +2,7 @@ package integration;
 
 import com.pwittchen.money.transfer.api.Application;
 import io.restassured.RestAssured;
+import org.eclipse.jetty.http.HttpStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -51,20 +52,6 @@ public class RestApiIntegrationTest {
   }
 
   @Test
-  public void shouldRespondWithForbiddenStatus() {
-    given()
-        .when().get("/")
-        .then().statusCode(403);
-  }
-
-  @Test
-  public void shouldInvokeHealthCheck() {
-    given()
-        .when().get("/health")
-        .then().body(containsString("OK")).statusCode(200);
-  }
-
-  @Test
   public void shouldCreateAccount() {
     given()
         .param("name", "testName")
@@ -72,18 +59,25 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
-        .then().body("message", equalTo("account created")).statusCode(200);
+        .then()
+        .statusCode(HttpStatus.OK_200);
   }
 
   @Test
   public void shouldNotCreateAccountWhenCurrencyIsInvalid() {
     given()
         .param("name", "testName")
-        .and().param("surname", "testSurname")
-        .and().param("currency", "INVALID")
-        .and().param("money", "10.00")
-        .when().post("/account")
-        .then().body("message", equalTo("Invalid money format")).statusCode(200);
+        .and()
+        .param("surname", "testSurname")
+        .and()
+        .param("currency", "INVALID")
+        .and()
+        .param("money", "10.00")
+        .when()
+        .post("/account")
+        .then()
+        .body(equalTo("\"Invalid money format\""))
+        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
@@ -94,7 +88,8 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "INVALID")
         .when().post("/account")
-        .then().body("message", equalTo("Invalid money format")).statusCode(200);
+        .then().body(equalTo("\"Invalid money format\""))
+        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
@@ -105,18 +100,25 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
-        .then().body("message", equalTo("User name is empty")).statusCode(200);
+        .then().body(equalTo("\"User name is empty\""))
+        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
   public void shouldNotCreateAccountWhenUserSurnameIsEmpty() {
     given()
         .param("name", "testName")
-        .and().param("surname", "")
-        .and().param("currency", "EUR")
-        .and().param("money", "10.00")
-        .when().post("/account")
-        .then().body("message", equalTo("User surname is empty")).statusCode(200);
+        .and()
+        .param("surname", "")
+        .and()
+        .param("currency", "EUR")
+        .and()
+        .param("money", "10.00")
+        .when()
+        .post("/account")
+        .then()
+        .body(equalTo("\"User surname is empty\""))
+        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
@@ -127,25 +129,24 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
-        .then().extract().path("object.number");
+        .then().extract().path("value.number");
 
     delete("/account/".concat(number))
         .then()
-        .body("message", equalTo(
-            String.format("account with number %s deleted", number)
-        )).statusCode(200);
+        .body(equalTo("\"account with number " + number + " deleted\""))
+        .statusCode(HttpStatus.OK_200);
   }
 
   @Test
   public void shouldTryToDeleteInvalidAccount() {
     delete("/account/invalid")
-        .then().body("message", equalTo("account with number invalid does not exist"))
-        .statusCode(200);
+        .then().body(equalTo("\"account with number invalid does not exist\""))
+        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
   public void shouldTryToDeleteEmptyAccount() {
-    delete("/account").then().statusCode(404);
+    delete("/account").then().statusCode(HttpStatus.NOT_FOUND_404);
   }
 
   @Test
@@ -156,15 +157,16 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
-        .then().extract().path("object.number");
+        .then().extract().path("value.number");
 
-    get("/account/".concat(number)).then().body("number", equalTo(number));
+    get("/account/".concat(number)).then().statusCode(HttpStatus.OK_200);
   }
 
   @Test
   public void shouldNotGetOneAccountIfItDoesNotExist() {
     get("/account/invalid")
-        .then().body("message", equalTo("account with id invalid does not exist"));
+        .then().body(equalTo("\"account with id invalid does not exist\""))
+        .statusCode(HttpStatus.NOT_FOUND_404);
   }
 
   @Test
@@ -175,10 +177,11 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
-        .then().extract().path("object.number");
+        .then().extract().path("value.number");
 
     get("/account")
-        .then().body(number.concat(".number"), equalTo(number)).statusCode(200);
+        .then().body(containsString(number))
+        .statusCode(HttpStatus.OK_200);
   }
 
   @Test
@@ -189,7 +192,7 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "100.00")
         .when().post("/account")
-        .then().extract().path("object.number");
+        .then().extract().path("value.number");
 
     String numberTwo = given()
         .param("name", "testName2")
@@ -197,7 +200,7 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "50.00")
         .when().post("/account")
-        .then().extract().path("object.number");
+        .then().extract().path("value.number");
 
     given()
         .param("from", numberOne)
@@ -207,11 +210,7 @@ public class RestApiIntegrationTest {
         .when()
         .post("/transaction")
         .then()
-        .body(
-            "message",
-            equalTo("transaction committed")
-        )
-        .statusCode(200);
+        .statusCode(HttpStatus.OK_200);
   }
 
   @Test
@@ -225,10 +224,9 @@ public class RestApiIntegrationTest {
         .post("/transaction")
         .then()
         .body(
-            "message",
-            equalTo("Trying to transfer money from or to account, which does not exist")
+            equalTo("\"Trying to transfer money from or to account, which does not exist\"")
         )
-        .statusCode(200);
+        .statusCode(HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
@@ -239,7 +237,7 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "100.00")
         .when().post("/account")
-        .then().extract().path("object.number");
+        .then().extract().path("value.number");
 
     String numberTwo = given()
         .param("name", "testName2")
@@ -247,7 +245,7 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "50.00")
         .when().post("/account")
-        .then().extract().path("object.number");
+        .then().extract().path("value.number");
 
     String transactionId = given()
         .param("from", numberOne)
@@ -257,7 +255,7 @@ public class RestApiIntegrationTest {
         .when()
         .post("/transaction")
         .then()
-        .extract().path("object.id");
+        .extract().path("id");
 
     get("/transaction/".concat(transactionId))
         .then()
@@ -268,16 +266,16 @@ public class RestApiIntegrationTest {
   public void shouldTryToGetOneTransactionForInvalidId() {
     get("/transaction/invalid")
         .then()
-        .body("message", equalTo("transaction with id invalid does not exist"));
+        .body(equalTo("\"transaction with id invalid does not exist\""));
   }
 
   @Test
   public void shouldGetAllTransactions() {
-    get("/transaction").then().statusCode(200);
+    get("/transaction").then().statusCode(HttpStatus.OK_200);
   }
 
   @Test
   public void shouldGetNotFoundStatusForInvalidEndpoint() {
-    get("/invalid").then().statusCode(404);
+    get("/invalid").then().statusCode(HttpStatus.NOT_FOUND_404);
   }
 }

@@ -2,7 +2,6 @@ package com.pwittchen.money.transfer.api.controller;
 
 import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
-import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
@@ -11,6 +10,7 @@ import io.javalin.http.Context;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.eclipse.jetty.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,15 +71,14 @@ public class TransactionControllerTest {
     String id = "1";
     when(contextWrapper.pathParam(context, "id")).thenReturn(id);
     when(transactionRepository.get(id)).thenReturn(Optional.empty());
-    Response response = Response.builder()
-        .message("transaction with id 1 does not exist")
-        .build();
 
     // when
     controller.getOne(context);
 
     // then
-    verify(contextWrapper).json(context, response, 404);
+    verify(contextWrapper).json(context,
+        "transaction with id " + id + " does not exist",
+        HttpStatus.NOT_FOUND_404);
   }
 
   @Test
@@ -123,16 +122,15 @@ public class TransactionControllerTest {
     when(contextWrapper.formParam(context, "to")).thenReturn(receiverNo);
     when(accountRepository.get(senderNo)).thenReturn(Optional.empty());
     when(accountRepository.get(receiverNo)).thenReturn(Optional.of(account));
-    Response response = Response.builder()
-        .message("Trying to transfer money from or to account, which does not exist")
-        .build();
 
     // when
     controller.commit(context);
 
     // then
     verify(transactionRepository, times(0)).commit(any(Transaction.class));
-    verify(contextWrapper).json(context, response);
+    verify(contextWrapper).json(context,
+        "Trying to transfer money from or to account, which does not exist",
+        HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
@@ -144,16 +142,15 @@ public class TransactionControllerTest {
     when(contextWrapper.formParam(context, "to")).thenReturn(receiverNo);
     when(accountRepository.get(senderNo)).thenReturn(Optional.of(account));
     when(accountRepository.get(receiverNo)).thenReturn(Optional.empty());
-    Response response = Response.builder()
-        .message("Trying to transfer money from or to account, which does not exist")
-        .build();
 
     // when
     controller.commit(context);
 
     // then
     verify(transactionRepository, times(0)).commit(any(Transaction.class));
-    verify(contextWrapper).json(context, response);
+    verify(contextWrapper).json(context,
+        "Trying to transfer money from or to account, which does not exist",
+        HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
@@ -167,14 +164,14 @@ public class TransactionControllerTest {
     when(accountRepository.get(receiverNo)).thenReturn(Optional.of(account));
     when(contextWrapper.formParam(context, "currency")).thenReturn("INVALID");
     when(contextWrapper.formParam(context, "money")).thenReturn("10.00");
-    Response response = Response.builder().message("invalid money format").build();
 
     // when
     controller.commit(context);
 
     // then
     verify(transactionRepository, times(0)).commit(any(Transaction.class));
-    verify(contextWrapper).json(context, response);
+    verify(contextWrapper).json(context, "invalid money format",
+        HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
@@ -188,14 +185,15 @@ public class TransactionControllerTest {
     when(accountRepository.get(receiverNo)).thenReturn(Optional.of(account));
     when(contextWrapper.formParam(context, "currency")).thenReturn("EUR");
     when(contextWrapper.formParam(context, "money")).thenReturn("INVALID");
-    Response response = Response.builder().message("invalid money format").build();
 
     // when
     controller.commit(context);
 
     // then
     verify(transactionRepository, times(0)).commit(any(Transaction.class));
-    verify(contextWrapper).json(context, response);
+    verify(contextWrapper).json(context,
+        "invalid money format",
+        HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   @Test
@@ -212,14 +210,11 @@ public class TransactionControllerTest {
 
     TransferToTheSameAccountException exception = new TransferToTheSameAccountException();
     when(transactionRepository.commit(any(Transaction.class))).thenThrow(exception);
-    Response response = Response.builder()
-        .message(exception.getMessage())
-        .build();
 
     // when
     controller.commit(context);
 
     // then
-    verify(contextWrapper).json(context, response);
+    verify(contextWrapper).json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
   }
 }

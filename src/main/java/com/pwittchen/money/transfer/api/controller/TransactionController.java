@@ -2,7 +2,6 @@ package com.pwittchen.money.transfer.api.controller;
 
 import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
-import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
@@ -16,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import javax.inject.Inject;
+import org.eclipse.jetty.http.HttpStatus;
 import org.joda.money.Money;
 
 public class TransactionController {
@@ -49,11 +49,8 @@ public class TransactionController {
     if (transaction.isPresent()) {
       contextWrapper.json(context, transaction.get());
     } else {
-      Response response = Response.builder()
-          .message(String.format("transaction with id %s does not exist", id))
-          .build();
-
-      contextWrapper.json(context, response, 404);
+      String message = String.format("transaction with id %s does not exist", id);
+      contextWrapper.json(context, message, HttpStatus.NOT_FOUND_404);
     }
   }
 
@@ -80,7 +77,7 @@ public class TransactionController {
           @OpenApiParam(name = "currency"),
           @OpenApiParam(name = "money")
       },
-      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Response.class))
+      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Transaction.class))
   )
   public void commit(final Context context) {
     String from = contextWrapper.formParam(context, "from");
@@ -88,14 +85,14 @@ public class TransactionController {
     Optional<Account> senderAccount = accountRepository.get(from);
     Optional<Account> receiverAccount = accountRepository.get(to);
 
-    if (!senderAccount.isPresent() || !receiverAccount.isPresent()) {
+    if (senderAccount.isEmpty() || receiverAccount.isEmpty()) {
       createInvalidAccountResponse(context);
       return;
     }
 
     Optional<Money> money = parseMoney(context);
 
-    if (!money.isPresent()) {
+    if (money.isEmpty()) {
       createInvalidMoneyFormatResponse(context);
       return;
     }
@@ -104,11 +101,9 @@ public class TransactionController {
   }
 
   private void createInvalidAccountResponse(Context context) {
-    Response response = Response.builder()
-        .message("Trying to transfer money from or to account, which does not exist")
-        .build();
-
-    contextWrapper.json(context, response);
+    contextWrapper.json(context,
+        "Trying to transfer money from or to account, which does not exist",
+        HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   private Optional<Money> parseMoney(Context context) {
@@ -124,11 +119,7 @@ public class TransactionController {
   }
 
   private void createInvalidMoneyFormatResponse(Context context) {
-    Response response = Response.builder()
-        .message("invalid money format")
-        .build();
-
-    contextWrapper.json(context, response);
+    contextWrapper.json(context, "invalid money format", HttpStatus.NOT_ACCEPTABLE_406);
   }
 
   private Transaction createTransaction(Account sender, Account receiver, Money money) {
@@ -144,18 +135,9 @@ public class TransactionController {
   private void commit(final Context context, final Transaction transaction) {
     try {
       transactionRepository.commit(transaction);
-      Response response = Response.builder()
-          .message("transaction committed")
-          .object(transaction)
-          .build();
-
-      contextWrapper.json(context, response);
+      contextWrapper.json(context, transaction, HttpStatus.OK_200);
     } catch (Exception exception) {
-      Response response = Response.builder()
-          .message(exception.getMessage())
-          .build();
-
-      contextWrapper.json(context, response);
+      contextWrapper.json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
     }
   }
 }

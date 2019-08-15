@@ -2,7 +2,6 @@ package com.pwittchen.money.transfer.api.controller;
 
 import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
-import com.pwittchen.money.transfer.api.model.Response;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import io.javalin.http.Context;
@@ -15,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import javax.inject.Inject;
+import org.eclipse.jetty.http.HttpStatus;
 import org.joda.money.Money;
 
 public class AccountController {
@@ -41,18 +41,14 @@ public class AccountController {
     Optional<Account> account = accountRepository.get(contextWrapper.pathParam(context, "id"));
 
     if (account.isPresent()) {
-      contextWrapper.json(context, account.get());
+      contextWrapper.json(context, account.get(), HttpStatus.OK_200);
     } else {
       String message = String.format(
           "account with id %s does not exist",
           contextWrapper.pathParam(context, "id")
       );
 
-      Response response = Response.builder()
-          .message(message)
-          .build();
-
-      contextWrapper.json(context, response, 404);
+      contextWrapper.json(context, message, HttpStatus.NOT_FOUND_404);
     }
   }
 
@@ -79,29 +75,22 @@ public class AccountController {
           @OpenApiParam(name = "currency"),
           @OpenApiParam(name = "money")
       },
-      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Response.class))
+      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Account.class))
   )
   public void create(final Context context) {
     User user = createUser(context);
     Optional<Account> account = createAccount(context, user);
 
-    if (!account.isPresent()) {
-      Response response = Response.builder().message("Invalid money format").build();
-      contextWrapper.json(context, response);
+    if (account.isEmpty()) {
+      contextWrapper.json(context, "Invalid money format", HttpStatus.NOT_ACCEPTABLE_406);
       return;
     }
 
     try {
       accountRepository.create(account.get());
-      Response response = Response.builder()
-          .message("account created")
-          .object(account.get())
-          .build();
-
-      contextWrapper.json(context, response);
+      contextWrapper.json(context, account, HttpStatus.OK_200);
     } catch (Exception exception) {
-      Response response = Response.builder().message(exception.getMessage()).build();
-      contextWrapper.json(context, response);
+      contextWrapper.json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
     }
   }
 
@@ -140,7 +129,7 @@ public class AccountController {
       path = "/account/:id",
       description = "deletes an account with given id",
       pathParams = @OpenApiParam(name = "id", type = Integer.class),
-      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = Response.class))
+      responses = @OpenApiResponse(status = "200", content = @OpenApiContent(from = String.class))
   )
   public void delete(Context context) {
     try {
@@ -151,14 +140,9 @@ public class AccountController {
           contextWrapper.pathParam(context, "id")
       );
 
-      Response response = Response.builder()
-          .message(message)
-          .build();
-
-      contextWrapper.json(context, response);
+      contextWrapper.json(context, message, HttpStatus.OK_200);
     } catch (Exception exception) {
-      Response response = Response.builder().message(exception.getMessage()).build();
-      contextWrapper.json(context, response);
+      contextWrapper.json(context, exception.getMessage(), HttpStatus.NOT_ACCEPTABLE_406);
     }
   }
 }
