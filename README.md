@@ -50,9 +50,7 @@ Tests
 
 - running unit tests: `./gradlew test`
 - running integration tests: `./gradlew test -Dtest.profile=integration`
-- creating test coverage report: `./gradlew test jacocoTestReport`
-
-Generated test report can be found in `build/reports/jacoco/` directory
+- creating test coverage report: `./gradlew test jacocoTestReport`(report will be created in `build/reports/jacoco/` directory)
 
 Code style
 ----------
