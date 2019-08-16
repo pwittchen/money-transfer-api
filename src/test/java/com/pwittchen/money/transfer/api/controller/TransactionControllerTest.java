@@ -129,7 +129,7 @@ public class TransactionControllerTest {
     // then
     verify(transactionRepository, times(0)).commit(any(Transaction.class));
     verify(contextWrapper).json(context,
-        "Trying to transfer money from or to account, which does not exist",
+        "Trying to transfer money from account, which does not exist",
         HttpStatus.BAD_REQUEST_400);
   }
 
@@ -149,7 +149,7 @@ public class TransactionControllerTest {
     // then
     verify(transactionRepository, times(0)).commit(any(Transaction.class));
     verify(contextWrapper).json(context,
-        "Trying to transfer money from or to account, which does not exist",
+        "Trying to transfer money to account, which does not exist",
         HttpStatus.BAD_REQUEST_400);
   }
 

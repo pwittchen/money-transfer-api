@@ -91,25 +91,28 @@ public class TransactionController {
     Optional<Account> senderAccount = accountRepository.get(from);
     Optional<Account> receiverAccount = accountRepository.get(to);
 
-    if (senderAccount.isEmpty() || receiverAccount.isEmpty()) {
-      createInvalidAccountResponse(context);
+    if (senderAccount.isEmpty()) {
+      contextWrapper.json(context,
+          "Trying to transfer money from account, which does not exist",
+          HttpStatus.BAD_REQUEST_400);
+      return;
+    }
+
+    if (receiverAccount.isEmpty()) {
+      contextWrapper.json(context,
+          "Trying to transfer money to account, which does not exist",
+          HttpStatus.BAD_REQUEST_400);
       return;
     }
 
     Optional<Money> money = parseMoney(context);
 
     if (money.isEmpty()) {
-      createInvalidMoneyFormatResponse(context);
+      contextWrapper.json(context, "invalid money format", HttpStatus.BAD_REQUEST_400);
       return;
     }
 
     commit(context, createTransaction(senderAccount.get(), receiverAccount.get(), money.get()));
-  }
-
-  private void createInvalidAccountResponse(Context context) {
-    contextWrapper.json(context,
-        "Trying to transfer money from or to account, which does not exist",
-        HttpStatus.BAD_REQUEST_400);
   }
 
   private Optional<Money> parseMoney(Context context) {
@@ -122,10 +125,6 @@ public class TransactionController {
     } catch (Exception exception) {
       return Optional.empty();
     }
-  }
-
-  private void createInvalidMoneyFormatResponse(Context context) {
-    contextWrapper.json(context, "invalid money format", HttpStatus.BAD_REQUEST_400);
   }
 
   private Transaction createTransaction(Account sender, Account receiver, Money money) {

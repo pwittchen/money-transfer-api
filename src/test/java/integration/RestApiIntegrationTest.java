@@ -214,17 +214,41 @@ public class RestApiIntegrationTest {
   }
 
   @Test
-  public void shouldTryToCommitTransactionForInvalidAccounts() {
+  public void shouldTryToCommitTransactionFromInvalidAccount() {
     given()
-        .param("from", "senderNo")
-        .and().param("to", "receiverNo")
+        .param("from", "invalidSenderNo")
+        .and().param("to", "invalidReceiverNo")
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when()
         .post("/transaction")
         .then()
         .body(
-            equalTo("\"Trying to transfer money from or to account, which does not exist\"")
+            equalTo("\"Trying to transfer money from account, which does not exist\"")
+        )
+        .statusCode(HttpStatus.BAD_REQUEST_400);
+  }
+
+  @Test
+  public void shouldTryToCommitTransactionToInvalidAccount() {
+    String senderAccountNumber = given()
+        .param("name", "testName1")
+        .and().param("surname", "testSurname1")
+        .and().param("currency", "EUR")
+        .and().param("money", "100.00")
+        .when().post("/account")
+        .then().extract().path("value.number");
+
+    given()
+        .param("from", senderAccountNumber)
+        .and().param("to", "invalidReceiverNo")
+        .and().param("currency", "EUR")
+        .and().param("money", "10.00")
+        .when()
+        .post("/transaction")
+        .then()
+        .body(
+            equalTo("\"Trying to transfer money to account, which does not exist\"")
         )
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
