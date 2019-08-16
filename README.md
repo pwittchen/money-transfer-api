@@ -8,13 +8,13 @@ Description of the task can be found in [TASK.md](https://github.com/pwittchen/m
 
 Contents
 --------
-- [Building and running application](#building-and-running-application)
+- [Building and running the application](#building-and-running-the-application)
 - [API documentation](#api-documentation)
 - [Tests](#tests)
 - [Code style](#code-style)
 
-Building and running application
---------------------------------
+Building and running the application
+------------------------------------
 
 Please note: If we're on Windows, use `gradlew.bat` instead of `./gradlew` script
 
