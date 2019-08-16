@@ -11,6 +11,7 @@ import io.javalin.plugin.json.JavalinJson;
 import io.javalin.plugin.openapi.OpenApiOptions;
 import io.javalin.plugin.openapi.OpenApiPlugin;
 import io.swagger.v3.oas.models.info.Info;
+import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +77,7 @@ public class Application {
     });
 
     app.exception(Exception.class, (exception, context) -> {
-      context.status(500);
+      context.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
       LOG.error("error occurred", exception);
     });
   }
