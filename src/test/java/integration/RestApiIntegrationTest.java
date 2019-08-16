@@ -223,9 +223,7 @@ public class RestApiIntegrationTest {
         .when()
         .post("/transaction")
         .then()
-        .body(
-            equalTo("\"Trying to transfer money from account, which does not exist\"")
-        )
+        .body(equalTo("\"Trying to transfer money from account, which does not exist\""))
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
@@ -247,9 +245,7 @@ public class RestApiIntegrationTest {
         .when()
         .post("/transaction")
         .then()
-        .body(
-            equalTo("\"Trying to transfer money to account, which does not exist\"")
-        )
+        .body(equalTo("\"Trying to transfer money to account, which does not exist\""))
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
