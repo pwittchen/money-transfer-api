@@ -7,7 +7,7 @@ import java.util.concurrent.BlockingQueue;
 public interface TransactionRepository {
   Optional<Transaction> get(String id);
 
-  BlockingQueue<Transaction> get();
+  BlockingQueue<Transaction> getAll();
 
   Transaction commit(Transaction transaction) throws Exception;
 

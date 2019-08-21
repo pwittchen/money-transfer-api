@@ -8,7 +8,7 @@ import org.joda.money.Money;
 public interface AccountRepository {
   Optional<Account> get(String number);
 
-  List<Account> get();
+  List<Account> getAll();
 
   Account create(Account account) throws Exception;
 

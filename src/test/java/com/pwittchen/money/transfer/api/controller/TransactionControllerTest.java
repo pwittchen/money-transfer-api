@@ -85,7 +85,7 @@ public class TransactionControllerTest {
   public void shouldGetAllTransactions() {
     // given
     BlockingQueue<Transaction> transactions = new LinkedBlockingQueue<>();
-    when(transactionRepository.get()).thenReturn(transactions);
+    when(transactionRepository.getAll()).thenReturn(transactions);
 
     // when
     controller.getAll(context);

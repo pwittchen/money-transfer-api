@@ -65,7 +65,7 @@ public class AccountController {
       )
   )
   public void getAll(final Context context) {
-    contextWrapper.json(context, accountRepository.get());
+    contextWrapper.json(context, accountRepository.getAll());
   }
 
   @OpenApi(

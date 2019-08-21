@@ -102,7 +102,7 @@ public class ConcurrentInMemoryTransactionTest {
     Money senderMoney = accountRepository.get(sender.number()).get().money();
     Money receiverMoney = accountRepository.get(receiver.number()).get().money();
 
-    assertThat(transactionRepository.get().size()).isEqualTo(3);
+    assertThat(transactionRepository.getAll().size()).isEqualTo(3);
     assertThat(senderMoney).isEqualTo(Money.of(CurrencyUnit.EUR, 86));
     assertThat(receiverMoney).isEqualTo(Money.of(CurrencyUnit.EUR, 64));
   }
@@ -146,7 +146,7 @@ public class ConcurrentInMemoryTransactionTest {
     Money senderMoney = accountRepository.get(sender.number()).get().money();
     Money receiverMoney = accountRepository.get(receiver.number()).get().money();
 
-    assertThat(transactionRepository.get().size()).isEqualTo(1);
+    assertThat(transactionRepository.getAll().size()).isEqualTo(1);
     assertThat(senderMoney).isEqualTo(Money.of(CurrencyUnit.EUR, 0));
     assertThat(receiverMoney).isEqualTo(Money.of(CurrencyUnit.EUR, 10));
   }

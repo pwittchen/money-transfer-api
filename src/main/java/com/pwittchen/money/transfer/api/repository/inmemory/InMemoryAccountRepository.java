@@ -25,14 +25,10 @@ public class InMemoryAccountRepository implements AccountRepository {
   }
 
   @Override public Optional<Account> get(String number) {
-    final Account account = accounts.get(number);
-    if (account == null) {
-      return Optional.empty();
-    }
-    return Optional.of(account);
+    return Optional.ofNullable(accounts.get(number));
   }
 
-  @Override public List<Account> get() {
+  @Override public List<Account> getAll() {
     return new ArrayList<>(accounts.values());
   }
 

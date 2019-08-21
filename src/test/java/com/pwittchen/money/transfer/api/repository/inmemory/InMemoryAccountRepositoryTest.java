@@ -75,7 +75,7 @@ public class InMemoryAccountRepositoryTest {
     accountRepository.create(createAccount());
 
     // when
-    List<Account> accounts = accountRepository.get();
+    List<Account> accounts = accountRepository.getAll();
 
     // then
     assertThat(accounts.size()).isEqualTo(2);
@@ -93,7 +93,7 @@ public class InMemoryAccountRepositoryTest {
     Account createdAccount = accountRepository.get(account.number()).get();
 
     // then
-    assertThat(accountRepository.get().isEmpty()).isFalse();
+    assertThat(accountRepository.getAll().isEmpty()).isFalse();
     assertThat(createdAccount).isEqualTo(account);
     assertThat(createdAccount.user()).isEqualTo(account.user());
     assertThat(createdAccount.user().id()).isEqualTo(account.user().id());
@@ -274,13 +274,13 @@ public class InMemoryAccountRepositoryTest {
     accountRepository.create(createAccount());
     accountRepository.create(createAccount());
 
-    assertThat(accountRepository.get().size()).isEqualTo(2);
+    assertThat(accountRepository.getAll().size()).isEqualTo(2);
 
     // when
     accountRepository.clear();
 
     // then
-    assertThat(accountRepository.get().isEmpty()).isTrue();
+    assertThat(accountRepository.getAll().isEmpty()).isTrue();
   }
 
   private Account createAccount() {

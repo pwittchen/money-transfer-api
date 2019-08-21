@@ -67,7 +67,7 @@ public class TransactionController {
       )
   )
   public void getAll(final Context context) {
-    contextWrapper.json(context, transactionRepository.get());
+    contextWrapper.json(context, transactionRepository.getAll());
   }
 
   @OpenApi(

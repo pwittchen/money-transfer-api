@@ -96,7 +96,7 @@ public class InMemoryTransactionRepositoryTest {
     // then
     verify(accountRepository).withdrawMoney(sender, transaction.money());
     verify(accountRepository).putMoney(receiver, transaction.money());
-    assertThat(transactionRepository.get().isEmpty()).isFalse();
+    assertThat(transactionRepository.getAll().isEmpty()).isFalse();
   }
 
   @Test
@@ -162,7 +162,7 @@ public class InMemoryTransactionRepositoryTest {
     transactionRepository.commit(transactionTwo);
 
     // then
-    assertThat(transactionRepository.get().size()).isEqualTo(2);
+    assertThat(transactionRepository.getAll().size()).isEqualTo(2);
   }
 
   @Test
@@ -190,7 +190,7 @@ public class InMemoryTransactionRepositoryTest {
     transactionRepository.clear();
 
     // then
-    assertThat(transactionRepository.get().isEmpty()).isTrue();
+    assertThat(transactionRepository.getAll().isEmpty()).isTrue();
   }
 
   @Test

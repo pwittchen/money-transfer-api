@@ -77,7 +77,7 @@ public class AccountControllerTest {
   public void shouldGetAllAccounts() {
     // given
     List<Account> accounts = new ArrayList<>();
-    when(accountRepository.get()).thenReturn(accounts);
+    when(accountRepository.getAll()).thenReturn(accounts);
 
     // when
     controller.getAll(context);

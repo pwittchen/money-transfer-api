@@ -39,7 +39,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
         .findFirst();
   }
 
-  @Override public BlockingQueue<Transaction> get() {
+  @Override public BlockingQueue<Transaction> getAll() {
     return transactions;
   }
 
