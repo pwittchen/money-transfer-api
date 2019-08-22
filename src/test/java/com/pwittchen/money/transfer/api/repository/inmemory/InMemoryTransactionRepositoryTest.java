@@ -1,12 +1,11 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
+import com.pwittchen.money.transfer.api.exception.NotEnoughMoneyException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
-import com.pwittchen.money.transfer.api.validation.TransactionValidation;
-import com.pwittchen.money.transfer.api.validation.exception.NotEnoughMoneyException;
 import java.util.Optional;
 import java.util.UUID;
 import org.joda.money.CurrencyUnit;
@@ -32,24 +31,23 @@ public class InMemoryTransactionRepositoryTest {
   @Mock
   private AccountRepository accountRepository;
 
-  @Mock
-  private TransactionValidation transactionValidation;
-
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
   @Before
   public void setUp() {
-    transactionRepository = new InMemoryTransactionRepository(
-        accountRepository, transactionValidation
-    );
+    transactionRepository = new InMemoryTransactionRepository(accountRepository);
   }
 
   @Test
-  public void shouldNotCommitTransactionWhenValidationDetectedError() throws Exception {
+  public void shouldNotCommitTransactionWhenSenderHasNotEnoughMoney() throws Exception {
     // given
-    Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));
-    Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50));
+    final String senderNumber = "AC1";
+    final String receiverNumber = "AC2";
+    Account sender = createSenderAccount(senderNumber, Money.of(CurrencyUnit.EUR, 100));
+    Account receiver = createReceiverAccount(receiverNumber, Money.of(CurrencyUnit.EUR, 50));
+    when(accountRepository.get(senderNumber)).thenReturn(Optional.of(sender));
+    when(accountRepository.get(receiverNumber)).thenReturn(Optional.of(receiver));
 
     Transaction transaction = Transaction
         .builder()
@@ -58,10 +56,6 @@ public class InMemoryTransactionRepositoryTest {
         .to(receiver)
         .money(Money.of(CurrencyUnit.EUR, 600))
         .build();
-
-    when(transactionValidation.validate(transaction)).thenReturn(
-        Optional.of(new NotEnoughMoneyException(sender.number()))
-    );
 
     // when
     expectedException.expect(NotEnoughMoneyException.class);
@@ -86,7 +80,6 @@ public class InMemoryTransactionRepositoryTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    when(transactionValidation.validate(transaction)).thenReturn(Optional.empty());
     when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
     when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
@@ -114,7 +107,6 @@ public class InMemoryTransactionRepositoryTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    when(transactionValidation.validate(transaction)).thenReturn(Optional.empty());
     when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
     when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
@@ -152,8 +144,6 @@ public class InMemoryTransactionRepositoryTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    when(transactionValidation.validate(transactionOne)).thenReturn(Optional.empty());
-    when(transactionValidation.validate(transactionTwo)).thenReturn(Optional.empty());
     when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
     when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
@@ -180,7 +170,6 @@ public class InMemoryTransactionRepositoryTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    when(transactionValidation.validate(transaction)).thenReturn(Optional.empty());
     when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
     when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 

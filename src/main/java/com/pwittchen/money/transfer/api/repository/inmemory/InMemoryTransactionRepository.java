@@ -4,9 +4,10 @@ import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
-import com.pwittchen.money.transfer.api.validation.TransactionValidation;
-import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
-import com.pwittchen.money.transfer.api.validation.exception.NotEnoughMoneyException;
+import com.pwittchen.money.transfer.api.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.exception.DifferentCurrencyException;
+import com.pwittchen.money.transfer.api.exception.NotEnoughMoneyException;
+import com.pwittchen.money.transfer.api.exception.TransferToTheSameAccountException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -23,13 +24,10 @@ public class InMemoryTransactionRepository implements TransactionRepository {
 
   private final BlockingQueue<Transaction> transactions = new LinkedBlockingQueue<>();
   private AccountRepository accountRepository;
-  private TransactionValidation transactionValidation;
 
   @Inject
-  public InMemoryTransactionRepository(final AccountRepository accountRepository,
-      final TransactionValidation transactionValidation) {
+  public InMemoryTransactionRepository(final AccountRepository accountRepository) {
     this.accountRepository = accountRepository;
-    this.transactionValidation = transactionValidation;
   }
 
   @Override public Optional<Transaction> get(final String id) {
@@ -53,9 +51,16 @@ public class InMemoryTransactionRepository implements TransactionRepository {
 
     while (transaction.isRunning().get()) {
       synchronized (this) {
-        final Optional<Exception> error = transactionValidation.validate(transaction);
-        if (error.isPresent()) {
-          throw error.get();
+
+        if (!transaction.from().money().isSameCurrency(transaction.to().money())) {
+          throw new DifferentCurrencyException(
+              transaction.from().number(),
+              transaction.to().number()
+          );
+        }
+
+        if (transaction.from().number().equals(transaction.to().number())) {
+          throw new TransferToTheSameAccountException();
         }
 
         final Optional<Account> from = accountRepository.get(transaction.from().number());

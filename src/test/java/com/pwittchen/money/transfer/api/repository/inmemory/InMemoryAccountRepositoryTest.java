@@ -1,13 +1,12 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
+import com.pwittchen.money.transfer.api.exception.AccountAlreadyExistsException;
+import com.pwittchen.money.transfer.api.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.exception.EmptyAccountNumberException;
+import com.pwittchen.money.transfer.api.exception.EmptyUserIdException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
-import com.pwittchen.money.transfer.api.validation.AccountValidation;
-import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
-import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
-import com.pwittchen.money.transfer.api.validation.exception.EmptyAccountNumberException;
-import com.pwittchen.money.transfer.api.validation.exception.EmptyUserIdException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,26 +18,21 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InMemoryAccountRepositoryTest {
 
   private AccountRepository accountRepository;
 
-  @Mock
-  private AccountValidation accountValidation;
-
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
   @Before
   public void setUp() {
-    accountRepository = new InMemoryAccountRepository(accountValidation);
+    accountRepository = new InMemoryAccountRepository();
     accountRepository.clear();
   }
 
@@ -86,7 +80,6 @@ public class InMemoryAccountRepositoryTest {
   public void shouldCreateNewAccount() throws Exception {
     // given
     Account account = createAccount();
-    when(accountValidation.validate(account)).thenReturn(Optional.empty());
 
     // when
     accountRepository.create(account);
@@ -120,12 +113,24 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test
-  public void shouldNotCreateAccountIfItErrorOccurred() throws Exception {
+  public void shouldNotCreateAccountIfUserIdIsEmpty() throws Exception {
     // given
-    Account account = createAccount();
-    when(accountValidation.validate(account)).thenReturn(Optional.of(new EmptyUserIdException()));
+    User user = User
+        .builder()
+        .id("")
+        .name("John")
+        .surname("Doe")
+        .build();
 
-    // then
+    Account account = Account
+        .builder()
+        .user(user)
+        .number(UUID.randomUUID().toString())
+        .money(Money.of(CurrencyUnit.EUR, 0))
+        .createdAt(LocalDateTime.now())
+        .build();
+
+    // when
     expectedException.expect(EmptyUserIdException.class);
     expectedException.expectMessage(
         new EmptyUserIdException().getMessage()
@@ -165,13 +170,10 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test(expected = EmptyAccountNumberException.class)
-  public void shouldNotWithdrawMoneyIfErrorOccurred() throws Exception {
+  public void shouldNotWithdrawMoneyIfAccountNumberIsEmpty() throws Exception {
     // given
-    Account account = createAccount();
+    Account account = createAnotherAccount("");
     Money money = Money.of(CurrencyUnit.EUR, 1);
-    when(accountValidation.validate(account)).thenReturn(
-        Optional.of(new EmptyAccountNumberException())
-    );
 
     // when
     accountRepository.create(account);
@@ -210,13 +212,10 @@ public class InMemoryAccountRepositoryTest {
   }
 
   @Test(expected = EmptyAccountNumberException.class)
-  public void shouldNotPutMoneyIfErrorOccurred() throws Exception {
+  public void shouldNotPutMoneyIfAccountNumberIsEmpty() throws Exception {
     // given
-    Account account = createAccount();
+    Account account = createAnotherAccount("");
     Money money = Money.of(CurrencyUnit.EUR, 1);
-    when(accountValidation.validate(account)).thenReturn(
-        Optional.of(new EmptyAccountNumberException())
-    );
 
     // when
     accountRepository.create(account);

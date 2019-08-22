@@ -1,28 +1,23 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
+import com.pwittchen.money.transfer.api.exception.AccountAlreadyExistsException;
+import com.pwittchen.money.transfer.api.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.exception.EmptyAccountNumberException;
+import com.pwittchen.money.transfer.api.exception.EmptyUserIdException;
+import com.pwittchen.money.transfer.api.exception.EmptyUserNameException;
+import com.pwittchen.money.transfer.api.exception.EmptyUserSurnameException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
-import com.pwittchen.money.transfer.api.validation.AccountValidation;
-import com.pwittchen.money.transfer.api.validation.exception.AccountAlreadyExistsException;
-import com.pwittchen.money.transfer.api.validation.exception.AccountNotExistsException;
-import com.pwittchen.money.transfer.api.validation.exception.EmptyAccountNumberException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.inject.Inject;
 import org.joda.money.Money;
 
 public class InMemoryAccountRepository implements AccountRepository {
 
   private final Map<String, Account> accounts = new HashMap<>();
-  private AccountValidation accountValidation;
-
-  @Inject
-  public InMemoryAccountRepository(AccountValidation accountValidation) {
-    this.accountValidation = accountValidation;
-  }
 
   @Override public Optional<Account> get(String number) {
     return Optional.ofNullable(accounts.get(number));
@@ -33,14 +28,24 @@ public class InMemoryAccountRepository implements AccountRepository {
   }
 
   @Override public Account create(Account account) throws Exception {
+    if (account.number() == null || account.number().isEmpty()) {
+      throw new EmptyAccountNumberException();
+    }
+
     if (accounts.containsKey(account.number())) {
       throw new AccountAlreadyExistsException(account.number());
     }
 
-    Optional<Exception> error = accountValidation.validate(account);
+    if (account.user().id() == null || account.user().id().isEmpty()) {
+      throw new EmptyUserIdException();
+    }
 
-    if (error.isPresent()) {
-      throw error.get();
+    if (account.user().name() == null || account.user().name().isEmpty()) {
+      throw new EmptyUserNameException();
+    }
+
+    if (account.user().surname() == null || account.user().surname().isEmpty()) {
+      throw new EmptyUserSurnameException();
     }
 
     accounts.put(account.number(), account);

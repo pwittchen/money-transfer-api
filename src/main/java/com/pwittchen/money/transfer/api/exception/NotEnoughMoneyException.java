@@ -1,4 +1,4 @@
-package com.pwittchen.money.transfer.api.validation.exception;
+package com.pwittchen.money.transfer.api.exception;
 
 public class NotEnoughMoneyException extends RuntimeException {
   private final String accountNumber;

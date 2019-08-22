@@ -5,9 +5,6 @@ import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
-import com.pwittchen.money.transfer.api.validation.TransactionValidation;
-import com.pwittchen.money.transfer.api.validation.implementation.DefaultAccountValidation;
-import com.pwittchen.money.transfer.api.validation.implementation.DefaultTransactionValidation;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -34,14 +31,8 @@ public class ConcurrentInMemoryTransactionTest {
 
   @Before
   public void setUp() {
-    accountRepository = new InMemoryAccountRepository(new DefaultAccountValidation());
-    TransactionValidation transactionValidation = new DefaultTransactionValidation(
-        accountRepository
-    );
-
-    transactionRepository = new InMemoryTransactionRepository(
-        accountRepository, transactionValidation
-    );
+    accountRepository = new InMemoryAccountRepository();
+    transactionRepository = new InMemoryTransactionRepository(accountRepository);
 
     waiter = new Waiter();
     executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);

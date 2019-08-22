@@ -4,8 +4,6 @@ import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import com.pwittchen.money.transfer.api.repository.inmemory.InMemoryAccountRepository;
 import com.pwittchen.money.transfer.api.repository.inmemory.InMemoryTransactionRepository;
-import com.pwittchen.money.transfer.api.validation.AccountValidation;
-import com.pwittchen.money.transfer.api.validation.TransactionValidation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -21,18 +19,10 @@ public class RepositoryModuleTest {
   @Mock
   private AccountRepository accountRepository;
 
-  @Mock
-  private TransactionValidation transactionValidation;
-
-  @Mock
-  private AccountValidation accountValidation;
-
   @Test
   public void shouldProvideAccountRepository() {
     // when
-    AccountRepository accountRepository = repositoryModule.provideAccountRepository(
-        accountValidation
-    );
+    AccountRepository accountRepository = repositoryModule.provideAccountRepository();
 
     // then
     assertThat(accountRepository).isNotNull();
@@ -43,7 +33,7 @@ public class RepositoryModuleTest {
   public void shouldProvideTransactionRepository() {
     // when
     TransactionRepository transactionRepository = repositoryModule.provideTransactionRepository(
-        accountRepository, transactionValidation
+        accountRepository
     );
 
     assertThat(transactionRepository).isNotNull();
