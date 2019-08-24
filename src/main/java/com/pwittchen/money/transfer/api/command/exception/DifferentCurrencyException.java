@@ -1,4 +1,4 @@
-package com.pwittchen.money.transfer.api.exception;
+package com.pwittchen.money.transfer.api.command.exception;
 
 public class DifferentCurrencyException extends RuntimeException {
   private final String accountNumberFrom;
@@ -11,7 +11,7 @@ public class DifferentCurrencyException extends RuntimeException {
 
   @Override public String getMessage() {
     return String.format(
-        "account %s and %s have funds in different currencies",
+        "Account %s and %s have funds in different currencies",
         accountNumberFrom,
         accountNumberTo
     );

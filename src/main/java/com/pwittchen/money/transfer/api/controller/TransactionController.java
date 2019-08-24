@@ -1,10 +1,10 @@
 package com.pwittchen.money.transfer.api.controller;
 
+import com.pwittchen.money.transfer.api.command.CommitTransactionCommand;
 import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
-import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
-import com.pwittchen.money.transfer.api.repository.AccountRepository;
-import com.pwittchen.money.transfer.api.repository.TransactionRepository;
+import com.pwittchen.money.transfer.api.query.GetAllTransactionsQuery;
+import com.pwittchen.money.transfer.api.query.GetTransactionQuery;
 import io.javalin.http.Context;
 import io.javalin.plugin.openapi.annotations.HttpMethod;
 import io.javalin.plugin.openapi.annotations.OpenApi;
@@ -18,21 +18,25 @@ import javax.inject.Inject;
 import org.eclipse.jetty.http.HttpStatus;
 import org.joda.money.Money;
 
+//todo: replace repository with commands
 public class TransactionController {
 
   private ContextWrapper contextWrapper;
-  private TransactionRepository transactionRepository;
-  private AccountRepository accountRepository;
+  private GetTransactionQuery getTransactionQuery;
+  private GetAllTransactionsQuery getAllTransactionsQuery;
+  private CommitTransactionCommand commitTransactionCommand;
 
   @Inject
   public TransactionController(
       ContextWrapper contextWrapper,
-      TransactionRepository transactionRepository,
-      AccountRepository accountRepository
+      GetTransactionQuery getTransactionQuery,
+      GetAllTransactionsQuery getAllTransactionsQuery,
+      CommitTransactionCommand commitTransactionCommand
   ) {
     this.contextWrapper = contextWrapper;
-    this.transactionRepository = transactionRepository;
-    this.accountRepository = accountRepository;
+    this.getTransactionQuery = getTransactionQuery;
+    this.getAllTransactionsQuery = getAllTransactionsQuery;
+    this.commitTransactionCommand = commitTransactionCommand;
   }
 
   @OpenApi(
@@ -47,7 +51,7 @@ public class TransactionController {
   )
   public void getOne(final Context context) {
     String id = contextWrapper.pathParam(context, "id");
-    Optional<Transaction> transaction = transactionRepository.get(id);
+    Optional<Transaction> transaction = getTransactionQuery.run(id);
 
     if (transaction.isPresent()) {
       contextWrapper.json(context, transaction.get());
@@ -67,7 +71,7 @@ public class TransactionController {
       )
   )
   public void getAll(final Context context) {
-    contextWrapper.json(context, transactionRepository.getAll());
+    contextWrapper.json(context, getAllTransactionsQuery.run());
   }
 
   @OpenApi(
@@ -88,23 +92,6 @@ public class TransactionController {
   public void commit(final Context context) {
     String from = contextWrapper.formParam(context, "from");
     String to = contextWrapper.formParam(context, "to");
-    Optional<Account> senderAccount = accountRepository.get(from);
-    Optional<Account> receiverAccount = accountRepository.get(to);
-
-    if (senderAccount.isEmpty()) {
-      contextWrapper.json(context,
-          "Trying to transfer money from account, which does not exist",
-          HttpStatus.BAD_REQUEST_400);
-      return;
-    }
-
-    if (receiverAccount.isEmpty()) {
-      contextWrapper.json(context,
-          "Trying to transfer money to account, which does not exist",
-          HttpStatus.BAD_REQUEST_400);
-      return;
-    }
-
     Optional<Money> money = parseMoney(context);
 
     if (money.isEmpty()) {
@@ -112,7 +99,7 @@ public class TransactionController {
       return;
     }
 
-    commit(context, createTransaction(senderAccount.get(), receiverAccount.get(), money.get()));
+    commit(context, createTransaction(from, to, money.get()));
   }
 
   private Optional<Money> parseMoney(Context context) {
@@ -127,19 +114,19 @@ public class TransactionController {
     }
   }
 
-  private Transaction createTransaction(Account sender, Account receiver, Money money) {
+  private Transaction createTransaction(String senderNumber, String receiverNumber, Money money) {
     return Transaction.builder()
         .id(UUID.randomUUID().toString())
         .createdAt(LocalDateTime.now())
-        .from(sender)
-        .to(receiver)
+        .fromNumber(senderNumber)
+        .toNumber(receiverNumber)
         .money(money)
         .build();
   }
 
   private void commit(final Context context, final Transaction transaction) {
     try {
-      transactionRepository.commit(transaction);
+      commitTransactionCommand.run(transaction);
       contextWrapper.json(context, transaction, HttpStatus.OK_200);
     } catch (Exception exception) {
       contextWrapper.json(context, exception.getMessage(), HttpStatus.BAD_REQUEST_400);

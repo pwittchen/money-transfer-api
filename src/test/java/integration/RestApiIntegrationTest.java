@@ -140,7 +140,7 @@ public class RestApiIntegrationTest {
   @Test
   public void shouldTryToDeleteInvalidAccount() {
     delete("/account/invalid")
-        .then().body(equalTo("\"account with number invalid does not exist\""))
+        .then().body(equalTo("\"Account with number invalid does not exist\""))
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
@@ -223,7 +223,7 @@ public class RestApiIntegrationTest {
         .when()
         .post("/transaction")
         .then()
-        .body(equalTo("\"Trying to transfer money from account, which does not exist\""))
+        .body(equalTo("\"Account with number invalidSenderNo does not exist\""))
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
@@ -245,7 +245,7 @@ public class RestApiIntegrationTest {
         .when()
         .post("/transaction")
         .then()
-        .body(equalTo("\"Trying to transfer money to account, which does not exist\""))
+        .body(equalTo("\"Account with number invalidReceiverNo does not exist\""))
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 

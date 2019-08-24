@@ -1,4 +1,4 @@
-package com.pwittchen.money.transfer.api.exception;
+package com.pwittchen.money.transfer.api.command.exception;
 
 public class AccountNotExistsException extends RuntimeException {
 
@@ -9,6 +9,6 @@ public class AccountNotExistsException extends RuntimeException {
   }
 
   @Override public String getMessage() {
-    return String.format("account with number %s does not exist", number);
+    return String.format("Account with number %s does not exist", number);
   }
 }

@@ -1,10 +1,18 @@
 package com.pwittchen.money.transfer.api.controller;
 
+import com.pwittchen.money.transfer.api.command.CreateAccountCommand;
+import com.pwittchen.money.transfer.api.command.DeleteAccountCommand;
+import com.pwittchen.money.transfer.api.command.exception.AccountAlreadyExistsException;
+import com.pwittchen.money.transfer.api.command.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.command.implementation.DefaultCreateAccountCommand;
+import com.pwittchen.money.transfer.api.command.implementation.DefaultDeleteAccountCommand;
 import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
+import com.pwittchen.money.transfer.api.query.GetAccountQuery;
+import com.pwittchen.money.transfer.api.query.GetAllAccountsQuery;
+import com.pwittchen.money.transfer.api.query.implementation.DefaultGetAccountQuery;
+import com.pwittchen.money.transfer.api.query.implementation.DefaultGetAllAccountsQuery;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
-import com.pwittchen.money.transfer.api.exception.AccountAlreadyExistsException;
-import com.pwittchen.money.transfer.api.exception.AccountNotExistsException;
 import io.javalin.http.Context;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +25,17 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountControllerTest {
+
+  private AccountController controller;
 
   @Mock
   private Account account;
@@ -37,11 +49,25 @@ public class AccountControllerTest {
   @Mock
   private Context context;
 
-  private AccountController controller;
+  private GetAccountQuery getAccountQuery;
+  private GetAllAccountsQuery getAllAccountsQuery;
+  private CreateAccountCommand createAccountCommand;
+  private DeleteAccountCommand deleteAccountCommand;
 
   @Before
   public void setUp() {
-    controller = new AccountController(contextWrapper, accountRepository);
+    getAccountQuery = spy(new DefaultGetAccountQuery(accountRepository));
+    getAllAccountsQuery = spy(new DefaultGetAllAccountsQuery(accountRepository));
+    createAccountCommand = spy(new DefaultCreateAccountCommand(accountRepository));
+    deleteAccountCommand = spy(new DefaultDeleteAccountCommand(accountRepository));
+
+    controller = new AccountController(
+        contextWrapper,
+        getAccountQuery,
+        getAllAccountsQuery,
+        createAccountCommand,
+        deleteAccountCommand
+    );
   }
 
   @Test
@@ -96,7 +122,7 @@ public class AccountControllerTest {
     controller.create(context);
 
     // then
-    verify(accountRepository).create(any(Account.class));
+    verify(createAccountCommand).run(any(Account.class));
   }
 
   @Test
@@ -131,6 +157,8 @@ public class AccountControllerTest {
   public void shouldNotCreateAccountIfErrorOccurred() throws Exception {
     // given
     AccountAlreadyExistsException exception = new AccountAlreadyExistsException("1");
+    when(contextWrapper.formParam(context, "name")).thenReturn("John");
+    when(contextWrapper.formParam(context, "surname")).thenReturn("Kovalsky");
     when(contextWrapper.formParam(context, "currency")).thenReturn("EUR");
     when(contextWrapper.formParam(context, "money")).thenReturn("100.00");
     when(accountRepository.create(any())).thenThrow(exception);
@@ -147,17 +175,12 @@ public class AccountControllerTest {
     // given
     String id = "1";
     when(contextWrapper.pathParam(context, "id")).thenReturn(id);
-    String message = String.format(
-        "account with number %s deleted",
-        contextWrapper.pathParam(context, "id")
-    );
 
     // when
     controller.delete(context);
 
     // then
-    verify(accountRepository).delete(id);
-    verify(contextWrapper).json(context, message, HttpStatus.OK_200);
+    verify(deleteAccountCommand).run(id);
   }
 
   @Test
@@ -166,7 +189,6 @@ public class AccountControllerTest {
     String id = "1";
     AccountNotExistsException exception = new AccountNotExistsException(id);
     when(contextWrapper.pathParam(context, "id")).thenReturn(id);
-    doThrow(exception).when(accountRepository).delete(id);
 
     // when
     controller.delete(context);

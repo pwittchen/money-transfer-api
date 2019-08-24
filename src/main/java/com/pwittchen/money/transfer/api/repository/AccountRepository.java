@@ -10,7 +10,7 @@ public interface AccountRepository {
 
   List<Account> getAll();
 
-  Account create(Account account) throws Exception;
+  Account create(Account account);
 
   void withdrawMoney(Account account, Money money);
 

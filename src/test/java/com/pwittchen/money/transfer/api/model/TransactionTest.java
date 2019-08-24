@@ -79,8 +79,8 @@ public class TransactionTest {
     Transaction transactionOne = Transaction.builder()
         .id("TR1")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(createAccount())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -98,8 +98,8 @@ public class TransactionTest {
 
     Transaction transactionTwo = Transaction.builder()
         .id("TR2")
-        .from(accountTwo)
-        .to(createAccount())
+        .fromNumber(accountTwo.number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -116,8 +116,8 @@ public class TransactionTest {
     Transaction transactionOne = Transaction.builder()
         .id("TR1")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(createAccount())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -136,8 +136,8 @@ public class TransactionTest {
     Transaction transactionTwo = Transaction.builder()
         .id("TR2")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(accountTwo)
+        .fromNumber(createAccount().number())
+        .toNumber(accountTwo.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -154,16 +154,16 @@ public class TransactionTest {
     Transaction transactionOne = Transaction.builder()
         .id("TR1")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(createAccount())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
     Transaction transactionTwo = Transaction.builder()
         .id("TR2")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(createAccount())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 20))
         .build();
 
@@ -178,8 +178,8 @@ public class TransactionTest {
     return Transaction.builder()
         .id("TR1")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(createAccount())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
   }

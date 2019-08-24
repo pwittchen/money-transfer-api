@@ -1,11 +1,7 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
-import com.pwittchen.money.transfer.api.exception.AccountAlreadyExistsException;
-import com.pwittchen.money.transfer.api.exception.AccountNotExistsException;
-import com.pwittchen.money.transfer.api.exception.EmptyAccountNumberException;
-import com.pwittchen.money.transfer.api.exception.EmptyUserIdException;
-import com.pwittchen.money.transfer.api.exception.EmptyUserNameException;
-import com.pwittchen.money.transfer.api.exception.EmptyUserSurnameException;
+import com.pwittchen.money.transfer.api.command.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.command.exception.EmptyAccountNumberException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import java.util.ArrayList;
@@ -27,27 +23,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     return new ArrayList<>(accounts.values());
   }
 
-  @Override public Account create(Account account) throws Exception {
-    if (account.number() == null || account.number().isEmpty()) {
-      throw new EmptyAccountNumberException();
-    }
-
-    if (accounts.containsKey(account.number())) {
-      throw new AccountAlreadyExistsException(account.number());
-    }
-
-    if (account.user().id() == null || account.user().id().isEmpty()) {
-      throw new EmptyUserIdException();
-    }
-
-    if (account.user().name() == null || account.user().name().isEmpty()) {
-      throw new EmptyUserNameException();
-    }
-
-    if (account.user().surname() == null || account.user().surname().isEmpty()) {
-      throw new EmptyUserSurnameException();
-    }
-
+  @Override public Account create(Account account) {
     accounts.put(account.number(), account);
     return account;
   }

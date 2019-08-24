@@ -9,7 +9,7 @@ public interface TransactionRepository {
 
   BlockingQueue<Transaction> getAll();
 
-  Transaction commit(Transaction transaction) throws Exception;
+  Transaction create(Transaction transaction);
 
   void clear();
 }

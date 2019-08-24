@@ -1,9 +1,9 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
-import com.pwittchen.money.transfer.api.exception.AccountAlreadyExistsException;
-import com.pwittchen.money.transfer.api.exception.AccountNotExistsException;
-import com.pwittchen.money.transfer.api.exception.EmptyAccountNumberException;
-import com.pwittchen.money.transfer.api.exception.EmptyUserIdException;
+import com.pwittchen.money.transfer.api.command.exception.AccountAlreadyExistsException;
+import com.pwittchen.money.transfer.api.command.exception.AccountNotExistsException;
+import com.pwittchen.money.transfer.api.command.exception.EmptyAccountNumberException;
+import com.pwittchen.money.transfer.api.command.exception.EmptyUserIdException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;

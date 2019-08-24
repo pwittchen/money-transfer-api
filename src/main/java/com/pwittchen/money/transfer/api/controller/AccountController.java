@@ -1,9 +1,12 @@
 package com.pwittchen.money.transfer.api.controller;
 
+import com.pwittchen.money.transfer.api.command.CreateAccountCommand;
+import com.pwittchen.money.transfer.api.command.DeleteAccountCommand;
 import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.User;
-import com.pwittchen.money.transfer.api.repository.AccountRepository;
+import com.pwittchen.money.transfer.api.query.GetAccountQuery;
+import com.pwittchen.money.transfer.api.query.GetAllAccountsQuery;
 import io.javalin.http.Context;
 import io.javalin.plugin.openapi.annotations.HttpMethod;
 import io.javalin.plugin.openapi.annotations.OpenApi;
@@ -20,14 +23,24 @@ import org.joda.money.Money;
 public class AccountController {
 
   private ContextWrapper contextWrapper;
-  private AccountRepository accountRepository;
+  private GetAccountQuery getAccountQuery;
+  private GetAllAccountsQuery getAllAccountsQuery;
+  private CreateAccountCommand createAccountCommand;
+  private DeleteAccountCommand deleteAccountCommand;
 
   @Inject
   public AccountController(
       final ContextWrapper contextWrapper,
-      final AccountRepository accountRepository) {
+      final GetAccountQuery getAccountQuery,
+      final GetAllAccountsQuery getAllAccountsQuery,
+      final CreateAccountCommand createAccountCommand,
+      final DeleteAccountCommand deleteAccountCommand
+  ) {
     this.contextWrapper = contextWrapper;
-    this.accountRepository = accountRepository;
+    this.getAccountQuery = getAccountQuery;
+    this.getAllAccountsQuery = getAllAccountsQuery;
+    this.createAccountCommand = createAccountCommand;
+    this.deleteAccountCommand = deleteAccountCommand;
   }
 
   @OpenApi(
@@ -41,7 +54,7 @@ public class AccountController {
       }
   )
   public void getOne(Context context) {
-    Optional<Account> account = accountRepository.get(contextWrapper.pathParam(context, "id"));
+    Optional<Account> account = getAccountQuery.run(contextWrapper.pathParam(context, "id"));
 
     if (account.isPresent()) {
       contextWrapper.json(context, account.get(), HttpStatus.OK_200);
@@ -65,7 +78,7 @@ public class AccountController {
       )
   )
   public void getAll(final Context context) {
-    contextWrapper.json(context, accountRepository.getAll());
+    contextWrapper.json(context, getAllAccountsQuery.run());
   }
 
   @OpenApi(
@@ -93,7 +106,7 @@ public class AccountController {
     }
 
     try {
-      accountRepository.create(account.get());
+      createAccountCommand.run(account.get());
       contextWrapper.json(context, account, HttpStatus.OK_200);
     } catch (Exception exception) {
       contextWrapper.json(context, exception.getMessage(), HttpStatus.BAD_REQUEST_400);
@@ -142,7 +155,7 @@ public class AccountController {
   )
   public void delete(Context context) {
     try {
-      accountRepository.delete(contextWrapper.pathParam(context, "id"));
+      deleteAccountCommand.run(contextWrapper.pathParam(context, "id"));
 
       String message = String.format(
           "account with number %s deleted",
