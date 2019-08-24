@@ -96,6 +96,7 @@ public class InMemoryAccountRepositoryTest {
     assertThat(createdAccount.money()).isEqualTo(account.money());
   }
 
+  //todo: fix this test
   @Test
   public void shouldNotCreateNewAccountWithNumberWhichAlreadyExists() throws Exception {
     // given
@@ -112,6 +113,7 @@ public class InMemoryAccountRepositoryTest {
     accountRepository.create(account);
   }
 
+  //todo: fix this test
   @Test
   public void shouldNotCreateAccountIfUserIdIsEmpty() throws Exception {
     // given
@@ -169,6 +171,7 @@ public class InMemoryAccountRepositoryTest {
     // then exception is thrown
   }
 
+  //todo: fix this test
   @Test(expected = EmptyAccountNumberException.class)
   public void shouldNotWithdrawMoneyIfAccountNumberIsEmpty() throws Exception {
     // given
@@ -211,6 +214,7 @@ public class InMemoryAccountRepositoryTest {
     // then exception is thrown
   }
 
+  //todo: fix this test
   @Test(expected = EmptyAccountNumberException.class)
   public void shouldNotPutMoneyIfAccountNumberIsEmpty() throws Exception {
     // given
