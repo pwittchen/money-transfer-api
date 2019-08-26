@@ -53,8 +53,7 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
         try {
           if (receiver.lock().tryLock()) {
             try {
-              accountRepository.withdrawMoney(sender, transaction.money());
-              accountRepository.putMoney(receiver, transaction.money());
+              accountRepository.transfer(sender, receiver, transaction.money());
               transactionRepository.create(transaction);
               transaction.isRunning().set(false);
             } finally {

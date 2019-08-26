@@ -92,8 +92,7 @@ public class DefaultCommitTransactionCommandTest {
     commitTransactionCommand.run(transaction);
 
     // then
-    verify(accountRepository).withdrawMoney(sender, transaction.money());
-    verify(accountRepository).putMoney(receiver, transaction.money());
+    verify(accountRepository).transfer(sender, receiver, transaction.money());
     verify(transactionRepository).create(transaction);
   }
 

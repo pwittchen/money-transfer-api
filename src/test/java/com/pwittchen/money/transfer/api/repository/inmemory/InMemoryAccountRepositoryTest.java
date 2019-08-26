@@ -95,34 +95,38 @@ public class InMemoryAccountRepositoryTest {
   @Test
   public void shouldWithdrawMoney() throws Exception {
     // given
-    Account account = createAccount();
+    Account sender = createAccount();
+    Account receiver = createAnotherAccount("anotherNumber");
     Money moneyToWithdraw = Money.of(CurrencyUnit.EUR, 1);
-    Money expectedAmount = account.money().minus(moneyToWithdraw);
+    Money expectedAmount = sender.money().minus(moneyToWithdraw);
 
     // when
-    accountRepository.create(account);
-    accountRepository.withdrawMoney(account, moneyToWithdraw);
+    accountRepository.create(sender);
+    accountRepository.create(receiver);
+    accountRepository.transfer(sender, receiver, moneyToWithdraw);
 
     // then
     //noinspection OptionalGetWithoutIsPresent
-    Money actualAmount = accountRepository.get(account.number()).get().money();
+    Money actualAmount = accountRepository.get(sender.number()).get().money();
     assertThat(actualAmount).isEqualTo(expectedAmount);
   }
 
   @Test
   public void shouldPutMoney() throws Exception {
     // given
-    Account account = createAccount();
+    Account sender = createAccount();
+    Account receiver = createAnotherAccount("anotherNumber");
     Money moneyToPut = Money.of(CurrencyUnit.EUR, 1);
-    Money expectedAmount = account.money().plus(moneyToPut);
+    Money expectedAmount = receiver.money().plus(moneyToPut);
 
     // when
-    accountRepository.create(account);
-    accountRepository.putMoney(account, moneyToPut);
+    accountRepository.create(sender);
+    accountRepository.create(receiver);
+    accountRepository.transfer(sender, receiver, moneyToPut);
 
     // then
     //noinspection OptionalGetWithoutIsPresent
-    Money actualAmount = accountRepository.get(account.number()).get().money();
+    Money actualAmount = accountRepository.get(receiver.number()).get().money();
     assertThat(actualAmount).isEqualTo(expectedAmount);
   }
 

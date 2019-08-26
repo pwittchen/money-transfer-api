@@ -1,7 +1,5 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
-import com.pwittchen.money.transfer.api.command.exception.AccountNotExistsException;
-import com.pwittchen.money.transfer.api.command.exception.EmptyAccountNumberException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import java.util.ArrayList;
@@ -28,7 +26,13 @@ public class InMemoryAccountRepository implements AccountRepository {
     return account;
   }
 
-  @Override public void withdrawMoney(final Account account, final Money money) {
+  @Override
+  public synchronized void transfer(final Account from, final Account to, final Money money) {
+    withdrawMoney(from, money);
+    putMoney(to, money);
+  }
+
+  private void withdrawMoney(final Account account, final Money money) {
     final Account updatedAccount = Account
         .builder()
         .number(account.number())
@@ -39,7 +43,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     accounts.put(account.number(), updatedAccount);
   }
 
-  @Override public void putMoney(final Account account, Money money) {
+  private void putMoney(final Account account, final Money money) {
     final Account updatedAccount = Account
         .builder()
         .number(account.number())

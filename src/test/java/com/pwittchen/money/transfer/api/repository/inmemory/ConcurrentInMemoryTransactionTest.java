@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-//todo: use command instead of repository and fix this
+//todo: consider more use cases and improvements
 public class ConcurrentInMemoryTransactionTest {
 
   private static final int NUMBER_OF_THREADS = 3;
