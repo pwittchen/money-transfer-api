@@ -1,9 +1,5 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
-import com.pwittchen.money.transfer.api.command.exception.AccountAlreadyExistsException;
-import com.pwittchen.money.transfer.api.command.exception.AccountNotExistsException;
-import com.pwittchen.money.transfer.api.command.exception.EmptyAccountNumberException;
-import com.pwittchen.money.transfer.api.command.exception.EmptyUserIdException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
@@ -96,52 +92,6 @@ public class InMemoryAccountRepositoryTest {
     assertThat(createdAccount.money()).isEqualTo(account.money());
   }
 
-  //todo: fix this test
-  @Test
-  public void shouldNotCreateNewAccountWithNumberWhichAlreadyExists() throws Exception {
-    // given
-    Account account = createAccount();
-    accountRepository.create(account);
-
-    // when
-    expectedException.expect(AccountAlreadyExistsException.class);
-    expectedException.expectMessage(
-        new AccountAlreadyExistsException(account.number()).getMessage()
-    );
-
-    // then
-    accountRepository.create(account);
-  }
-
-  //todo: fix this test
-  @Test
-  public void shouldNotCreateAccountIfUserIdIsEmpty() throws Exception {
-    // given
-    User user = User
-        .builder()
-        .id("")
-        .name("John")
-        .surname("Doe")
-        .build();
-
-    Account account = Account
-        .builder()
-        .user(user)
-        .number(UUID.randomUUID().toString())
-        .money(Money.of(CurrencyUnit.EUR, 0))
-        .createdAt(LocalDateTime.now())
-        .build();
-
-    // when
-    expectedException.expect(EmptyUserIdException.class);
-    expectedException.expectMessage(
-        new EmptyUserIdException().getMessage()
-    );
-
-    // then
-    accountRepository.create(account);
-  }
-
   @Test
   public void shouldWithdrawMoney() throws Exception {
     // given
@@ -157,32 +107,6 @@ public class InMemoryAccountRepositoryTest {
     //noinspection OptionalGetWithoutIsPresent
     Money actualAmount = accountRepository.get(account.number()).get().money();
     assertThat(actualAmount).isEqualTo(expectedAmount);
-  }
-
-  @Test(expected = AccountNotExistsException.class)
-  public void shouldNotWithdrawMoneyIfAccountDoesNotExist() {
-    // given
-    Account account = createAccount();
-    Money money = Money.of(CurrencyUnit.EUR, 1);
-
-    // when
-    accountRepository.withdrawMoney(account, money);
-
-    // then exception is thrown
-  }
-
-  //todo: fix this test
-  @Test(expected = EmptyAccountNumberException.class)
-  public void shouldNotWithdrawMoneyIfAccountNumberIsEmpty() throws Exception {
-    // given
-    Account account = createAnotherAccount("");
-    Money money = Money.of(CurrencyUnit.EUR, 1);
-
-    // when
-    accountRepository.create(account);
-    accountRepository.withdrawMoney(account, money);
-
-    // then exception is thrown
   }
 
   @Test
@@ -202,32 +126,6 @@ public class InMemoryAccountRepositoryTest {
     assertThat(actualAmount).isEqualTo(expectedAmount);
   }
 
-  @Test(expected = AccountNotExistsException.class)
-  public void shouldNotPutMoneyIfAccountDoesNotExist() {
-    // given
-    Account account = createAccount();
-    Money money = Money.of(CurrencyUnit.EUR, 1);
-
-    // when
-    accountRepository.putMoney(account, money);
-
-    // then exception is thrown
-  }
-
-  //todo: fix this test
-  @Test(expected = EmptyAccountNumberException.class)
-  public void shouldNotPutMoneyIfAccountNumberIsEmpty() throws Exception {
-    // given
-    Account account = createAnotherAccount("");
-    Money money = Money.of(CurrencyUnit.EUR, 1);
-
-    // when
-    accountRepository.create(account);
-    accountRepository.putMoney(account, money);
-
-    // then exception is thrown
-  }
-
   @Test
   public void shouldDeleteAccount() throws Exception {
     // given
@@ -239,36 +137,6 @@ public class InMemoryAccountRepositoryTest {
 
     // then
     assertThat(accountRepository.get(account.number()).isPresent()).isFalse();
-  }
-
-  @Test
-  public void shouldNotDeleteAccountIfItDoesNotExist() {
-    // given
-    String numberWhichDoesNotExist = "numberWhichDoesNotExist";
-
-    // when
-    expectedException.expect(AccountNotExistsException.class);
-    expectedException.expectMessage(
-        new AccountNotExistsException(numberWhichDoesNotExist).getMessage()
-    );
-
-    // then
-    accountRepository.delete(numberWhichDoesNotExist);
-  }
-
-  @Test
-  public void shouldNotDeleteAccountIfItIsEmpty() {
-    // given
-    String emptyNumber = "";
-
-    // when
-    expectedException.expect(EmptyAccountNumberException.class);
-    expectedException.expectMessage(
-        new EmptyAccountNumberException().getMessage()
-    );
-
-    // then
-    accountRepository.delete(emptyNumber);
   }
 
   @Test
@@ -310,7 +178,7 @@ public class InMemoryAccountRepositoryTest {
         .builder()
         .user(createAnotherUser())
         .number(number)
-        .money(Money.of(CurrencyUnit.GBP, 5))
+        .money(Money.of(CurrencyUnit.EUR, 5))
         .createdAt(LocalDateTime.now())
         .build();
   }

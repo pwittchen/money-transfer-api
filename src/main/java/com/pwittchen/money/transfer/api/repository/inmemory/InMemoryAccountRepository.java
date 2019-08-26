@@ -29,10 +29,6 @@ public class InMemoryAccountRepository implements AccountRepository {
   }
 
   @Override public void withdrawMoney(final Account account, final Money money) {
-    if (!accounts.containsKey(account.number())) {
-      throw new AccountNotExistsException(account.number());
-    }
-
     final Account updatedAccount = Account
         .builder()
         .number(account.number())
@@ -44,10 +40,6 @@ public class InMemoryAccountRepository implements AccountRepository {
   }
 
   @Override public void putMoney(final Account account, Money money) {
-    if (!accounts.containsKey(account.number())) {
-      throw new AccountNotExistsException(account.number());
-    }
-
     final Account updatedAccount = Account
         .builder()
         .number(account.number())
@@ -59,14 +51,6 @@ public class InMemoryAccountRepository implements AccountRepository {
   }
 
   @Override public void delete(String number) {
-    if (number == null || number.isEmpty()) {
-      throw new EmptyAccountNumberException();
-    }
-
-    if (!accounts.containsKey(number)) {
-      throw new AccountNotExistsException(number);
-    }
-
     accounts.remove(number);
   }
 

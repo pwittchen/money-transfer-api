@@ -1,5 +1,7 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
+import com.pwittchen.money.transfer.api.command.CommitTransactionCommand;
+import com.pwittchen.money.transfer.api.command.implementation.DefaultCommitTransactionCommand;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.model.User;
@@ -16,7 +18,6 @@ import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -26,6 +27,7 @@ public class ConcurrentInMemoryTransactionTest {
 
   private static final int NUMBER_OF_THREADS = 3;
 
+  private CommitTransactionCommand commitTransactionCommand;
   private TransactionRepository transactionRepository;
   private AccountRepository accountRepository;
   private ExecutorService executorService;
@@ -35,6 +37,9 @@ public class ConcurrentInMemoryTransactionTest {
   public void setUp() {
     accountRepository = new InMemoryAccountRepository();
     transactionRepository = new InMemoryTransactionRepository();
+    commitTransactionCommand = new DefaultCommitTransactionCommand(
+        accountRepository, transactionRepository
+    );
 
     waiter = new Waiter();
     executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
@@ -45,7 +50,6 @@ public class ConcurrentInMemoryTransactionTest {
     executorService.shutdown();
   }
 
-  @Ignore
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent")
   public void shouldHandleConcurrentTransactions() throws Exception {
@@ -101,7 +105,6 @@ public class ConcurrentInMemoryTransactionTest {
     assertThat(receiverMoney).isEqualTo(Money.of(CurrencyUnit.EUR, 64));
   }
 
-  @Ignore
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent")
   public void shouldPassOnlyOneTransaction() throws Exception {
@@ -149,7 +152,7 @@ public class ConcurrentInMemoryTransactionTest {
   private void commitTransaction(Transaction transaction) {
     try {
       Thread.sleep(ThreadLocalRandom.current().nextInt(3000));
-      //transactionRepository.commit(transaction);
+      commitTransactionCommand.run(transaction);
       waiter.assertNotNull(transaction);
       System.out.println(String.format("executing: %s, time: %d ms, thread: %s",
           transaction.id(),
