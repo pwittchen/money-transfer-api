@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import org.eclipse.jetty.http.HttpStatus;
 import org.joda.money.Money;
 
-//todo: replace repository with commands
 public class TransactionController {
 
   private ContextWrapper contextWrapper;

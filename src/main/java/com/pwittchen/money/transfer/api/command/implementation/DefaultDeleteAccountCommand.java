@@ -6,7 +6,6 @@ import com.pwittchen.money.transfer.api.command.exception.EmptyAccountNumberExce
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import javax.inject.Inject;
 
-//todo: write tests
 public class DefaultDeleteAccountCommand implements DeleteAccountCommand {
 
   private AccountRepository accountRepository;

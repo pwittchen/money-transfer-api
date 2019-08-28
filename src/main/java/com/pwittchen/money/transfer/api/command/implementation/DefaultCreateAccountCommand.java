@@ -10,7 +10,6 @@ import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import javax.inject.Inject;
 
-//todo: write tests
 public class DefaultCreateAccountCommand implements CreateAccountCommand {
 
   private AccountRepository accountRepository;

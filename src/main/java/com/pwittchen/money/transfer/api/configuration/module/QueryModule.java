@@ -15,7 +15,6 @@ import dagger.Provides;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-//todo: write tests
 @Module
 public class QueryModule {
 

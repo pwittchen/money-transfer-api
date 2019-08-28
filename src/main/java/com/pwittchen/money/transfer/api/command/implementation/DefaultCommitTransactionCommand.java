@@ -15,9 +15,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-//todo:
-// - write tests for this and other commands
-// - update concurrent tests to use this command instead of repository
 public class DefaultCommitTransactionCommand implements CommitTransactionCommand {
 
   private static final Random random = new Random();
