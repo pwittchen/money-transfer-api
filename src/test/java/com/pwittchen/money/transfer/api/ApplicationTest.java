@@ -14,15 +14,4 @@ public class ApplicationTest {
     // then
     assertThat(application).isNotNull();
   }
-
-  @Test
-  public void shouldStartApplication() {
-    // given
-    String[] args = {};
-
-    // when
-    Application.main(args);
-
-    // then no exception is thrown
-  }
 }

@@ -37,7 +37,8 @@ API documentation
 Tests
 -----
 
-- running unit tests: `./gradlew test`
+- running all tests: `./gradlew test`
+- running unit tests: `./gradlew test -Dtest.profile=unit`
 - running integration tests: `./gradlew test -Dtest.profile=integration`
 - creating test coverage report: `./gradlew test jacocoTestReport` (report will be in `build/reports/jacoco/` dir)
 
