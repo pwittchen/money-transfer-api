@@ -6,7 +6,6 @@ import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import java.util.Optional;
 import javax.inject.Inject;
 
-//todo: write tests
 public class DefaultGetTransactionQuery implements GetTransactionQuery {
 
   private TransactionRepository transactionRepository;

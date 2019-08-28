@@ -5,7 +5,6 @@ import com.pwittchen.money.transfer.api.query.GetAccountQuery;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import java.util.Optional;
 
-//todo: write tests
 public class DefaultGetAccountQuery implements GetAccountQuery {
 
   private AccountRepository accountRepository;
