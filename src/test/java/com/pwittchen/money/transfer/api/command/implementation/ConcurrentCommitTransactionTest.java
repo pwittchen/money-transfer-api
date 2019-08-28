@@ -19,16 +19,13 @@ import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-//todo: consider more use cases and improvements
-@Ignore
 public class ConcurrentCommitTransactionTest {
 
-  private static final int NUMBER_OF_THREADS = 3;
+  private static final int NUMBER_OF_THREADS = 4;
 
   private CommitTransactionCommand commitTransactionCommand;
   private TransactionRepository transactionRepository;
@@ -57,19 +54,33 @@ public class ConcurrentCommitTransactionTest {
   @SuppressWarnings("OptionalGetWithoutIsPresent")
   public void shouldHandleConcurrentTransactions() throws Exception {
     // given
-    final Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));
-    final Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50));
-    accountRepository.create(sender);
-    accountRepository.create(receiver);
+    double initialBalanceOne = 100;
+    double initialBalanceTwo = 50;
+
+    double firstTransfer = 5;
+    double secondTransfer = 10;
+    double thirdTransfer = 11;
+
+    final Account accountOne = createSenderAccount(
+        "AC1", Money.of(CurrencyUnit.EUR, initialBalanceOne)
+    );
+    final Account accountTwo = createReceiverAccount(
+        "AC2", Money.of(CurrencyUnit.EUR, initialBalanceTwo)
+    );
+
+    double balanceOne = initialBalanceOne - firstTransfer - secondTransfer + thirdTransfer;
+    double balanceTwo = initialBalanceTwo + firstTransfer + secondTransfer - thirdTransfer;
+    accountRepository.create(accountOne);
+    accountRepository.create(accountTwo);
 
     // send 5 EUR: AC1 -> AC2
     final Transaction transaction1 = Transaction
         .builder()
         .id("transaction_1")
         .createdAt(LocalDateTime.now())
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
-        .money(Money.of(CurrencyUnit.EUR, 5))
+        .fromNumber(accountOne.number())
+        .toNumber(accountTwo.number())
+        .money(Money.of(CurrencyUnit.EUR, firstTransfer))
         .build();
 
     // send 10 EUR: AC1 -> AC2
@@ -77,9 +88,9 @@ public class ConcurrentCommitTransactionTest {
         .builder()
         .id("transaction_2")
         .createdAt(LocalDateTime.now())
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
-        .money(Money.of(CurrencyUnit.EUR, 10))
+        .fromNumber(accountOne.number())
+        .toNumber(accountTwo.number())
+        .money(Money.of(CurrencyUnit.EUR, secondTransfer))
         .build();
 
     // send 1 EUR: AC2 -> AC1
@@ -87,9 +98,9 @@ public class ConcurrentCommitTransactionTest {
         .builder()
         .id("transaction_3")
         .createdAt(LocalDateTime.now())
-        .fromNumber(receiver.number())
-        .toNumber(sender.number())
-        .money(Money.of(CurrencyUnit.EUR, 1))
+        .fromNumber(accountTwo.number())
+        .toNumber(accountOne.number())
+        .money(Money.of(CurrencyUnit.EUR, thirdTransfer))
         .build();
 
     // when
@@ -100,17 +111,17 @@ public class ConcurrentCommitTransactionTest {
     waiter.await(5, TimeUnit.SECONDS, 3);
 
     // then
-    Money senderMoney = accountRepository.get(sender.number()).get().money();
-    Money receiverMoney = accountRepository.get(receiver.number()).get().money();
+    Money senderMoney = accountRepository.get(accountOne.number()).get().money();
+    Money receiverMoney = accountRepository.get(accountTwo.number()).get().money();
 
     assertThat(transactionRepository.getAll().size()).isEqualTo(3);
-    assertThat(senderMoney).isEqualTo(Money.of(CurrencyUnit.EUR, 86));
-    assertThat(receiverMoney).isEqualTo(Money.of(CurrencyUnit.EUR, 64));
+    assertThat(senderMoney).isEqualTo(Money.of(CurrencyUnit.EUR, balanceOne));
+    assertThat(receiverMoney).isEqualTo(Money.of(CurrencyUnit.EUR, balanceTwo));
   }
 
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent")
-  public void shouldPassOnlyOneTransaction() throws Exception {
+  public void shouldPassOnlyOneTransactionBecauseOfLimitedMoney() throws Exception {
     // given
     final Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 10));
     final Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 0));
@@ -139,7 +150,7 @@ public class ConcurrentCommitTransactionTest {
 
     // when
     executorService.submit(() -> commitTransaction(transaction1));
-    executorService.submit(() -> commitTransaction(transaction2));
+    executorService.submit(() -> commitTransaction(transaction2)); // should produce an exception
 
     waiter.await(5, TimeUnit.SECONDS, 1);
 

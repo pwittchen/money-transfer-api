@@ -16,7 +16,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.google.common.truth.Truth.assertThat;
 
-//todo: analyze and consider writing more tests
 @RunWith(MockitoJUnitRunner.class)
 public class InMemoryTransactionRepositoryTest {
 
