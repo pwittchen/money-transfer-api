@@ -6,8 +6,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class ApplicationTest {
 
-  @Test
-  public void shouldCreateApplicationObject() {
+  @Test public void shouldCreateApplicationObject() {
     // when
     Application application = new Application();
 

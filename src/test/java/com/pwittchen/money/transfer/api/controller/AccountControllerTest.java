@@ -35,25 +35,20 @@ public class AccountControllerTest {
 
   private AccountController controller;
 
-  @Mock
-  private Account account;
+  @Mock private Account account;
 
-  @Mock
-  private AccountRepository accountRepository;
+  @Mock private AccountRepository accountRepository;
 
-  @Mock
-  private ContextWrapper contextWrapper;
+  @Mock private ContextWrapper contextWrapper;
 
-  @Mock
-  private Context context;
+  @Mock private Context context;
 
   private GetAccountQuery getAccountQuery;
   private GetAllAccountsQuery getAllAccountsQuery;
   private CreateAccountCommand createAccountCommand;
   private DeleteAccountCommand deleteAccountCommand;
 
-  @Before
-  public void setUp() {
+  @Before public void setUp() {
     getAccountQuery = spy(new DefaultGetAccountQuery(accountRepository));
     getAllAccountsQuery = spy(new DefaultGetAllAccountsQuery(accountRepository));
     createAccountCommand = spy(new DefaultCreateAccountCommand(accountRepository));
@@ -68,8 +63,7 @@ public class AccountControllerTest {
     );
   }
 
-  @Test
-  public void shouldGetOneAccount() {
+  @Test public void shouldGetOneAccount() {
     // given
     when(contextWrapper.pathParam(context, "id")).thenReturn("1");
     when(accountRepository.get("1")).thenReturn(Optional.of(account));
@@ -81,8 +75,7 @@ public class AccountControllerTest {
     verify(contextWrapper).json(context, account, HttpStatus.OK_200);
   }
 
-  @Test
-  public void shouldNotGetOneAccount() {
+  @Test public void shouldNotGetOneAccount() {
     // given
     String id = "1";
     when(contextWrapper.pathParam(context, "id")).thenReturn(id);
@@ -97,8 +90,7 @@ public class AccountControllerTest {
         HttpStatus.NOT_FOUND_404);
   }
 
-  @Test
-  public void shouldGetAllAccounts() {
+  @Test public void shouldGetAllAccounts() {
     // given
     List<Account> accounts = new ArrayList<>();
     when(accountRepository.getAll()).thenReturn(accounts);
@@ -110,8 +102,7 @@ public class AccountControllerTest {
     verify(contextWrapper).json(context, accounts);
   }
 
-  @Test
-  public void shouldCreateAccount() throws Exception {
+  @Test public void shouldCreateAccount() throws Exception {
     // given
     when(contextWrapper.formParam(context, "currency")).thenReturn("EUR");
     when(contextWrapper.formParam(context, "money")).thenReturn("100.00");
@@ -123,8 +114,7 @@ public class AccountControllerTest {
     verify(createAccountCommand).run(any(Account.class));
   }
 
-  @Test
-  public void shouldNotCreateAccountIfCurrencyFormatIsInvalid() throws Exception {
+  @Test public void shouldNotCreateAccountIfCurrencyFormatIsInvalid() throws Exception {
     // given
     when(contextWrapper.formParam(context, "currency")).thenReturn("INVALID");
     when(contextWrapper.formParam(context, "money")).thenReturn("100.00");
@@ -137,8 +127,7 @@ public class AccountControllerTest {
     verify(contextWrapper).json(context, "Invalid money format", HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldNotCreateAccountIfMoneyFormatIsInvalid() throws Exception {
+  @Test public void shouldNotCreateAccountIfMoneyFormatIsInvalid() throws Exception {
     // given
     when(contextWrapper.formParam(context, "currency")).thenReturn("EUR");
     when(contextWrapper.formParam(context, "money")).thenReturn("INVALID");
@@ -151,8 +140,7 @@ public class AccountControllerTest {
     verify(contextWrapper).json(context, "Invalid money format", HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldNotCreateAccountIfErrorOccurred() throws Exception {
+  @Test public void shouldNotCreateAccountIfErrorOccurred() throws Exception {
     // given
     AccountAlreadyExistsException exception = new AccountAlreadyExistsException("1");
     when(contextWrapper.formParam(context, "name")).thenReturn("John");
@@ -168,8 +156,7 @@ public class AccountControllerTest {
     verify(contextWrapper).json(context, exception.getMessage(), HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldDeleteAccount() {
+  @Test public void shouldDeleteAccount() {
     // given
     String id = "1";
     when(contextWrapper.pathParam(context, "id")).thenReturn(id);
@@ -181,8 +168,7 @@ public class AccountControllerTest {
     verify(deleteAccountCommand).run(id);
   }
 
-  @Test
-  public void shouldNotDeleteAccountIfErrorOccurred() {
+  @Test public void shouldNotDeleteAccountIfErrorOccurred() {
     // given
     String id = "1";
     AccountNotExistsException exception = new AccountNotExistsException(id);

@@ -21,34 +21,25 @@ import static com.google.common.truth.Truth.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class ControllerModuleTest {
 
-  @Mock
-  private GetAccountQuery getAccountQuery;
+  @Mock private GetAccountQuery getAccountQuery;
 
-  @Mock
-  private GetAllAccountsQuery getAllAccountsQuery;
+  @Mock private GetAllAccountsQuery getAllAccountsQuery;
 
-  @Mock
-  private GetTransactionQuery getTransactionQuery;
+  @Mock private GetTransactionQuery getTransactionQuery;
 
-  @Mock
-  private GetAllTransactionsQuery getAllTransactionsQuery;
+  @Mock private GetAllTransactionsQuery getAllTransactionsQuery;
 
-  @Mock
-  private CommitTransactionCommand commitTransactionCommand;
+  @Mock private CommitTransactionCommand commitTransactionCommand;
 
-  @Mock
-  private CreateAccountCommand createAccountCommand;
+  @Mock private CreateAccountCommand createAccountCommand;
 
-  @Mock
-  private DeleteAccountCommand deleteAccountCommand;
+  @Mock private DeleteAccountCommand deleteAccountCommand;
 
-  @Mock
-  private ContextWrapper contextWrapper;
+  @Mock private ContextWrapper contextWrapper;
 
   private ControllerModule controllerModule = new ControllerModule();
 
-  @Test
-  public void shouldProvideAccountController() {
+  @Test public void shouldProvideAccountController() {
     // when
     AccountController controller = controllerModule.provideAccountController(
         contextWrapper,
@@ -62,8 +53,7 @@ public class ControllerModuleTest {
     assertThat(controller).isNotNull();
   }
 
-  @Test
-  public void shouldProvideTransactionController() {
+  @Test public void shouldProvideTransactionController() {
     // when
     TransactionController transactionController = controllerModule.provideTransactionController(
         contextWrapper,
@@ -76,8 +66,7 @@ public class ControllerModuleTest {
     assertThat(transactionController).isNotNull();
   }
 
-  @Test
-  public void shouldProvideContextWrapper() {
+  @Test public void shouldProvideContextWrapper() {
     // when
     ContextWrapper contextWrapper = controllerModule.provideContextWrapper();
 

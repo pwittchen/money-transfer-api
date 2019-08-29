@@ -37,30 +37,23 @@ public class TransactionControllerTest {
 
   private TransactionController controller;
 
-  @Mock
-  private TransactionRepository transactionRepository;
+  @Mock private TransactionRepository transactionRepository;
 
-  @Mock
-  private AccountRepository accountRepository;
+  @Mock private AccountRepository accountRepository;
 
-  @Mock
-  private ContextWrapper contextWrapper;
+  @Mock private ContextWrapper contextWrapper;
 
-  @Mock
-  private Context context;
+  @Mock private Context context;
 
-  @Mock
-  private Transaction transaction;
+  @Mock private Transaction transaction;
 
-  @Mock
-  private Account account;
+  @Mock private Account account;
 
   private GetTransactionQuery getTransactionQuery;
   private GetAllTransactionsQuery getAllTransactionsQuery;
   private CommitTransactionCommand commitTransactionCommand;
 
-  @Before
-  public void setUp() {
+  @Before public void setUp() {
     getTransactionQuery = spy(new DefaultGetTransactionQuery(transactionRepository));
     getAllTransactionsQuery = spy(new DefaultGetAllTransactionsQuery(transactionRepository));
     commitTransactionCommand = spy(new DefaultCommitTransactionCommand(
@@ -75,8 +68,7 @@ public class TransactionControllerTest {
     );
   }
 
-  @Test
-  public void shouldGetOneTransaction() {
+  @Test public void shouldGetOneTransaction() {
     // given
     when(contextWrapper.pathParam(context, "id")).thenReturn("1");
     when(transactionRepository.get("1")).thenReturn(Optional.of(transaction));
@@ -88,8 +80,7 @@ public class TransactionControllerTest {
     verify(contextWrapper).json(context, transaction);
   }
 
-  @Test
-  public void shouldNotGetOneTransaction() {
+  @Test public void shouldNotGetOneTransaction() {
     // given
     String id = "1";
     when(contextWrapper.pathParam(context, "id")).thenReturn(id);
@@ -104,8 +95,7 @@ public class TransactionControllerTest {
         HttpStatus.NOT_FOUND_404);
   }
 
-  @Test
-  public void shouldGetAllTransactions() {
+  @Test public void shouldGetAllTransactions() {
     // given
     BlockingQueue<Transaction> transactions = new LinkedBlockingQueue<>();
     when(transactionRepository.getAll()).thenReturn(transactions);
@@ -117,8 +107,7 @@ public class TransactionControllerTest {
     verify(contextWrapper).json(context, transactions);
   }
 
-  @Test
-  public void shouldCommitTransaction() throws Exception {
+  @Test public void shouldCommitTransaction() throws Exception {
     // given
     String senderNo = "senderNo";
     String receiverNo = "receiverNo";
@@ -136,8 +125,7 @@ public class TransactionControllerTest {
     verify(commitTransactionCommand).run(any(Transaction.class));
   }
 
-  @Test
-  public void shouldNotCommitTransactionIfSenderIsNotPresent() throws Exception {
+  @Test public void shouldNotCommitTransactionIfSenderIsNotPresent() {
     // given
     String senderNo = "senderNo";
     String receiverNo = "receiverNo";
@@ -156,8 +144,7 @@ public class TransactionControllerTest {
         HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldNotCommitTransactionIfReceiverIsNotPresent() throws Exception {
+  @Test public void shouldNotCommitTransactionIfReceiverIsNotPresent() {
     // given
     String senderNo = "senderNo";
     String receiverNo = "receiverNo";
@@ -177,8 +164,7 @@ public class TransactionControllerTest {
         HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldNotCommitTransactionIfCurrencyHasInvalidFormat() throws Exception {
+  @Test public void shouldNotCommitTransactionIfCurrencyHasInvalidFormat() {
     // given
     String senderNo = "senderNo";
     String receiverNo = "receiverNo";
@@ -196,8 +182,7 @@ public class TransactionControllerTest {
         HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldNotCommitTransactionIfMoneyHasInvalidFormat() throws Exception {
+  @Test public void shouldNotCommitTransactionIfMoneyHasInvalidFormat() {
     // given
     String senderNo = "senderNo";
     String receiverNo = "receiverNo";
@@ -216,8 +201,7 @@ public class TransactionControllerTest {
         HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldNotCommitTransactionWhenSenderAndReceiverNumberIsTheSame() throws Exception {
+  @Test public void shouldNotCommitTransactionWhenSenderAndReceiverNumberIsTheSame() {
     // given
     String accountNumber = "senderNo";
     when(contextWrapper.formParam(context, "from")).thenReturn(accountNumber);

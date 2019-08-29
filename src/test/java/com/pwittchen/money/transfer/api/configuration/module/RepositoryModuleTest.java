@@ -15,8 +15,7 @@ public class RepositoryModuleTest {
 
   private RepositoryModule repositoryModule = new RepositoryModule();
 
-  @Test
-  public void shouldProvideAccountRepository() {
+  @Test public void shouldProvideAccountRepository() {
     // when
     AccountRepository accountRepository = repositoryModule.provideAccountRepository();
 

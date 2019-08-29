@@ -21,17 +21,13 @@ public class InMemoryTransactionRepositoryTest {
 
   private TransactionRepository transactionRepository;
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  @Rule public ExpectedException expectedException = ExpectedException.none();
 
-  @Before
-  public void setUp() {
+  @Before public void setUp() {
     transactionRepository = new InMemoryTransactionRepository();
   }
 
-  @Test
-  @SuppressWarnings("OptionalGetWithoutIsPresent") // it's not relevant for this test
-  public void shouldGetCreatedTransaction() {
+  @Test public void shouldGetCreatedTransaction() {
     // given
     Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50));
@@ -48,6 +44,7 @@ public class InMemoryTransactionRepositoryTest {
     transactionRepository.create(transaction);
 
     // then
+    //noinspection OptionalGetWithoutIsPresent
     Transaction createdTransaction = transactionRepository.get(transaction.id()).get();
     assertThat(createdTransaction.equals(transaction)).isTrue();
     assertThat(createdTransaction.id()).isEqualTo(transaction.id());
@@ -56,8 +53,7 @@ public class InMemoryTransactionRepositoryTest {
     assertThat(createdTransaction.money()).isEqualTo(transaction.money());
   }
 
-  @Test
-  public void shouldGetAllTransactions() throws Exception {
+  @Test public void shouldGetAllTransactions() {
     // given
     Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50));
@@ -86,8 +82,7 @@ public class InMemoryTransactionRepositoryTest {
     assertThat(transactionRepository.getAll().size()).isEqualTo(2);
   }
 
-  @Test
-  public void shouldClearTransactions() {
+  @Test public void shouldClearTransactions() {
     // given
     Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));
     Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50));

@@ -20,11 +20,9 @@ public class CommandModuleTest {
 
   private CommandModule commandModule = new CommandModule();
 
-  @Mock
-  private AccountRepository accountRepository;
+  @Mock private AccountRepository accountRepository;
 
-  @Mock
-  private TransactionRepository transactionRepository;
+  @Mock private TransactionRepository transactionRepository;
 
   @Test public void shouldProvideCommitTransactionCommand() {
     // when

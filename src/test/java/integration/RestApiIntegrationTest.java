@@ -14,8 +14,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 public class RestApiIntegrationTest {
 
-  @BeforeClass
-  public static void setUp() {
+  @BeforeClass public static void setUp() {
     configureHost();
     configurePort();
     configureBasePath();
@@ -51,8 +50,7 @@ public class RestApiIntegrationTest {
     Application.main(new String[] {});
   }
 
-  @Test
-  public void shouldCreateAccount() {
+  @Test public void shouldCreateAccount() {
     given()
         .param("name", "testName")
         .and().param("surname", "testSurname")
@@ -63,8 +61,7 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.OK_200);
   }
 
-  @Test
-  public void shouldNotCreateAccountWhenCurrencyIsInvalid() {
+  @Test public void shouldNotCreateAccountWhenCurrencyIsInvalid() {
     given()
         .param("name", "testName")
         .and()
@@ -80,8 +77,7 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldNotCreateAccountWhenMoneyIsInvalid() {
+  @Test public void shouldNotCreateAccountWhenMoneyIsInvalid() {
     given()
         .param("name", "testName")
         .and().param("surname", "testSurname")
@@ -92,8 +88,7 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldNotCreateAccountWhenUserNameIsEmpty() {
+  @Test public void shouldNotCreateAccountWhenUserNameIsEmpty() {
     given()
         .param("name", "")
         .and().param("surname", "testSurname")
@@ -104,8 +99,7 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldNotCreateAccountWhenUserSurnameIsEmpty() {
+  @Test public void shouldNotCreateAccountWhenUserSurnameIsEmpty() {
     given()
         .param("name", "testName")
         .and()
@@ -121,8 +115,7 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldDeleteAccount() {
+  @Test public void shouldDeleteAccount() {
     String number = given()
         .param("name", "testName")
         .and().param("surname", "testSurname")
@@ -137,20 +130,17 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.OK_200);
   }
 
-  @Test
-  public void shouldTryToDeleteInvalidAccount() {
+  @Test public void shouldTryToDeleteInvalidAccount() {
     delete("/account/invalid")
         .then().body(equalTo("\"Account with number invalid does not exist\""))
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldTryToDeleteEmptyAccount() {
+  @Test public void shouldTryToDeleteEmptyAccount() {
     delete("/account").then().statusCode(HttpStatus.NOT_FOUND_404);
   }
 
-  @Test
-  public void shouldGetOneAccount() {
+  @Test public void shouldGetOneAccount() {
     String number = given()
         .param("name", "testName")
         .and().param("surname", "testSurname")
@@ -162,15 +152,13 @@ public class RestApiIntegrationTest {
     get("/account/".concat(number)).then().statusCode(HttpStatus.OK_200);
   }
 
-  @Test
-  public void shouldNotGetOneAccountIfItDoesNotExist() {
+  @Test public void shouldNotGetOneAccountIfItDoesNotExist() {
     get("/account/invalid")
         .then().body(equalTo("\"account with id invalid does not exist\""))
         .statusCode(HttpStatus.NOT_FOUND_404);
   }
 
-  @Test
-  public void shouldGetAllAccounts() {
+  @Test public void shouldGetAllAccounts() {
     String number = given()
         .param("name", "testName")
         .and().param("surname", "testSurname")
@@ -184,8 +172,7 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.OK_200);
   }
 
-  @Test
-  public void shouldCommitTransaction() {
+  @Test public void shouldCommitTransaction() {
     String numberOne = given()
         .param("name", "testName1")
         .and().param("surname", "testSurname1")
@@ -213,8 +200,7 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.OK_200);
   }
 
-  @Test
-  public void shouldTryToCommitTransactionFromInvalidAccount() {
+  @Test public void shouldTryToCommitTransactionFromInvalidAccount() {
     given()
         .param("from", "invalidSenderNo")
         .and().param("to", "invalidReceiverNo")
@@ -227,8 +213,7 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldTryToCommitTransactionToInvalidAccount() {
+  @Test public void shouldTryToCommitTransactionToInvalidAccount() {
     String senderAccountNumber = given()
         .param("name", "testName1")
         .and().param("surname", "testSurname1")
@@ -249,8 +234,7 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test
-  public void shouldGetOneTransaction() {
+  @Test public void shouldGetOneTransaction() {
     String numberOne = given()
         .param("name", "testName1")
         .and().param("surname", "testSurname1")
@@ -282,20 +266,17 @@ public class RestApiIntegrationTest {
         .body("id", equalTo(transactionId));
   }
 
-  @Test
-  public void shouldTryToGetOneTransactionForInvalidId() {
+  @Test public void shouldTryToGetOneTransactionForInvalidId() {
     get("/transaction/invalid")
         .then()
         .body(equalTo("\"transaction with id invalid does not exist\""));
   }
 
-  @Test
-  public void shouldGetAllTransactions() {
+  @Test public void shouldGetAllTransactions() {
     get("/transaction").then().statusCode(HttpStatus.OK_200);
   }
 
-  @Test
-  public void shouldGetNotFoundStatusForInvalidEndpoint() {
+  @Test public void shouldGetNotFoundStatusForInvalidEndpoint() {
     get("/invalid").then().statusCode(HttpStatus.NOT_FOUND_404);
   }
 }

@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class ConcurrentCommitTransactionTest {
+public class ConcurrentCommitTransactionCommandTest {
 
   private static final int NUMBER_OF_THREADS = 4;
 
@@ -33,8 +33,7 @@ public class ConcurrentCommitTransactionTest {
   private ExecutorService executorService;
   private Waiter waiter;
 
-  @Before
-  public void setUp() {
+  @Before public void setUp() {
     accountRepository = new InMemoryAccountRepository();
     transactionRepository = new InMemoryTransactionRepository();
     commitTransactionCommand = new DefaultCommitTransactionCommand(
@@ -45,8 +44,7 @@ public class ConcurrentCommitTransactionTest {
     executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
   }
 
-  @After
-  public void tearDown() {
+  @After public void tearDown() {
     executorService.shutdown();
   }
 
@@ -57,9 +55,10 @@ public class ConcurrentCommitTransactionTest {
     double initialBalanceOne = 100;
     double initialBalanceTwo = 50;
 
-    double firstTransfer = 5;
-    double secondTransfer = 10;
-    double thirdTransfer = 11;
+    double money1 = 5;
+    double money2 = 10;
+    double money3 = 11;
+    double money4 = 25;
 
     final Account accountOne = createSenderAccount(
         "AC1", Money.of(CurrencyUnit.EUR, initialBalanceOne)
@@ -68,8 +67,8 @@ public class ConcurrentCommitTransactionTest {
         "AC2", Money.of(CurrencyUnit.EUR, initialBalanceTwo)
     );
 
-    double balanceOne = initialBalanceOne - firstTransfer - secondTransfer + thirdTransfer;
-    double balanceTwo = initialBalanceTwo + firstTransfer + secondTransfer - thirdTransfer;
+    double balanceOne = initialBalanceOne - money1 - money2 + money3 - money4;
+    double balanceTwo = initialBalanceTwo + money1 + money2 - money3 + money4;
     accountRepository.create(accountOne);
     accountRepository.create(accountTwo);
 
@@ -80,7 +79,7 @@ public class ConcurrentCommitTransactionTest {
         .createdAt(LocalDateTime.now())
         .fromNumber(accountOne.number())
         .toNumber(accountTwo.number())
-        .money(Money.of(CurrencyUnit.EUR, firstTransfer))
+        .money(Money.of(CurrencyUnit.EUR, money1))
         .build();
 
     // send 10 EUR: AC1 -> AC2
@@ -90,31 +89,42 @@ public class ConcurrentCommitTransactionTest {
         .createdAt(LocalDateTime.now())
         .fromNumber(accountOne.number())
         .toNumber(accountTwo.number())
-        .money(Money.of(CurrencyUnit.EUR, secondTransfer))
+        .money(Money.of(CurrencyUnit.EUR, money2))
         .build();
 
-    // send 1 EUR: AC2 -> AC1
+    // send 11 EUR: AC2 -> AC1
     final Transaction transaction3 = Transaction
         .builder()
         .id("transaction_3")
         .createdAt(LocalDateTime.now())
         .fromNumber(accountTwo.number())
         .toNumber(accountOne.number())
-        .money(Money.of(CurrencyUnit.EUR, thirdTransfer))
+        .money(Money.of(CurrencyUnit.EUR, money3))
+        .build();
+
+    // send 25 EUR: AC1 -> AC2
+    final Transaction transaction4 = Transaction
+        .builder()
+        .id("transaction_4")
+        .createdAt(LocalDateTime.now())
+        .fromNumber(accountOne.number())
+        .toNumber(accountTwo.number())
+        .money(Money.of(CurrencyUnit.EUR, money4))
         .build();
 
     // when
     executorService.submit(() -> commitTransaction(transaction1));
     executorService.submit(() -> commitTransaction(transaction2));
     executorService.submit(() -> commitTransaction(transaction3));
+    executorService.submit(() -> commitTransaction(transaction4));
 
-    waiter.await(5, TimeUnit.SECONDS, 3);
+    waiter.await(5, TimeUnit.SECONDS, 4);
 
     // then
     Money senderMoney = accountRepository.get(accountOne.number()).get().money();
     Money receiverMoney = accountRepository.get(accountTwo.number()).get().money();
 
-    assertThat(transactionRepository.getAll().size()).isEqualTo(3);
+    assertThat(transactionRepository.getAll().size()).isEqualTo(4);
     assertThat(senderMoney).isEqualTo(Money.of(CurrencyUnit.EUR, balanceOne));
     assertThat(receiverMoney).isEqualTo(Money.of(CurrencyUnit.EUR, balanceTwo));
   }

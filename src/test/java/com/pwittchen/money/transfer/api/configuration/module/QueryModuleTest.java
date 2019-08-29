@@ -22,11 +22,9 @@ public class QueryModuleTest {
 
   private QueryModule queryModule = new QueryModule();
 
-  @Mock
-  private AccountRepository accountRepository;
+  @Mock private AccountRepository accountRepository;
 
-  @Mock
-  private TransactionRepository transactionRepository;
+  @Mock private TransactionRepository transactionRepository;
 
   @Test public void shouldProvideGetAccountQuery() {
     // when

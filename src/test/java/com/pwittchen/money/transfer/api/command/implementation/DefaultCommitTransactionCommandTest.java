@@ -30,26 +30,21 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultCommitTransactionCommandTest {
 
-  @Mock
-  private AccountRepository accountRepository;
+  @Mock private AccountRepository accountRepository;
 
-  @Mock
-  private TransactionRepository transactionRepository;
+  @Mock private TransactionRepository transactionRepository;
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  @Rule public ExpectedException expectedException = ExpectedException.none();
 
   private CommitTransactionCommand commitTransactionCommand;
 
-  @Before
-  public void setUp() {
+  @Before public void setUp() {
     commitTransactionCommand = new DefaultCommitTransactionCommand(
         accountRepository, transactionRepository
     );
   }
 
-  @Test
-  public void shouldCommitTransaction() {
+  @Test public void shouldCommitTransaction() {
     // given
     Account sender = spy(createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100)));
     Account receiver = spy(createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50)));
@@ -73,8 +68,7 @@ public class DefaultCommitTransactionCommandTest {
     verify(transactionRepository).create(transaction);
   }
 
-  @Test
-  public void shouldNotCommitTransactionWhenSenderHasNotEnoughMoney() throws Exception {
+  @Test public void shouldNotCommitTransactionWhenSenderHasNotEnoughMoney() throws Exception {
     // given
     final String senderNumber = "AC1";
     final String receiverNumber = "AC2";

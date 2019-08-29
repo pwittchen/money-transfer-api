@@ -23,17 +23,14 @@ public class InMemoryAccountRepositoryTest {
 
   private AccountRepository accountRepository;
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  @Rule public ExpectedException expectedException = ExpectedException.none();
 
-  @Before
-  public void setUp() {
+  @Before public void setUp() {
     accountRepository = new InMemoryAccountRepository();
     accountRepository.clear();
   }
 
-  @Test
-  public void shouldGetEmptyResultWhenAccountDoesNotExist() {
+  @Test public void shouldGetEmptyResultWhenAccountDoesNotExist() {
     // given
     String invalidNumber = "invalidNumber";
 
@@ -44,8 +41,7 @@ public class InMemoryAccountRepositoryTest {
     assertThat(optional.isPresent()).isFalse();
   }
 
-  @Test
-  public void shouldGetAccountWhenItExists() throws Exception {
+  @Test public void shouldGetAccountWhenItExists() {
     // given
     Account account = createAccount();
     String accountNumber = account.number();
@@ -58,8 +54,7 @@ public class InMemoryAccountRepositoryTest {
     assertThat(optional.isPresent()).isTrue();
   }
 
-  @Test
-  public void shouldGetAllAccounts() throws Exception {
+  @Test public void shouldGetAllAccounts() {
     // given
     accountRepository.create(createAccount());
     accountRepository.create(createAccount());
@@ -71,14 +66,13 @@ public class InMemoryAccountRepositoryTest {
     assertThat(accounts.size()).isEqualTo(2);
   }
 
-  @Test
-  @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
-  public void shouldCreateNewAccount() throws Exception {
+  @Test public void shouldCreateNewAccount() {
     // given
     Account account = createAccount();
 
     // when
     accountRepository.create(account);
+    //noinspection OptionalGetWithoutIsPresent
     Account createdAccount = accountRepository.get(account.number()).get();
 
     // then
@@ -92,8 +86,7 @@ public class InMemoryAccountRepositoryTest {
     assertThat(createdAccount.money()).isEqualTo(account.money());
   }
 
-  @Test
-  public void shouldWithdrawMoney() throws Exception {
+  @Test public void shouldWithdrawMoney() {
     // given
     Account sender = createAccount();
     Account receiver = createAnotherAccount("anotherNumber");
@@ -111,8 +104,7 @@ public class InMemoryAccountRepositoryTest {
     assertThat(actualAmount).isEqualTo(expectedAmount);
   }
 
-  @Test
-  public void shouldPutMoney() throws Exception {
+  @Test public void shouldPutMoney() {
     // given
     Account sender = createAccount();
     Account receiver = createAnotherAccount("anotherNumber");
@@ -130,8 +122,7 @@ public class InMemoryAccountRepositoryTest {
     assertThat(actualAmount).isEqualTo(expectedAmount);
   }
 
-  @Test
-  public void shouldDeleteAccount() throws Exception {
+  @Test public void shouldDeleteAccount() {
     // given
     Account account = createAccount();
     accountRepository.create(account);
@@ -143,8 +134,7 @@ public class InMemoryAccountRepositoryTest {
     assertThat(accountRepository.get(account.number()).isPresent()).isFalse();
   }
 
-  @Test
-  public void shouldClearAccounts() throws Exception {
+  @Test public void shouldClearAccounts() {
     // given
     accountRepository.create(createAccount());
     accountRepository.create(createAccount());
