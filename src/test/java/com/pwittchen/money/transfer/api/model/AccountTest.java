@@ -12,8 +12,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class AccountTest {
 
-  @Test
-  public void constructorShouldBePrivate() throws NoSuchMethodException, IllegalAccessException,
+  @Test public void constructorShouldBePrivate()
+      throws NoSuchMethodException, IllegalAccessException,
       InvocationTargetException, InstantiationException {
 
     // when
@@ -26,8 +26,7 @@ public class AccountTest {
     constructor.newInstance();
   }
 
-  @Test
-  public void objectsShouldBeEqualWhenTheyAreTheSameInstance() {
+  @Test public void objectsShouldBeEqualWhenTheyAreTheSameInstance() {
     // when
     Account account = createAccount();
 
@@ -35,8 +34,7 @@ public class AccountTest {
     assertThat(account.equals(account)).isTrue();
   }
 
-  @Test
-  public void objectsShouldNotBeEqualWhenOneIsNull() {
+  @Test public void objectsShouldNotBeEqualWhenOneIsNull() {
     // when
     Account account = createAccount();
 
@@ -44,8 +42,7 @@ public class AccountTest {
     assertThat(account.equals(null)).isFalse();
   }
 
-  @Test
-  public void shouldNotBeTheSameAsOtherObject() {
+  @Test public void shouldNotBeTheSameAsOtherObject() {
     // given
     Account account = createAccount();
     Object anotherObject = new Object();
@@ -57,8 +54,7 @@ public class AccountTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test
-  public void shouldNotBeTheSameWhenComparingToNull() {
+  @Test public void shouldNotBeTheSameWhenComparingToNull() {
     // given
     Account account = createAccount();
 
@@ -69,8 +65,7 @@ public class AccountTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test
-  public void shouldNotBeTheSameWhenUserIsDifferent() {
+  @Test public void shouldNotBeTheSameWhenUserIsDifferent() {
     // given
     Account account = createAccount();
     User user = User.builder()
@@ -93,8 +88,7 @@ public class AccountTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test
-  public void shouldNotBeTheSameWhenNumberIsDifferent() {
+  @Test public void shouldNotBeTheSameWhenNumberIsDifferent() {
     // given
     Account account = createAccount();
     User user = User.builder()
@@ -117,8 +111,7 @@ public class AccountTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test
-  public void shouldNotBeTheSameWhenMoneyDiffers() {
+  @Test public void shouldNotBeTheSameWhenMoneyDiffers() {
     // given
     Account account = createAccount();
     User user = User.builder()

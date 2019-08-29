@@ -6,7 +6,6 @@ import com.pwittchen.money.transfer.api.repository.inmemory.InMemoryAccountRepos
 import com.pwittchen.money.transfer.api.repository.inmemory.InMemoryTransactionRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -16,11 +15,7 @@ public class RepositoryModuleTest {
 
   private RepositoryModule repositoryModule = new RepositoryModule();
 
-  @Mock
-  private AccountRepository accountRepository;
-
-  @Test
-  public void shouldProvideAccountRepository() {
+  @Test public void shouldProvideAccountRepository() {
     // when
     AccountRepository accountRepository = repositoryModule.provideAccountRepository();
 
@@ -32,9 +27,7 @@ public class RepositoryModuleTest {
   @Test
   public void shouldProvideTransactionRepository() {
     // when
-    TransactionRepository transactionRepository = repositoryModule.provideTransactionRepository(
-        accountRepository
-    );
+    TransactionRepository transactionRepository = repositoryModule.provideTransactionRepository();
 
     assertThat(transactionRepository).isNotNull();
     assertThat(transactionRepository).isInstanceOf(InMemoryTransactionRepository.class);

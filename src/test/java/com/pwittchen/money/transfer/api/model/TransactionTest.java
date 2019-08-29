@@ -12,8 +12,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class TransactionTest {
 
-  @Test
-  public void constructorShouldBePrivate() throws NoSuchMethodException, IllegalAccessException,
+  @Test public void constructorShouldBePrivate()
+      throws NoSuchMethodException, IllegalAccessException,
       InvocationTargetException, InstantiationException {
 
     // when
@@ -26,8 +26,7 @@ public class TransactionTest {
     constructor.newInstance();
   }
 
-  @Test
-  public void objectsShouldBeEqual() {
+  @Test public void objectsShouldBeEqual() {
     // when
     Transaction transactionOne = createTransaction();
     Transaction transactionTwo = transactionOne;
@@ -36,8 +35,7 @@ public class TransactionTest {
     assertThat(transactionOne.equals(transactionTwo)).isTrue();
   }
 
-  @Test
-  public void objectsShouldBeEqualWhenTheyAreTheSameInstance() {
+  @Test public void objectsShouldBeEqualWhenTheyAreTheSameInstance() {
     // when
     Transaction transaction = createTransaction();
 
@@ -45,8 +43,7 @@ public class TransactionTest {
     assertThat(transaction.equals(transaction)).isTrue();
   }
 
-  @Test
-  public void objectsShouldNotBeEqualWhenOneIsNull() {
+  @Test public void objectsShouldNotBeEqualWhenOneIsNull() {
     // when
     Transaction transaction = createTransaction();
 
@@ -54,8 +51,7 @@ public class TransactionTest {
     assertThat(transaction.equals(null)).isFalse();
   }
 
-  @Test
-  public void objectsShouldNotBeEqualWhenOneHasDifferentType() {
+  @Test public void objectsShouldNotBeEqualWhenOneHasDifferentType() {
     // when
     Transaction transaction = createTransaction();
 
@@ -63,8 +59,7 @@ public class TransactionTest {
     assertThat(transaction.equals(new Object())).isFalse();
   }
 
-  @Test
-  public void objectsShouldBeInTheSameBucket() {
+  @Test public void objectsShouldBeInTheSameBucket() {
     // when
     Transaction transactionOne = createTransaction();
     Transaction transactionTwo = transactionOne;
@@ -73,14 +68,13 @@ public class TransactionTest {
     assertThat(transactionOne.hashCode() == transactionTwo.hashCode()).isTrue();
   }
 
-  @Test
-  public void objectShouldNotBeTheSameWhenOneHasDifferentSender() {
+  @Test public void objectShouldNotBeTheSameWhenOneHasDifferentSender() {
     // given
     Transaction transactionOne = Transaction.builder()
         .id("TR1")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(createAccount())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -98,8 +92,8 @@ public class TransactionTest {
 
     Transaction transactionTwo = Transaction.builder()
         .id("TR2")
-        .from(accountTwo)
-        .to(createAccount())
+        .fromNumber(accountTwo.number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -110,14 +104,13 @@ public class TransactionTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test
-  public void objectShouldNotBeTheSameWhenOneHasDifferentReceiver() {
+  @Test public void objectShouldNotBeTheSameWhenOneHasDifferentReceiver() {
     // given
     Transaction transactionOne = Transaction.builder()
         .id("TR1")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(createAccount())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -136,8 +129,8 @@ public class TransactionTest {
     Transaction transactionTwo = Transaction.builder()
         .id("TR2")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(accountTwo)
+        .fromNumber(createAccount().number())
+        .toNumber(accountTwo.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -148,22 +141,21 @@ public class TransactionTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test
-  public void objectShouldNotBeTheSameWhenOneMoneyValueDiffers() {
+  @Test public void objectShouldNotBeTheSameWhenOneMoneyValueDiffers() {
     // given
     Transaction transactionOne = Transaction.builder()
         .id("TR1")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(createAccount())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
     Transaction transactionTwo = Transaction.builder()
         .id("TR2")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(createAccount())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 20))
         .build();
 
@@ -178,8 +170,8 @@ public class TransactionTest {
     return Transaction.builder()
         .id("TR1")
         .createdAt(LocalDateTime.now())
-        .from(createAccount())
-        .to(createAccount())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
   }

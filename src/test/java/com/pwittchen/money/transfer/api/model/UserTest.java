@@ -9,8 +9,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class UserTest {
 
-  @Test
-  public void constructorShouldBePrivate() throws NoSuchMethodException, IllegalAccessException,
+  @Test public void constructorShouldBePrivate()
+      throws NoSuchMethodException, IllegalAccessException,
       InvocationTargetException, InstantiationException {
 
     // when
@@ -23,8 +23,7 @@ public class UserTest {
     constructor.newInstance();
   }
 
-  @Test
-  public void objectsShouldBeEqual() {
+  @Test public void objectsShouldBeEqual() {
     // when
     User userOne = createUser();
     User userTwo = createUser();
@@ -33,8 +32,7 @@ public class UserTest {
     assertThat(userOne.equals(userTwo)).isTrue();
   }
 
-  @Test
-  public void objectsShouldBeEqualWhenTheyAreTheSameInstance() {
+  @Test public void objectsShouldBeEqualWhenTheyAreTheSameInstance() {
     // when
     User user = createUser();
 
@@ -42,8 +40,7 @@ public class UserTest {
     assertThat(user.equals(user)).isTrue();
   }
 
-  @Test
-  public void objectsShouldNotBeEqualWhenOneIsNull() {
+  @Test public void objectsShouldNotBeEqualWhenOneIsNull() {
     // when
     User user = createUser();
 
@@ -60,8 +57,7 @@ public class UserTest {
     assertThat(user.equals(new Object())).isFalse();
   }
 
-  @Test
-  public void objectsShouldNotBeEqualWhenOneHasDifferentId() {
+  @Test public void objectsShouldNotBeEqualWhenOneHasDifferentId() {
     // given
     User userOne = createUser();
     User userTwo = User
@@ -78,8 +74,7 @@ public class UserTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test
-  public void objectsShouldNotBeEqualWhenOneHasDifferentName() {
+  @Test public void objectsShouldNotBeEqualWhenOneHasDifferentName() {
     // given
     User userOne = createUser();
     User userTwo = User
@@ -96,8 +91,7 @@ public class UserTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test
-  public void objectsShouldNotBeEqualWhenOneHasDifferentSurname() {
+  @Test public void objectsShouldNotBeEqualWhenOneHasDifferentSurname() {
     // given
     User userOne = createUser();
     User userTwo = User
@@ -114,8 +108,7 @@ public class UserTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test
-  public void objectsShouldBeInTheSameBucket() {
+  @Test public void objectsShouldBeInTheSameBucket() {
     // when
     User userOne = createUser();
     User userTwo = createUser();

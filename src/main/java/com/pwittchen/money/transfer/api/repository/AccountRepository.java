@@ -10,11 +10,9 @@ public interface AccountRepository {
 
   List<Account> getAll();
 
-  Account create(Account account) throws Exception;
+  Account create(Account account);
 
-  void withdrawMoney(Account account, Money money);
-
-  void putMoney(Account account, Money money);
+  void transfer(Account from, Account to, Money money);
 
   void delete(String number);
 

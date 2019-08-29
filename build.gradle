@@ -74,9 +74,9 @@ tasks.withType(FindBugs) {
 }
 
 test {
-  if (System.properties['test.profile'] != 'integration') {
+  if (System.properties['test.profile'] == 'unit') {
     exclude '**/*integration*'
-  } else {
+  } else if( System.properties['test.profile'] == 'integration') {
     exclude '**/*com/*'
   }
 }

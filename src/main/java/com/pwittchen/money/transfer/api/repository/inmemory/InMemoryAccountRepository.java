@@ -1,11 +1,5 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
-import com.pwittchen.money.transfer.api.exception.AccountAlreadyExistsException;
-import com.pwittchen.money.transfer.api.exception.AccountNotExistsException;
-import com.pwittchen.money.transfer.api.exception.EmptyAccountNumberException;
-import com.pwittchen.money.transfer.api.exception.EmptyUserIdException;
-import com.pwittchen.money.transfer.api.exception.EmptyUserNameException;
-import com.pwittchen.money.transfer.api.exception.EmptyUserSurnameException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import java.util.ArrayList;
@@ -27,36 +21,18 @@ public class InMemoryAccountRepository implements AccountRepository {
     return new ArrayList<>(accounts.values());
   }
 
-  @Override public Account create(Account account) throws Exception {
-    if (account.number() == null || account.number().isEmpty()) {
-      throw new EmptyAccountNumberException();
-    }
-
-    if (accounts.containsKey(account.number())) {
-      throw new AccountAlreadyExistsException(account.number());
-    }
-
-    if (account.user().id() == null || account.user().id().isEmpty()) {
-      throw new EmptyUserIdException();
-    }
-
-    if (account.user().name() == null || account.user().name().isEmpty()) {
-      throw new EmptyUserNameException();
-    }
-
-    if (account.user().surname() == null || account.user().surname().isEmpty()) {
-      throw new EmptyUserSurnameException();
-    }
-
+  @Override public Account create(Account account) {
     accounts.put(account.number(), account);
     return account;
   }
 
-  @Override public void withdrawMoney(final Account account, final Money money) {
-    if (!accounts.containsKey(account.number())) {
-      throw new AccountNotExistsException(account.number());
-    }
+  @Override
+  public synchronized void transfer(final Account from, final Account to, final Money money) {
+    withdrawMoney(from, money);
+    putMoney(to, money);
+  }
 
+  private void withdrawMoney(final Account account, final Money money) {
     final Account updatedAccount = Account
         .builder()
         .number(account.number())
@@ -67,11 +43,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     accounts.put(account.number(), updatedAccount);
   }
 
-  @Override public void putMoney(final Account account, Money money) {
-    if (!accounts.containsKey(account.number())) {
-      throw new AccountNotExistsException(account.number());
-    }
-
+  private void putMoney(final Account account, final Money money) {
     final Account updatedAccount = Account
         .builder()
         .number(account.number())
@@ -83,14 +55,6 @@ public class InMemoryAccountRepository implements AccountRepository {
   }
 
   @Override public void delete(String number) {
-    if (number == null || number.isEmpty()) {
-      throw new EmptyAccountNumberException();
-    }
-
-    if (!accounts.containsKey(number)) {
-      throw new AccountNotExistsException(number);
-    }
-
     accounts.remove(number);
   }
 

@@ -1,9 +1,5 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
-import com.pwittchen.money.transfer.api.exception.AccountAlreadyExistsException;
-import com.pwittchen.money.transfer.api.exception.AccountNotExistsException;
-import com.pwittchen.money.transfer.api.exception.EmptyAccountNumberException;
-import com.pwittchen.money.transfer.api.exception.EmptyUserIdException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
@@ -27,17 +23,14 @@ public class InMemoryAccountRepositoryTest {
 
   private AccountRepository accountRepository;
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  @Rule public ExpectedException expectedException = ExpectedException.none();
 
-  @Before
-  public void setUp() {
+  @Before public void setUp() {
     accountRepository = new InMemoryAccountRepository();
     accountRepository.clear();
   }
 
-  @Test
-  public void shouldGetEmptyResultWhenAccountDoesNotExist() {
+  @Test public void shouldGetEmptyResultWhenAccountDoesNotExist() {
     // given
     String invalidNumber = "invalidNumber";
 
@@ -48,8 +41,7 @@ public class InMemoryAccountRepositoryTest {
     assertThat(optional.isPresent()).isFalse();
   }
 
-  @Test
-  public void shouldGetAccountWhenItExists() throws Exception {
+  @Test public void shouldGetAccountWhenItExists() {
     // given
     Account account = createAccount();
     String accountNumber = account.number();
@@ -62,8 +54,7 @@ public class InMemoryAccountRepositoryTest {
     assertThat(optional.isPresent()).isTrue();
   }
 
-  @Test
-  public void shouldGetAllAccounts() throws Exception {
+  @Test public void shouldGetAllAccounts() {
     // given
     accountRepository.create(createAccount());
     accountRepository.create(createAccount());
@@ -75,14 +66,13 @@ public class InMemoryAccountRepositoryTest {
     assertThat(accounts.size()).isEqualTo(2);
   }
 
-  @Test
-  @SuppressWarnings("OptionalGetWithoutIsPresent") // in this test, check is not needed
-  public void shouldCreateNewAccount() throws Exception {
+  @Test public void shouldCreateNewAccount() {
     // given
     Account account = createAccount();
 
     // when
     accountRepository.create(account);
+    //noinspection OptionalGetWithoutIsPresent
     Account createdAccount = accountRepository.get(account.number()).get();
 
     // then
@@ -96,136 +86,43 @@ public class InMemoryAccountRepositoryTest {
     assertThat(createdAccount.money()).isEqualTo(account.money());
   }
 
-  @Test
-  public void shouldNotCreateNewAccountWithNumberWhichAlreadyExists() throws Exception {
+  @Test public void shouldWithdrawMoney() {
     // given
-    Account account = createAccount();
-    accountRepository.create(account);
-
-    // when
-    expectedException.expect(AccountAlreadyExistsException.class);
-    expectedException.expectMessage(
-        new AccountAlreadyExistsException(account.number()).getMessage()
-    );
-
-    // then
-    accountRepository.create(account);
-  }
-
-  @Test
-  public void shouldNotCreateAccountIfUserIdIsEmpty() throws Exception {
-    // given
-    User user = User
-        .builder()
-        .id("")
-        .name("John")
-        .surname("Doe")
-        .build();
-
-    Account account = Account
-        .builder()
-        .user(user)
-        .number(UUID.randomUUID().toString())
-        .money(Money.of(CurrencyUnit.EUR, 0))
-        .createdAt(LocalDateTime.now())
-        .build();
-
-    // when
-    expectedException.expect(EmptyUserIdException.class);
-    expectedException.expectMessage(
-        new EmptyUserIdException().getMessage()
-    );
-
-    // then
-    accountRepository.create(account);
-  }
-
-  @Test
-  public void shouldWithdrawMoney() throws Exception {
-    // given
-    Account account = createAccount();
+    Account sender = createAccount();
+    Account receiver = createAnotherAccount("anotherNumber");
     Money moneyToWithdraw = Money.of(CurrencyUnit.EUR, 1);
-    Money expectedAmount = account.money().minus(moneyToWithdraw);
+    Money expectedAmount = sender.money().minus(moneyToWithdraw);
 
     // when
-    accountRepository.create(account);
-    accountRepository.withdrawMoney(account, moneyToWithdraw);
+    accountRepository.create(sender);
+    accountRepository.create(receiver);
+    accountRepository.transfer(sender, receiver, moneyToWithdraw);
 
     // then
     //noinspection OptionalGetWithoutIsPresent
-    Money actualAmount = accountRepository.get(account.number()).get().money();
+    Money actualAmount = accountRepository.get(sender.number()).get().money();
     assertThat(actualAmount).isEqualTo(expectedAmount);
   }
 
-  @Test(expected = AccountNotExistsException.class)
-  public void shouldNotWithdrawMoneyIfAccountDoesNotExist() {
+  @Test public void shouldPutMoney() {
     // given
-    Account account = createAccount();
-    Money money = Money.of(CurrencyUnit.EUR, 1);
-
-    // when
-    accountRepository.withdrawMoney(account, money);
-
-    // then exception is thrown
-  }
-
-  @Test(expected = EmptyAccountNumberException.class)
-  public void shouldNotWithdrawMoneyIfAccountNumberIsEmpty() throws Exception {
-    // given
-    Account account = createAnotherAccount("");
-    Money money = Money.of(CurrencyUnit.EUR, 1);
-
-    // when
-    accountRepository.create(account);
-    accountRepository.withdrawMoney(account, money);
-
-    // then exception is thrown
-  }
-
-  @Test
-  public void shouldPutMoney() throws Exception {
-    // given
-    Account account = createAccount();
+    Account sender = createAccount();
+    Account receiver = createAnotherAccount("anotherNumber");
     Money moneyToPut = Money.of(CurrencyUnit.EUR, 1);
-    Money expectedAmount = account.money().plus(moneyToPut);
+    Money expectedAmount = receiver.money().plus(moneyToPut);
 
     // when
-    accountRepository.create(account);
-    accountRepository.putMoney(account, moneyToPut);
+    accountRepository.create(sender);
+    accountRepository.create(receiver);
+    accountRepository.transfer(sender, receiver, moneyToPut);
 
     // then
     //noinspection OptionalGetWithoutIsPresent
-    Money actualAmount = accountRepository.get(account.number()).get().money();
+    Money actualAmount = accountRepository.get(receiver.number()).get().money();
     assertThat(actualAmount).isEqualTo(expectedAmount);
   }
 
-  @Test(expected = AccountNotExistsException.class)
-  public void shouldNotPutMoneyIfAccountDoesNotExist() {
-    // given
-    Account account = createAccount();
-    Money money = Money.of(CurrencyUnit.EUR, 1);
-
-    // when
-    accountRepository.putMoney(account, money);
-
-    // then exception is thrown
-  }
-
-  @Test(expected = EmptyAccountNumberException.class)
-  public void shouldNotPutMoneyIfAccountNumberIsEmpty() throws Exception {
-    // given
-    Account account = createAnotherAccount("");
-    Money money = Money.of(CurrencyUnit.EUR, 1);
-
-    // when
-    accountRepository.create(account);
-    accountRepository.putMoney(account, money);
-
-    // then exception is thrown
-  }
-
-  @Test
-  public void shouldDeleteAccount() throws Exception {
+  @Test public void shouldDeleteAccount() {
     // given
     Account account = createAccount();
     accountRepository.create(account);
@@ -237,38 +134,7 @@ public class InMemoryAccountRepositoryTest {
     assertThat(accountRepository.get(account.number()).isPresent()).isFalse();
   }
 
-  @Test
-  public void shouldNotDeleteAccountIfItDoesNotExist() {
-    // given
-    String numberWhichDoesNotExist = "numberWhichDoesNotExist";
-
-    // when
-    expectedException.expect(AccountNotExistsException.class);
-    expectedException.expectMessage(
-        new AccountNotExistsException(numberWhichDoesNotExist).getMessage()
-    );
-
-    // then
-    accountRepository.delete(numberWhichDoesNotExist);
-  }
-
-  @Test
-  public void shouldNotDeleteAccountIfItIsEmpty() {
-    // given
-    String emptyNumber = "";
-
-    // when
-    expectedException.expect(EmptyAccountNumberException.class);
-    expectedException.expectMessage(
-        new EmptyAccountNumberException().getMessage()
-    );
-
-    // then
-    accountRepository.delete(emptyNumber);
-  }
-
-  @Test
-  public void shouldClearAccounts() throws Exception {
+  @Test public void shouldClearAccounts() {
     // given
     accountRepository.create(createAccount());
     accountRepository.create(createAccount());
@@ -306,7 +172,7 @@ public class InMemoryAccountRepositoryTest {
         .builder()
         .user(createAnotherUser())
         .number(number)
-        .money(Money.of(CurrencyUnit.GBP, 5))
+        .money(Money.of(CurrencyUnit.EUR, 5))
         .createdAt(LocalDateTime.now())
         .build();
   }
