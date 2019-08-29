@@ -4,7 +4,7 @@ install:
   - true
 
 script:
-  - ./gradlew clean build test jacocoTestReport check
+  - ./gradlew clean build jacocoTestReport
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
