@@ -14,8 +14,7 @@ public class DefaultCreateAccountCommand implements CreateAccountCommand {
 
   private AccountRepository accountRepository;
 
-  @Inject
-  public DefaultCreateAccountCommand(AccountRepository accountRepository) {
+  @Inject public DefaultCreateAccountCommand(AccountRepository accountRepository) {
     this.accountRepository = accountRepository;
   }
 

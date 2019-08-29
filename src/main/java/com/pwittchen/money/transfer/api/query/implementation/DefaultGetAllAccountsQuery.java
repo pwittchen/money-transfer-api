@@ -10,8 +10,7 @@ public class DefaultGetAllAccountsQuery implements GetAllAccountsQuery {
 
   private AccountRepository accountRepository;
 
-  @Inject
-  public DefaultGetAllAccountsQuery(AccountRepository accountRepository) {
+  @Inject public DefaultGetAllAccountsQuery(AccountRepository accountRepository) {
     this.accountRepository = accountRepository;
   }
 

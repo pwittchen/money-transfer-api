@@ -10,8 +10,7 @@ public class DefaultGetAllTransactionsQuery implements GetAllTransactionsQuery {
 
   private TransactionRepository transactionRepository;
 
-  @Inject
-  public DefaultGetAllTransactionsQuery(TransactionRepository transactionRepository) {
+  @Inject public DefaultGetAllTransactionsQuery(TransactionRepository transactionRepository) {
     this.transactionRepository = transactionRepository;
   }
 

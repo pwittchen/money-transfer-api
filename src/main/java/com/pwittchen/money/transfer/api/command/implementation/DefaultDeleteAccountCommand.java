@@ -10,8 +10,7 @@ public class DefaultDeleteAccountCommand implements DeleteAccountCommand {
 
   private AccountRepository accountRepository;
 
-  @Inject
-  public DefaultDeleteAccountCommand(AccountRepository accountRepository) {
+  @Inject public DefaultDeleteAccountCommand(AccountRepository accountRepository) {
     this.accountRepository = accountRepository;
   }
 

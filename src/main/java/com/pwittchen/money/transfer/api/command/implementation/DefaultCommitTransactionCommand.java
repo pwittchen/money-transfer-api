@@ -25,8 +25,7 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
   private AccountRepository accountRepository;
   private TransactionRepository transactionRepository;
 
-  @Inject
-  public DefaultCommitTransactionCommand(
+  @Inject public DefaultCommitTransactionCommand(
       AccountRepository accountRepository,
       TransactionRepository transactionRepository) {
     this.accountRepository = accountRepository;

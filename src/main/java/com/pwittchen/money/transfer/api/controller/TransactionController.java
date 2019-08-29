@@ -25,8 +25,7 @@ public class TransactionController {
   private GetAllTransactionsQuery getAllTransactionsQuery;
   private CommitTransactionCommand commitTransactionCommand;
 
-  @Inject
-  public TransactionController(
+  @Inject public TransactionController(
       ContextWrapper contextWrapper,
       GetTransactionQuery getTransactionQuery,
       GetAllTransactionsQuery getAllTransactionsQuery,

@@ -4,12 +4,13 @@ import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.query.GetAccountQuery;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import java.util.Optional;
+import javax.inject.Inject;
 
 public class DefaultGetAccountQuery implements GetAccountQuery {
 
   private AccountRepository accountRepository;
 
-  public DefaultGetAccountQuery(AccountRepository accountRepository) {
+  @Inject public DefaultGetAccountQuery(AccountRepository accountRepository) {
     this.accountRepository = accountRepository;
   }
 

@@ -28,8 +28,7 @@ public class AccountController {
   private CreateAccountCommand createAccountCommand;
   private DeleteAccountCommand deleteAccountCommand;
 
-  @Inject
-  public AccountController(
+  @Inject public AccountController(
       final ContextWrapper contextWrapper,
       final GetAccountQuery getAccountQuery,
       final GetAllAccountsQuery getAllAccountsQuery,
