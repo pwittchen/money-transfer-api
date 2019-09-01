@@ -67,8 +67,8 @@ public class ConcurrentCommitTransactionCommandTest {
         "AC2", Money.of(CurrencyUnit.EUR, initialBalanceTwo)
     );
 
-    double balanceOne = initialBalanceOne - money1 - money2 + money3 - money4;
-    double balanceTwo = initialBalanceTwo + money1 + money2 - money3 + money4;
+    double balanceOne = initialBalanceOne - money1 - money2 + money3 + money4;
+    double balanceTwo = initialBalanceTwo + money1 + money2 - money3 - money4;
     accountRepository.create(accountOne);
     accountRepository.create(accountTwo);
 
@@ -102,13 +102,13 @@ public class ConcurrentCommitTransactionCommandTest {
         .money(Money.of(CurrencyUnit.EUR, money3))
         .build();
 
-    // send 25 EUR: AC1 -> AC2
+    // send 25 EUR: AC2 -> AC1
     final Transaction transaction4 = Transaction
         .builder()
         .id("transaction_4")
         .createdAt(LocalDateTime.now())
-        .fromNumber(accountOne.number())
-        .toNumber(accountTwo.number())
+        .fromNumber(accountTwo.number())
+        .toNumber(accountOne.number())
         .money(Money.of(CurrencyUnit.EUR, money4))
         .build();
 
