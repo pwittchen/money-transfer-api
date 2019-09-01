@@ -178,8 +178,11 @@ public class ConcurrentCommitTransactionCommandTest {
       Thread.sleep(ThreadLocalRandom.current().nextInt(3000));
       commitTransactionCommand.run(transaction);
       waiter.assertNotNull(transaction);
-      System.out.println(String.format("executing: %s, time: %d ms, thread: %s",
+      System.out.println(String.format("executing: %s, %s -> %s (%s), time: %d ms, thread: %s",
           transaction.id(),
+          transaction.fromNumber(),
+          transaction.toNumber(),
+          transaction.money(),
           TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS),
           Thread.currentThread().getName())
       );
