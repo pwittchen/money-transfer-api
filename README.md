@@ -20,7 +20,6 @@ Please note: If we're on Windows, use `gradlew.bat` instead of `./gradlew` scrip
 - To start an application on port `8000`, execute: `./gradlew run`
 - To build an application as a "fat jar", execute: `./gradlew shadowJar`
 - To start an application as a "fat jar" on port `8000`, execute: `java -jar build/libs/app-1.0-SNAPSHOT-all.jar`
-- To generate a sample data in the running application, execute: `./gradlew sampleData` (if you are Windows user, install `curl` and run contents from `sampledata.sh` script manually)
 
 API documentation
 -----------------

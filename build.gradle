@@ -89,14 +89,6 @@ task redoc() {
   }
 }
 
-task sampleData() {
-  doLast {
-    exec {
-      executable "./sampledata.sh"
-    }
-  }
-}
-
 repositories {
   mavenCentral()
 }
