@@ -24,8 +24,7 @@ Please note: If we're on Windows, use `gradlew.bat` instead of `./gradlew` scrip
 API documentation
 -----------------
 
-- Start Docker Daemon
-- Pull ReDoc image: `sudo docker pull redocly/redoc`
+- Start Docker Daemon if it's not runnig
 - Start application
 - Run ReDoc: `./gradlew redoc` (if you're Windows user, run contents from the `redoc.sh` script manually)
 - Open website with documentation in the web browser: `http://localhost:9000`
