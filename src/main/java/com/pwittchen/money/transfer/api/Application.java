@@ -22,9 +22,17 @@ import static io.javalin.apibuilder.ApiBuilder.post;
 
 public class Application {
   private static final Logger LOG = LoggerFactory.getLogger(Application.class);
-  private static final int PORT = 8000;
+  private static final int DEFAULT_PORT = 8000;
 
   public static void main(String args[]) {
+    int port;
+
+    try {
+      port = Integer.parseInt(args[0]);
+    } catch (Exception e) {
+      port = DEFAULT_PORT;
+    }
+
     final ApplicationComponent component = DaggerApplicationComponent.create();
     final AccountController accountController = component.accountController();
     final TransactionController transactionController = component.transactionController();
@@ -57,7 +65,7 @@ public class Application {
           event.serverStarted(() -> LOG.info("server has started"));
           event.serverStartFailed(() -> LOG.error("server start has failed"));
         })
-        .start(PORT);
+        .start(port);
 
     app.routes(() -> {
       path("/account", () -> {
