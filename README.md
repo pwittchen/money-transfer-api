@@ -20,7 +20,7 @@ Please note: If we're on Windows, use `gradlew.bat` instead of `./gradlew` scrip
 - To start an application on default port `8000`, execute: `./gradlew run`
 - To build an application as a "fat jar", execute: `./gradlew shadowJar`
 - To start an application as a "fat jar" on default port `8000`, execute: `java -jar build/libs/app-1.0-SNAPSHOT-all.jar`
-- To start an application as a "fat jar" on custom port, execute: execute: `java -jar build/libs/app-1.0-SNAPSHOT-all.jar PORT_NUMBER`
+- To start an application as a "fat jar" on custom port, execute: execute: `java -jar build/libs/app-1.0-SNAPSHOT-all.jar PORT_NUMBER` where `PORT_NUMBER` is an integer value
 
 API documentation
 -----------------
