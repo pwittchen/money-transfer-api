@@ -67,8 +67,8 @@ public class ConcurrentCommitTransactionCommandTest {
         "AC2", Money.of(CurrencyUnit.EUR, initialBalanceTwo)
     );
 
-    double balanceOne = initialBalanceOne - money1 - money2 + money3 + money4;
-    double balanceTwo = initialBalanceTwo + money1 + money2 - money3 - money4;
+    double expectedBalanceOne = initialBalanceOne - money1 - money2 + money3 + money4;
+    double expectedBalanceTwo = initialBalanceTwo + money1 + money2 - money3 - money4;
     accountRepository.create(accountOne);
     accountRepository.create(accountTwo);
 
@@ -125,8 +125,8 @@ public class ConcurrentCommitTransactionCommandTest {
     Money receiverMoney = accountRepository.get(accountTwo.number()).get().money();
 
     assertThat(transactionRepository.getAll().size()).isEqualTo(4);
-    assertThat(senderMoney).isEqualTo(Money.of(CurrencyUnit.EUR, balanceOne));
-    assertThat(receiverMoney).isEqualTo(Money.of(CurrencyUnit.EUR, balanceTwo));
+    assertThat(senderMoney).isEqualTo(Money.of(CurrencyUnit.EUR, expectedBalanceOne));
+    assertThat(receiverMoney).isEqualTo(Money.of(CurrencyUnit.EUR, expectedBalanceTwo));
   }
 
   @Test
