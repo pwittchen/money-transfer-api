@@ -32,7 +32,7 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
     this.transactionRepository = transactionRepository;
   }
 
-  @Override public Transaction run(Transaction transaction) {
+  @Override public void run(Transaction transaction) {
     Account sender;
     Account receiver;
     long stopTime = System.nanoTime() + TIMEOUT;
@@ -71,8 +71,6 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
         throw new RuntimeException(exception);
       }
     }
-
-    return transaction;
   }
 
   private void validateTransaction(Transaction transaction) {

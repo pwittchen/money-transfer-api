@@ -18,9 +18,9 @@ public class DefaultCreateAccountCommand implements CreateAccountCommand {
     this.accountRepository = accountRepository;
   }
 
-  @Override public Account run(Account account) {
+  @Override public void run(Account account) {
     validateAccount(account);
-    return accountRepository.create(account);
+    accountRepository.create(account);
   }
 
   private void validateAccount(Account account) {
