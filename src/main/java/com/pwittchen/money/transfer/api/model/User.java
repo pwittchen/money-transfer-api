@@ -3,9 +3,9 @@ package com.pwittchen.money.transfer.api.model;
 import java.util.Objects;
 
 public class User {
-  public final String id;
-  public final String name;
-  public final String surname;
+  private final String id;
+  private final String name;
+  private final String surname;
 
   private User() {
     this(builder());

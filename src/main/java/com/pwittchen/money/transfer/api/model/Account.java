@@ -8,10 +8,10 @@ import org.joda.money.Money;
 
 public class Account {
   private transient final Lock lock;
-  public final String number;
-  public final User user;
-  public Money money;
-  public final LocalDateTime createdAt;
+  private final String number;
+  private final User user;
+  private Money money;
+  private final LocalDateTime createdAt;
 
   private Account() {
     this(builder());
