@@ -35,7 +35,7 @@ public class TransactionTest {
         .fromNumber(createAccount().number())
         .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
-        .build();;
+        .build();
 
     Transaction transactionTwo = Transaction.builder()
         .id("TR1")
@@ -43,7 +43,7 @@ public class TransactionTest {
         .fromNumber(createAccount().number())
         .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
-        .build();;
+        .build();
 
     // then
     assertThat(transactionOne.equals(transactionTwo)).isTrue();
