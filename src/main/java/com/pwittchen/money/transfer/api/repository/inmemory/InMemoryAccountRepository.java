@@ -28,11 +28,11 @@ public class InMemoryAccountRepository implements AccountRepository {
 
   @Override
   public synchronized void transfer(final Account from, final Account to, final Money money) {
-    withdrawMoney(from, money);
-    putMoney(to, money);
+    withdraw(from, money);
+    deposit(to, money);
   }
 
-  private void withdrawMoney(final Account account, final Money money) {
+  private void withdraw(final Account account, final Money money) {
     final Account updatedAccount = Account
         .builder()
         .number(account.number())
@@ -43,7 +43,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     accounts.put(account.number(), updatedAccount);
   }
 
-  private void putMoney(final Account account, final Money money) {
+  private void deposit(final Account account, final Money money) {
     final Account updatedAccount = Account
         .builder()
         .number(account.number())

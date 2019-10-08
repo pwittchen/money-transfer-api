@@ -33,18 +33,13 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
   }
 
   @Override public void run(Transaction transaction) {
-    Account sender;
-    Account receiver;
-    long stopTime = System.nanoTime() + TIMEOUT;
-
     while (transaction.isRunning().get()) {
+      Account sender, receiver;
       synchronized (this) {
         validateTransaction(transaction);
         sender = getSender(transaction.fromNumber());
         receiver = getReceiver(transaction.toNumber());
-        validateSenderBalance(transaction, sender);
       }
-
       if (sender.lock().tryLock()) {
         try {
           if (receiver.lock().tryLock()) {
@@ -60,30 +55,22 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
           sender.lock().unlock();
         }
       }
-
-      if (System.nanoTime() > stopTime) {
-        transaction.isRunning().set(false);
-      }
-      try {
-        TimeUnit.NANOSECONDS.sleep(FIXED_DELAY + random.nextLong() % RANDOM_DELAY);
-      } catch (InterruptedException exception) {
-        Thread.currentThread().interrupt();
-        throw new RuntimeException(exception);
-      }
+      finalizeTransaction(transaction);
     }
   }
 
   private void validateTransaction(Transaction transaction) {
-    final Account sender = getSender(transaction.fromNumber());
-    final Account receiver = getReceiver(transaction.toNumber());
-
-    if (!sender.money().isSameCurrency(receiver.money())) {
-      throw new DifferentCurrencyException(
-          transaction.fromNumber(),
-          transaction.toNumber()
-      );
+    Account sender, receiver;
+    synchronized (this) {
+      sender = getSender(transaction.fromNumber());
+      receiver = getReceiver(transaction.toNumber());
     }
-
+    if (sender.money().isLessThan(transaction.money())) {
+      throw new NotEnoughMoneyException(sender.number());
+    }
+    if (!sender.money().isSameCurrency(receiver.money())) {
+      throw new DifferentCurrencyException(transaction.fromNumber(), transaction.toNumber());
+    }
     if (transaction.fromNumber().equals(transaction.toNumber())) {
       throw new TransferToTheSameAccountException();
     }
@@ -107,9 +94,18 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
     }
   }
 
-  private void validateSenderBalance(Transaction transaction, Account sender) {
-    if (sender.money().isLessThan(transaction.money())) {
-      throw new NotEnoughMoneyException(sender.number());
+  private void finalizeTransaction(Transaction transaction) {
+    long stopTime = System.nanoTime() + TIMEOUT;
+
+    if (System.nanoTime() > stopTime) {
+      transaction.isRunning().set(false);
+    }
+
+    try {
+      TimeUnit.NANOSECONDS.sleep(FIXED_DELAY + random.nextLong() % RANDOM_DELAY);
+    } catch (InterruptedException exception) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(exception);
     }
   }
 }

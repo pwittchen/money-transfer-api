@@ -104,17 +104,17 @@ public class InMemoryAccountRepositoryTest {
     assertThat(actualAmount).isEqualTo(expectedAmount);
   }
 
-  @Test public void shouldPutMoney() {
+  @Test public void shouldDepositMoney() {
     // given
     Account sender = createAccount();
     Account receiver = createAnotherAccount("anotherNumber");
-    Money moneyToPut = Money.of(CurrencyUnit.EUR, 1);
-    Money expectedAmount = receiver.money().plus(moneyToPut);
+    Money moneyToDeposit = Money.of(CurrencyUnit.EUR, 1);
+    Money expectedAmount = receiver.money().plus(moneyToDeposit);
 
     // when
     accountRepository.create(sender);
     accountRepository.create(receiver);
-    accountRepository.transfer(sender, receiver, moneyToPut);
+    accountRepository.transfer(sender, receiver, moneyToDeposit);
 
     // then
     //noinspection OptionalGetWithoutIsPresent
