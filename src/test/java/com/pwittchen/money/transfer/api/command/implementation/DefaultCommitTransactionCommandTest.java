@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -112,6 +113,19 @@ public class DefaultCommitTransactionCommandTest {
     // then
     verify(accountRepository, times(0)).transfer(sender, receiver, transaction.money());
     verify(transactionRepository, times(0)).create(transaction);
+  }
+
+  @Test
+  public void shouldCreateErrorMessageForDifferentCurrencyException() {
+    // given
+    final String expectedMessage =
+        "Accounts sender and receiver have funds in different currencies";
+
+    // when
+    DifferentCurrencyException exception = new DifferentCurrencyException("sender", "receiver");
+
+    // then
+    assertThat(exception.getMessage()).isEqualTo(expectedMessage);
   }
 
   @Test(expected = TransferToTheSameAccountException.class)

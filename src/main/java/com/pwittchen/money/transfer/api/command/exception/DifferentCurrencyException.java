@@ -11,7 +11,7 @@ public class DifferentCurrencyException extends RuntimeException {
 
   @Override public String getMessage() {
     return String.format(
-        "Account %s and %s have funds in different currencies",
+        "Accounts %s and %s have funds in different currencies",
         accountNumberFrom,
         accountNumberTo
     );
