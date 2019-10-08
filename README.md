@@ -27,7 +27,7 @@ API documentation
 -----------------
 
 - Start Docker Daemon if it's not runnig: `sudo dockerd &`
-- Start application: `java -jar build/libs/app-1.0-SNAPSHOT-all.jar`
+- Start compiled application: `java -jar build/libs/app-1.0-SNAPSHOT-all.jar`
 - Run ReDoc: `./gradlew redoc` (if you're Windows user, run contents from the `redoc.sh` script manually)
 - Open website with documentation in the web browser: `http://localhost:9000`
 - Moreover, API is also documented by tests in `RestApiIntegrationTest` class
