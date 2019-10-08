@@ -36,7 +36,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     final Account updatedAccount = Account
         .builder()
         .number(account.number())
-        .user(account.user())
+        .owner(account.owner())
         .money(account.money().minus(money))
         .build();
 
@@ -47,7 +47,7 @@ public class InMemoryAccountRepository implements AccountRepository {
     final Account updatedAccount = Account
         .builder()
         .number(account.number())
-        .user(account.user())
+        .owner(account.owner())
         .money(account.money().plus(money))
         .build();
 

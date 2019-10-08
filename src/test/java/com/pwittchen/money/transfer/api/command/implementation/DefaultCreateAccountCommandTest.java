@@ -3,11 +3,8 @@ package com.pwittchen.money.transfer.api.command.implementation;
 import com.pwittchen.money.transfer.api.command.CreateAccountCommand;
 import com.pwittchen.money.transfer.api.command.exception.AccountAlreadyExistsException;
 import com.pwittchen.money.transfer.api.command.exception.EmptyAccountNumberException;
-import com.pwittchen.money.transfer.api.command.exception.EmptyUserIdException;
-import com.pwittchen.money.transfer.api.command.exception.EmptyUserNameException;
-import com.pwittchen.money.transfer.api.command.exception.EmptyUserSurnameException;
+import com.pwittchen.money.transfer.api.command.exception.EmptyAccountOwnerException;
 import com.pwittchen.money.transfer.api.model.Account;
-import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import java.util.Collections;
 import java.util.UUID;
@@ -36,16 +33,9 @@ public class DefaultCreateAccountCommandTest {
 
   @Test public void shouldCreateAccount() {
     // given
-    User user = User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("name")
-        .surname("surname")
-        .build();
-
     Account account = Account
         .builder()
-        .user(user)
+        .owner("testOwner")
         .number(UUID.randomUUID().toString())
         .money(Money.of(CurrencyUnit.EUR, 10.00))
         .build();
@@ -58,18 +48,11 @@ public class DefaultCreateAccountCommandTest {
   }
 
   @Test(expected = EmptyAccountNumberException.class)
-  public void shouldNoCreateAccountWhenNumberIsNull() {
+  public void shouldNotCreateAccountWhenNumberIsNull() {
     // given
-    User user = User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("name")
-        .surname("surname")
-        .build();
-
     Account account = Account
         .builder()
-        .user(user)
+        .owner("testOwner")
         .number(null)
         .money(Money.of(CurrencyUnit.EUR, 10.00))
         .build();
@@ -82,18 +65,11 @@ public class DefaultCreateAccountCommandTest {
   }
 
   @Test(expected = EmptyAccountNumberException.class)
-  public void shouldNoCreateAccountWhenNumberIsEmpty() {
+  public void shouldNotCreateAccountWhenNumberIsEmpty() {
     // given
-    User user = User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("name")
-        .surname("surname")
-        .build();
-
     Account account = Account
         .builder()
-        .user(user)
+        .owner("testOwner")
         .number("")
         .money(Money.of(CurrencyUnit.EUR, 10.00))
         .build();
@@ -106,18 +82,11 @@ public class DefaultCreateAccountCommandTest {
   }
 
   @Test(expected = AccountAlreadyExistsException.class)
-  public void shouldNoCreateAccountWhenAccountAlreadyExists() {
+  public void shouldNotCreateAccountWhenAccountAlreadyExists() {
     // given
-    User user = User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("name")
-        .surname("surname")
-        .build();
-
     Account account = Account
         .builder()
-        .user(user)
+        .owner("testOwner")
         .number(UUID.randomUUID().toString())
         .money(Money.of(CurrencyUnit.EUR, 10.00))
         .build();
@@ -131,19 +100,12 @@ public class DefaultCreateAccountCommandTest {
     verify(accountRepository, times(0)).create(account);
   }
 
-  @Test(expected = EmptyUserIdException.class)
-  public void shouldNoCreateAccountWhenUserIdIsNull() {
+  @Test(expected = EmptyAccountOwnerException.class)
+  public void shouldNotCreateAccountWhenOwnerIsNull() {
     // given
-    User user = User
-        .builder()
-        .id(null)
-        .name("name")
-        .surname("surname")
-        .build();
-
     Account account = Account
         .builder()
-        .user(user)
+        .owner(null)
         .number(UUID.randomUUID().toString())
         .money(Money.of(CurrencyUnit.EUR, 10.00))
         .build();
@@ -155,115 +117,12 @@ public class DefaultCreateAccountCommandTest {
     verify(accountRepository, times(0)).create(account);
   }
 
-  @Test(expected = EmptyUserIdException.class)
-  public void shouldNoCreateAccountWhenUserIdIsEmpty() {
+  @Test(expected = EmptyAccountOwnerException.class)
+  public void shouldNotCreateAccountWhenOwnerIsEmpty() {
     // given
-    User user = User
-        .builder()
-        .id("")
-        .name("name")
-        .surname("surname")
-        .build();
-
     Account account = Account
         .builder()
-        .user(user)
-        .number(UUID.randomUUID().toString())
-        .money(Money.of(CurrencyUnit.EUR, 10.00))
-        .build();
-
-    // when
-    createAccountCommand.run(account);
-
-    // then
-    verify(accountRepository, times(0)).create(account);
-  }
-
-  @Test(expected = EmptyUserNameException.class)
-  public void shouldNoCreateAccountWhenUserNameIsNull() {
-    // given
-    User user = User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name(null)
-        .surname("surname")
-        .build();
-
-    Account account = Account
-        .builder()
-        .user(user)
-        .number(UUID.randomUUID().toString())
-        .money(Money.of(CurrencyUnit.EUR, 10.00))
-        .build();
-
-    // when
-    createAccountCommand.run(account);
-
-    // then
-    verify(accountRepository, times(0)).create(account);
-  }
-
-  @Test(expected = EmptyUserNameException.class)
-  public void shouldNoCreateAccountWhenUserNameIsEmpty() {
-    // given
-    User user = User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("")
-        .surname("surname")
-        .build();
-
-    Account account = Account
-        .builder()
-        .user(user)
-        .number(UUID.randomUUID().toString())
-        .money(Money.of(CurrencyUnit.EUR, 10.00))
-        .build();
-
-    // when
-    createAccountCommand.run(account);
-
-    // then
-    verify(accountRepository, times(0)).create(account);
-  }
-
-  @Test(expected = EmptyUserSurnameException.class)
-  public void shouldNoCreateAccountWhenUserSurnameIsNull() {
-    // given
-    User user = User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("name")
-        .surname(null)
-        .build();
-
-    Account account = Account
-        .builder()
-        .user(user)
-        .number(UUID.randomUUID().toString())
-        .money(Money.of(CurrencyUnit.EUR, 10.00))
-        .build();
-
-    // when
-    createAccountCommand.run(account);
-
-    // then
-    verify(accountRepository, times(0)).create(account);
-  }
-
-  @Test(expected = EmptyUserSurnameException.class)
-  public void shouldNoCreateAccountWhenUserSurnameIsEmpty() {
-    // given
-    User user = User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("name")
-        .surname("")
-        .build();
-
-    Account account = Account
-        .builder()
-        .user(user)
+        .owner("")
         .number(UUID.randomUUID().toString())
         .money(Money.of(CurrencyUnit.EUR, 10.00))
         .build();

@@ -4,7 +4,6 @@ import com.pwittchen.money.transfer.api.command.CreateAccountCommand;
 import com.pwittchen.money.transfer.api.command.DeleteAccountCommand;
 import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
-import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.query.GetAccountQuery;
 import com.pwittchen.money.transfer.api.query.GetAllAccountsQuery;
 import io.javalin.http.Context;
@@ -85,8 +84,7 @@ public class AccountController {
       path = "/account",
       description = "creates an account",
       pathParams = {
-          @OpenApiParam(name = "name"),
-          @OpenApiParam(name = "surname"),
+          @OpenApiParam(name = "owner"),
           @OpenApiParam(name = "currency"),
           @OpenApiParam(name = "money")
       },
@@ -96,8 +94,7 @@ public class AccountController {
       }
   )
   public void create(final Context context) {
-    User user = createUser(context);
-    Optional<Account> account = createAccount(context, user);
+    Optional<Account> account = createAccount(context);
 
     if (account.isEmpty()) {
       contextWrapper.json(context, "Invalid money format", HttpStatus.BAD_REQUEST_400);
@@ -112,19 +109,11 @@ public class AccountController {
     }
   }
 
-  private User createUser(Context context) {
-    return User.builder()
-        .id(UUID.randomUUID().toString())
-        .name(contextWrapper.formParam(context, "name"))
-        .surname(contextWrapper.formParam(context, "surname"))
-        .build();
-  }
-
-  private Optional<Account> createAccount(Context context, User user) {
+  private Optional<Account> createAccount(Context context) {
     return parseMoney(context)
         .map(money -> Account.builder()
             .number(UUID.randomUUID().toString())
-            .user(user)
+            .owner(contextWrapper.formParam(context, "owner"))
             .money(money)
             .createdAt(LocalDateTime.now())
             .build()

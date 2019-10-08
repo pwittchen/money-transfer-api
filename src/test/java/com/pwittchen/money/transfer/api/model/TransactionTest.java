@@ -78,15 +78,9 @@ public class TransactionTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    User user = User.builder()
-        .id("2")
-        .name("Test")
-        .surname("User")
-        .build();
-
     Account accountTwo = Account.builder()
         .number("2")
-        .user(user)
+        .owner("testOwner")
         .money(Money.of(CurrencyUnit.EUR, 0))
         .build();
 
@@ -114,15 +108,9 @@ public class TransactionTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    User user = User.builder()
-        .id("2")
-        .name("Test")
-        .surname("User")
-        .build();
-
     Account accountTwo = Account.builder()
         .number("2")
-        .user(user)
+        .owner("testOwner")
         .money(Money.of(CurrencyUnit.EUR, 0))
         .build();
 
@@ -177,15 +165,9 @@ public class TransactionTest {
   }
 
   private Account createAccount() {
-    User user = User.builder()
-        .id("1")
-        .name("John")
-        .surname("Doe")
-        .build();
-
     return Account.builder()
         .number("1")
-        .user(user)
+        .owner("testOwner")
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
   }

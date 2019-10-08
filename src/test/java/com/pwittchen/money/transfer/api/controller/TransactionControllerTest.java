@@ -6,7 +6,6 @@ import com.pwittchen.money.transfer.api.command.implementation.DefaultCommitTran
 import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
-import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.query.GetAllTransactionsQuery;
 import com.pwittchen.money.transfer.api.query.GetTransactionQuery;
 import com.pwittchen.money.transfer.api.query.implementation.DefaultGetAllTransactionsQuery;
@@ -213,14 +212,8 @@ public class TransactionControllerTest {
 
     TransferToTheSameAccountException exception = new TransferToTheSameAccountException();
 
-    User user = User.builder()
-        .id("testId")
-        .name("John")
-        .surname("Kovalsky")
-        .build();
-
     Account account = Account.builder()
-        .user(user)
+        .owner("testOwner")
         .number(accountNumber)
         .money(Money.of(CurrencyUnit.EUR, 20))
         .build();

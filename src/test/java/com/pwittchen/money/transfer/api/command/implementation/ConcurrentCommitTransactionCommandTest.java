@@ -3,13 +3,11 @@ package com.pwittchen.money.transfer.api.command.implementation;
 import com.pwittchen.money.transfer.api.command.CommitTransactionCommand;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
-import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import com.pwittchen.money.transfer.api.repository.inmemory.InMemoryAccountRepository;
 import com.pwittchen.money.transfer.api.repository.inmemory.InMemoryTransactionRepository;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
@@ -195,36 +193,18 @@ public class ConcurrentCommitTransactionCommandTest {
   private Account createSenderAccount(final String number, final Money money) {
     return Account
         .builder()
-        .user(createSenderUser())
+        .owner("testSender")
         .number(number)
         .money(money)
-        .build();
-  }
-
-  private User createSenderUser() {
-    return User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("TestSender")
-        .surname("TestSenderSurname")
         .build();
   }
 
   private Account createReceiverAccount(final String number, final Money money) {
     return Account
         .builder()
-        .user(createReceiverUser())
+        .owner("testReceiver")
         .number(number)
         .money(money)
-        .build();
-  }
-
-  private User createReceiverUser() {
-    return User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("testReceiver")
-        .surname("testReceiverSurname")
         .build();
   }
 }

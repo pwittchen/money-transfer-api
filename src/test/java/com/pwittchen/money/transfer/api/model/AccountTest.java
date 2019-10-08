@@ -65,19 +65,14 @@ public class AccountTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test public void shouldNotBeTheSameWhenUserIsDifferent() {
+  @Test public void shouldNotBeTheSameWhenOwnerIsDifferent() {
     // given
     Account account = createAccount();
-    User user = User.builder()
-        .id("2")
-        .name("Test")
-        .surname("User")
-        .build();
 
     Account anotherAccount = Account.builder()
         .number("1")
         .createdAt(LocalDateTime.now())
-        .user(user)
+        .owner("anotherTestOwner")
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -91,16 +86,11 @@ public class AccountTest {
   @Test public void shouldNotBeTheSameWhenNumberIsDifferent() {
     // given
     Account account = createAccount();
-    User user = User.builder()
-        .id("1")
-        .name("John")
-        .surname("Doe")
-        .build();
 
     Account anotherAccount = Account.builder()
         .number("2")
         .createdAt(LocalDateTime.now())
-        .user(user)
+        .owner("testOwner")
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -114,16 +104,10 @@ public class AccountTest {
   @Test public void shouldNotBeTheSameWhenMoneyDiffers() {
     // given
     Account account = createAccount();
-    User user = User.builder()
-        .id("1")
-        .name("John")
-        .surname("Doe")
-        .build();
-
     Account anotherAccount = Account.builder()
         .number("2")
         .createdAt(LocalDateTime.now())
-        .user(user)
+        .owner("testOwner")
         .money(Money.of(CurrencyUnit.EUR, 20))
         .build();
 
@@ -135,16 +119,10 @@ public class AccountTest {
   }
 
   private Account createAccount() {
-    User user = User.builder()
-        .id("1")
-        .name("John")
-        .surname("Doe")
-        .build();
-
     return Account.builder()
         .number("1")
         .createdAt(LocalDateTime.now())
-        .user(user)
+        .owner("testOwner")
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
   }

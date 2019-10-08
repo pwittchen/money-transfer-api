@@ -1,7 +1,7 @@
 package com.pwittchen.money.transfer.api.command.exception;
 
-public class EmptyUserIdException extends RuntimeException {
+public class EmptyAccountOwnerException extends RuntimeException {
   @Override public String getMessage() {
-    return "User id is empty";
+    return "Account owner is empty";
   }
 }

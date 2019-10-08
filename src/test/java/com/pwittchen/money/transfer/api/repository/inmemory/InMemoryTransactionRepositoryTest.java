@@ -2,9 +2,7 @@ package com.pwittchen.money.transfer.api.repository.inmemory;
 
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
-import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
-import java.util.UUID;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Before;
@@ -107,36 +105,18 @@ public class InMemoryTransactionRepositoryTest {
   private Account createSenderAccount(final String number, final Money money) {
     return Account
         .builder()
-        .user(createSenderUser())
+        .owner("senderOwner")
         .number(number)
         .money(money)
-        .build();
-  }
-
-  private User createSenderUser() {
-    return User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("TestSender")
-        .surname("TestSenderSurname")
         .build();
   }
 
   private Account createReceiverAccount(final String number, final Money money) {
     return Account
         .builder()
-        .user(createReceiverUser())
+        .owner("receiverOwner")
         .number(number)
         .money(money)
-        .build();
-  }
-
-  private User createReceiverUser() {
-    return User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("testReceiver")
-        .surname("testReceiverSurname")
         .build();
   }
 }

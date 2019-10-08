@@ -4,7 +4,6 @@ import com.pwittchen.money.transfer.api.command.DeleteAccountCommand;
 import com.pwittchen.money.transfer.api.command.exception.AccountNotExistsException;
 import com.pwittchen.money.transfer.api.command.exception.EmptyAccountNumberException;
 import com.pwittchen.money.transfer.api.model.Account;
-import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,16 +34,10 @@ public class DefaultDeleteAccountCommandTest {
   @Test public void shouldDeleteAccount() {
     // given
     String accountNumber = UUID.randomUUID().toString();
-    User user = User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("name")
-        .surname("surname")
-        .build();
 
     Account account = Account
         .builder()
-        .user(user)
+        .owner("testOwner")
         .number(accountNumber)
         .money(Money.of(CurrencyUnit.EUR, 10.00))
         .build();

@@ -7,11 +7,9 @@ import com.pwittchen.money.transfer.api.command.exception.NotEnoughMoneyExceptio
 import com.pwittchen.money.transfer.api.command.exception.TransferToTheSameAccountException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
-import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import java.util.Optional;
-import java.util.UUID;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Before;
@@ -46,8 +44,8 @@ public class DefaultCommitTransactionCommandTest {
 
   @Test public void shouldCommitTransaction() {
     // given
-    Account sender = spy(createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100)));
-    Account receiver = spy(createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50)));
+    Account sender = spy(createSenderAccount(Money.of(CurrencyUnit.EUR, 100)));
+    Account receiver = spy(createReceiverAccount(Money.of(CurrencyUnit.EUR, 50)));
 
     Transaction transaction = Transaction
         .builder()
@@ -68,14 +66,12 @@ public class DefaultCommitTransactionCommandTest {
     verify(transactionRepository).create(transaction);
   }
 
-  @Test public void shouldNotCommitTransactionWhenSenderHasNotEnoughMoney() throws Exception {
+  @Test public void shouldNotCommitTransactionWhenSenderHasNotEnoughMoney() {
     // given
-    final String senderNumber = "AC1";
-    final String receiverNumber = "AC2";
-    Account sender = createSenderAccount(senderNumber, Money.of(CurrencyUnit.EUR, 100));
-    Account receiver = createReceiverAccount(receiverNumber, Money.of(CurrencyUnit.EUR, 50));
-    when(accountRepository.get(senderNumber)).thenReturn(Optional.of(sender));
-    when(accountRepository.get(receiverNumber)).thenReturn(Optional.of(receiver));
+    Account sender = createSenderAccount(Money.of(CurrencyUnit.EUR, 100));
+    Account receiver = createReceiverAccount(Money.of(CurrencyUnit.EUR, 50));
+    when(accountRepository.get("AC1")).thenReturn(Optional.of(sender));
+    when(accountRepository.get("AC2")).thenReturn(Optional.of(receiver));
 
     Transaction transaction = Transaction
         .builder()
@@ -96,8 +92,8 @@ public class DefaultCommitTransactionCommandTest {
   @Test(expected = DifferentCurrencyException.class)
   public void shouldNotCommitTransactionWhenMoneyOnTwoAccountsHasDifferentCurrency() {
     // given
-    Account sender = spy(createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100)));
-    Account receiver = spy(createReceiverAccount("AC2", Money.of(CurrencyUnit.GBP, 50)));
+    Account sender = spy(createSenderAccount(Money.of(CurrencyUnit.EUR, 100)));
+    Account receiver = spy(createReceiverAccount(Money.of(CurrencyUnit.GBP, 50)));
 
     Transaction transaction = Transaction
         .builder()
@@ -121,7 +117,7 @@ public class DefaultCommitTransactionCommandTest {
   @Test(expected = TransferToTheSameAccountException.class)
   public void shouldNotCommitTransactionWhenTransferIsToTheSameAccount() {
     // given
-    Account account = spy(createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100)));
+    Account account = spy(createSenderAccount(Money.of(CurrencyUnit.EUR, 100)));
 
     Transaction transaction = Transaction
         .builder()
@@ -144,8 +140,8 @@ public class DefaultCommitTransactionCommandTest {
   @Test(expected = AccountNotExistsException.class)
   public void shouldNotCommitTransactionWhenSenderAccountDoesNotExist() {
     // given
-    Account sender = spy(createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100)));
-    Account receiver = spy(createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50)));
+    Account sender = spy(createSenderAccount(Money.of(CurrencyUnit.EUR, 100)));
+    Account receiver = spy(createReceiverAccount(Money.of(CurrencyUnit.EUR, 50)));
 
     Transaction transaction = Transaction
         .builder()
@@ -168,8 +164,8 @@ public class DefaultCommitTransactionCommandTest {
   @Test(expected = AccountNotExistsException.class)
   public void shouldNotCommitTransactionWhenReceiverAccountDoesNotExist() {
     // given
-    Account sender = spy(createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100)));
-    Account receiver = spy(createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50)));
+    Account sender = spy(createSenderAccount(Money.of(CurrencyUnit.EUR, 100)));
+    Account receiver = spy(createReceiverAccount(Money.of(CurrencyUnit.EUR, 50)));
 
     Transaction transaction = Transaction
         .builder()
@@ -190,39 +186,21 @@ public class DefaultCommitTransactionCommandTest {
     verify(transactionRepository, times(0)).create(transaction);
   }
 
-  private Account createSenderAccount(final String number, final Money money) {
+  private Account createSenderAccount(final Money money) {
     return Account
         .builder()
-        .user(createSenderUser())
+        .owner("testSender")
         .number("AC1")
         .money(money)
         .build();
   }
 
-  private User createSenderUser() {
-    return User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("TestSender")
-        .surname("TestSenderSurname")
-        .build();
-  }
-
-  private Account createReceiverAccount(final String number, final Money money) {
+  private Account createReceiverAccount(final Money money) {
     return Account
         .builder()
-        .user(createReceiverUser())
+        .owner("testReceiver")
         .number("AC2")
         .money(money)
-        .build();
-  }
-
-  private User createReceiverUser() {
-    return User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("testReceiver")
-        .surname("testReceiverSurname")
         .build();
   }
 }

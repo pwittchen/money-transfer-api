@@ -52,8 +52,7 @@ public class RestApiIntegrationTest {
 
   @Test public void shouldCreateAccount() {
     given()
-        .param("name", "testName")
-        .and().param("surname", "testSurname")
+        .param("owner", "testOwner")
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
@@ -63,9 +62,8 @@ public class RestApiIntegrationTest {
 
   @Test public void shouldNotCreateAccountWhenCurrencyIsInvalid() {
     given()
-        .param("name", "testName")
+        .param("owner", "testOwner")
         .and()
-        .param("surname", "testSurname")
         .and()
         .param("currency", "INVALID")
         .and()
@@ -79,8 +77,7 @@ public class RestApiIntegrationTest {
 
   @Test public void shouldNotCreateAccountWhenMoneyIsInvalid() {
     given()
-        .param("name", "testName")
-        .and().param("surname", "testSurname")
+        .param("owner", "testOwner")
         .and().param("currency", "EUR")
         .and().param("money", "INVALID")
         .when().post("/account")
@@ -88,37 +85,19 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test public void shouldNotCreateAccountWhenUserNameIsEmpty() {
+  @Test public void shouldNotCreateAccountWhenOwnerIsEmpty() {
     given()
-        .param("name", "")
-        .and().param("surname", "testSurname")
+        .param("owner", "")
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
-        .then().body(equalTo("\"User name is empty\""))
-        .statusCode(HttpStatus.BAD_REQUEST_400);
-  }
-
-  @Test public void shouldNotCreateAccountWhenUserSurnameIsEmpty() {
-    given()
-        .param("name", "testName")
-        .and()
-        .param("surname", "")
-        .and()
-        .param("currency", "EUR")
-        .and()
-        .param("money", "10.00")
-        .when()
-        .post("/account")
-        .then()
-        .body(equalTo("\"User surname is empty\""))
+        .then().body(equalTo("\"Account owner is empty\""))
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
   @Test public void shouldDeleteAccount() {
     String number = given()
-        .param("name", "testName")
-        .and().param("surname", "testSurname")
+        .param("owner", "testOwner")
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
@@ -142,8 +121,7 @@ public class RestApiIntegrationTest {
 
   @Test public void shouldGetOneAccount() {
     String number = given()
-        .param("name", "testName")
-        .and().param("surname", "testSurname")
+        .param("owner", "testOwner")
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
@@ -160,8 +138,7 @@ public class RestApiIntegrationTest {
 
   @Test public void shouldGetAllAccounts() {
     String number = given()
-        .param("name", "testName")
-        .and().param("surname", "testSurname")
+        .param("owner", "testOwner")
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
@@ -174,16 +151,14 @@ public class RestApiIntegrationTest {
 
   @Test public void shouldCommitTransaction() {
     String numberOne = given()
-        .param("name", "testName1")
-        .and().param("surname", "testSurname1")
+        .param("owner", "testOwner1")
         .and().param("currency", "EUR")
         .and().param("money", "100.00")
         .when().post("/account")
         .then().extract().path("value.number");
 
     String numberTwo = given()
-        .param("name", "testName2")
-        .and().param("surname", "testSurname2")
+        .param("owner", "testOwner2")
         .and().param("currency", "EUR")
         .and().param("money", "50.00")
         .when().post("/account")
@@ -215,8 +190,7 @@ public class RestApiIntegrationTest {
 
   @Test public void shouldTryToCommitTransactionToInvalidAccount() {
     String senderAccountNumber = given()
-        .param("name", "testName1")
-        .and().param("surname", "testSurname1")
+        .param("owner", "testOwner1")
         .and().param("currency", "EUR")
         .and().param("money", "100.00")
         .when().post("/account")
@@ -236,16 +210,14 @@ public class RestApiIntegrationTest {
 
   @Test public void shouldGetOneTransaction() {
     String numberOne = given()
-        .param("name", "testName1")
-        .and().param("surname", "testSurname1")
+        .param("owner", "testOwner1")
         .and().param("currency", "EUR")
         .and().param("money", "100.00")
         .when().post("/account")
         .then().extract().path("value.number");
 
     String numberTwo = given()
-        .param("name", "testName2")
-        .and().param("surname", "testSurname2")
+        .param("owner", "testOwner2")
         .and().param("currency", "EUR")
         .and().param("money", "50.00")
         .when().post("/account")

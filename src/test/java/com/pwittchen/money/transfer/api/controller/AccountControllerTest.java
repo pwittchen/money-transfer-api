@@ -143,8 +143,7 @@ public class AccountControllerTest {
   @Test public void shouldNotCreateAccountIfErrorOccurred() throws Exception {
     // given
     AccountAlreadyExistsException exception = new AccountAlreadyExistsException("1");
-    when(contextWrapper.formParam(context, "name")).thenReturn("John");
-    when(contextWrapper.formParam(context, "surname")).thenReturn("Kovalsky");
+    when(contextWrapper.formParam(context, "owner")).thenReturn("testOwner");
     when(contextWrapper.formParam(context, "currency")).thenReturn("EUR");
     when(contextWrapper.formParam(context, "money")).thenReturn("100.00");
     when(accountRepository.create(any())).thenThrow(exception);

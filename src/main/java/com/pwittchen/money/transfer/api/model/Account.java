@@ -9,7 +9,7 @@ import org.joda.money.Money;
 public class Account {
   private transient final Lock lock;
   private final String number;
-  private final User user;
+  private final String owner;
   private Money money;
   private final LocalDateTime createdAt;
 
@@ -18,14 +18,14 @@ public class Account {
   }
 
   private Account(final Builder builder) {
-    this(builder.number, builder.user, builder.money, builder.createdAt);
+    this(builder.number, builder.owner, builder.money, builder.createdAt);
   }
 
-  public Account(final String number, final User user, final Money money,
+  public Account(final String number, final String owner, final Money money,
       final LocalDateTime createdAt) {
     this.lock = new ReentrantLock();
     this.number = number;
-    this.user = user;
+    this.owner = owner;
     this.money = money;
     this.createdAt = createdAt;
   }
@@ -42,8 +42,8 @@ public class Account {
     return number;
   }
 
-  public User user() {
-    return user;
+  public String owner() {
+    return owner;
   }
 
   public Money money() {
@@ -59,18 +59,18 @@ public class Account {
     if (o == null || getClass() != o.getClass()) return false;
     Account account = (Account) o;
     return Objects.equals(number, account.number)
-        && Objects.equals(user, account.user)
+        && Objects.equals(owner, account.owner)
         && Objects.equals(money, account.money)
         && Objects.equals(createdAt, account.createdAt);
   }
 
   @Override public int hashCode() {
-    return Objects.hash(number, user, money, createdAt);
+    return Objects.hash(number, owner, money, createdAt);
   }
 
   public static class Builder {
     private String number;
-    private User user;
+    private String owner;
     private Money money;
     private LocalDateTime createdAt;
 
@@ -82,8 +82,8 @@ public class Account {
       return this;
     }
 
-    public Builder user(final User user) {
-      this.user = user;
+    public Builder owner(final String owner) {
+      this.owner = owner;
       return this;
     }
 

@@ -1,7 +1,6 @@
 package com.pwittchen.money.transfer.api.repository.inmemory;
 
 import com.pwittchen.money.transfer.api.model.Account;
-import com.pwittchen.money.transfer.api.model.User;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -78,10 +77,7 @@ public class InMemoryAccountRepositoryTest {
     // then
     assertThat(accountRepository.getAll().isEmpty()).isFalse();
     assertThat(createdAccount).isEqualTo(account);
-    assertThat(createdAccount.user()).isEqualTo(account.user());
-    assertThat(createdAccount.user().id()).isEqualTo(account.user().id());
-    assertThat(createdAccount.user().name()).isEqualTo(account.user().name());
-    assertThat(createdAccount.user().surname()).isEqualTo(account.user().surname());
+    assertThat(createdAccount.owner()).isEqualTo(account.owner());
     assertThat(createdAccount.number()).isEqualTo(account.number());
     assertThat(createdAccount.money()).isEqualTo(account.money());
   }
@@ -151,38 +147,20 @@ public class InMemoryAccountRepositoryTest {
   private Account createAccount() {
     return Account
         .builder()
-        .user(createUser())
+        .owner("testOwner")
         .number(UUID.randomUUID().toString())
         .money(Money.of(CurrencyUnit.EUR, 0))
         .createdAt(LocalDateTime.now())
         .build();
   }
 
-  private User createUser() {
-    return User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("John")
-        .surname("Doe")
-        .build();
-  }
-
   private Account createAnotherAccount(String number) {
     return Account
         .builder()
-        .user(createAnotherUser())
+        .owner("anotherOwner")
         .number(number)
         .money(Money.of(CurrencyUnit.EUR, 5))
         .createdAt(LocalDateTime.now())
-        .build();
-  }
-
-  private User createAnotherUser() {
-    return User
-        .builder()
-        .id(UUID.randomUUID().toString())
-        .name("testName")
-        .surname("testSurname")
         .build();
   }
 }
