@@ -28,8 +28,22 @@ public class TransactionTest {
 
   @Test public void objectsShouldBeEqual() {
     // when
-    Transaction transactionOne = createTransaction();
-    Transaction transactionTwo = transactionOne;
+    LocalDateTime now = LocalDateTime.now();
+    Transaction transactionOne = Transaction.builder()
+        .id("TR1")
+        .createdAt(now)
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();;
+
+    Transaction transactionTwo = Transaction.builder()
+        .id("TR1")
+        .createdAt(now)
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();;
 
     // then
     assertThat(transactionOne.equals(transactionTwo)).isTrue();
@@ -68,6 +82,30 @@ public class TransactionTest {
     assertThat(transactionOne.hashCode() == transactionTwo.hashCode()).isTrue();
   }
 
+  @Test public void objectShouldNotBeTheSameWhenOneHasDifferentId() {
+    // given
+    Transaction transactionOne = Transaction.builder()
+        .id("TR1")
+        .createdAt(LocalDateTime.now())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    Transaction transactionTwo = Transaction.builder()
+        .id("TR2")
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    // when
+    boolean isTheSame = transactionOne.equals(transactionTwo);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
   @Test public void objectShouldNotBeTheSameWhenOneHasDifferentSender() {
     // given
     Transaction transactionOne = Transaction.builder()
@@ -78,15 +116,9 @@ public class TransactionTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    Account accountTwo = Account.builder()
-        .number("2")
-        .owner("testOwner")
-        .money(Money.of(CurrencyUnit.EUR, 0))
-        .build();
-
     Transaction transactionTwo = Transaction.builder()
-        .id("TR2")
-        .fromNumber(accountTwo.number())
+        .id("TR1")
+        .fromNumber("anotherNumber")
         .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
@@ -108,17 +140,11 @@ public class TransactionTest {
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
-    Account accountTwo = Account.builder()
-        .number("2")
-        .owner("testOwner")
-        .money(Money.of(CurrencyUnit.EUR, 0))
-        .build();
-
     Transaction transactionTwo = Transaction.builder()
-        .id("TR2")
+        .id("TR1")
         .createdAt(LocalDateTime.now())
         .fromNumber(createAccount().number())
-        .toNumber(accountTwo.number())
+        .toNumber("anotherNumber")
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -140,11 +166,61 @@ public class TransactionTest {
         .build();
 
     Transaction transactionTwo = Transaction.builder()
-        .id("TR2")
+        .id("TR1")
         .createdAt(LocalDateTime.now())
         .fromNumber(createAccount().number())
         .toNumber(createAccount().number())
         .money(Money.of(CurrencyUnit.EUR, 20))
+        .build();
+
+    // when
+    boolean isTheSame = transactionOne.equals(transactionTwo);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test public void objectShouldNotBeTheSameWhenOneMoneyCurrencyDiffers() {
+    // given
+    Transaction transactionOne = Transaction.builder()
+        .id("TR1")
+        .createdAt(LocalDateTime.now())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    Transaction transactionTwo = Transaction.builder()
+        .id("TR1")
+        .createdAt(LocalDateTime.now())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
+        .money(Money.of(CurrencyUnit.USD, 10))
+        .build();
+
+    // when
+    boolean isTheSame = transactionOne.equals(transactionTwo);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test public void objectShouldNotBeTheSameWhenCreationDateDiffers() {
+    // given
+    Transaction transactionOne = Transaction.builder()
+        .id("TR1")
+        .createdAt(LocalDateTime.now())
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    Transaction transactionTwo = Transaction.builder()
+        .id("TR1")
+        .createdAt(LocalDateTime.now().plusSeconds(30))
+        .fromNumber(createAccount().number())
+        .toNumber(createAccount().number())
+        .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
     // when

@@ -26,6 +26,27 @@ public class AccountTest {
     constructor.newInstance();
   }
 
+  @Test public void objectsShouldBeEqualWhenValuesAreTheSame() {
+    // when
+    LocalDateTime now = LocalDateTime.now();
+    Account accountOne = Account.builder()
+        .number("1")
+        .createdAt(now)
+        .owner("testOwner")
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    Account accountTwo = Account.builder()
+        .number("1")
+        .createdAt(now)
+        .owner("testOwner")
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    // then
+    assertThat(accountOne.equals(accountTwo)).isTrue();
+  }
+
   @Test public void objectsShouldBeEqualWhenTheyAreTheSameInstance() {
     // when
     Account account = createAccount();
@@ -65,24 +86,6 @@ public class AccountTest {
     assertThat(isTheSame).isFalse();
   }
 
-  @Test public void shouldNotBeTheSameWhenOwnerIsDifferent() {
-    // given
-    Account account = createAccount();
-
-    Account anotherAccount = Account.builder()
-        .number("1")
-        .createdAt(LocalDateTime.now())
-        .owner("anotherTestOwner")
-        .money(Money.of(CurrencyUnit.EUR, 10))
-        .build();
-
-    // when
-    boolean isTheSame = account.equals(anotherAccount);
-
-    // then
-    assertThat(isTheSame).isFalse();
-  }
-
   @Test public void shouldNotBeTheSameWhenNumberIsDifferent() {
     // given
     Account account = createAccount();
@@ -101,14 +104,67 @@ public class AccountTest {
     assertThat(isTheSame).isFalse();
   }
 
+  @Test public void shouldNotBeTheSameWhenCreationDatesAreDifferent() {
+    // given
+    Account account = createAccount();
+
+    Account anotherAccount = Account.builder()
+        .number("1")
+        .createdAt(LocalDateTime.now().plusSeconds(30))
+        .owner("testOwner")
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    // when
+    boolean isTheSame = account.equals(anotherAccount);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test public void shouldNotBeTheSameWhenOwnerIsDifferent() {
+    // given
+    Account account = createAccount();
+
+    Account anotherAccount = Account.builder()
+        .number("1")
+        .createdAt(LocalDateTime.now())
+        .owner("anotherTestOwner")
+        .money(Money.of(CurrencyUnit.EUR, 10))
+        .build();
+
+    // when
+    boolean isTheSame = account.equals(anotherAccount);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
   @Test public void shouldNotBeTheSameWhenMoneyDiffers() {
     // given
     Account account = createAccount();
     Account anotherAccount = Account.builder()
-        .number("2")
+        .number("1")
         .createdAt(LocalDateTime.now())
         .owner("testOwner")
         .money(Money.of(CurrencyUnit.EUR, 20))
+        .build();
+
+    // when
+    boolean isTheSame = account.equals(anotherAccount);
+
+    // then
+    assertThat(isTheSame).isFalse();
+  }
+
+  @Test public void shouldNotBeTheSameWhenMoneyCurrencyDiffers() {
+    // given
+    Account account = createAccount();
+    Account anotherAccount = Account.builder()
+        .number("1")
+        .createdAt(LocalDateTime.now())
+        .owner("testOwner")
+        .money(Money.of(CurrencyUnit.USD, 10))
         .build();
 
     // when
