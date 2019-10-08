@@ -173,7 +173,7 @@ public class ConcurrentCommitTransactionCommandTest {
 
   private void commitTransaction(Transaction transaction) {
     try {
-      Thread.sleep(ThreadLocalRandom.current().nextInt(3000));
+      Thread.sleep(ThreadLocalRandom.current().nextInt(3000)); // simulating random delay
       commitTransactionCommand.run(transaction);
       waiter.assertNotNull(transaction);
       System.out.println(String.format("executing: %s, %s -> %s (%s), time: %d ms, thread: %s",
