@@ -154,6 +154,17 @@ public class TransactionTest {
     assertThat(isTheSame).isFalse();
   }
 
+  @Test public void shouldBeCreatedJustNow() {
+    // given
+    final Transaction transaction = createTransaction();
+
+    // when
+    boolean isCreatedJustNow = transaction.createdAt().isBefore(LocalDateTime.now());
+
+    // then
+    assertThat(isCreatedJustNow).isTrue();
+  }
+
   private Transaction createTransaction() {
     return Transaction.builder()
         .id("TR1")

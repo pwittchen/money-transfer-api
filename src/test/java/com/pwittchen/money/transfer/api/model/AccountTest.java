@@ -118,6 +118,26 @@ public class AccountTest {
     assertThat(isTheSame).isFalse();
   }
 
+  @Test public void shouldBeCreatedJustNow() {
+    // given
+    Account account = createAccount();
+
+    // when
+    boolean isCreatedJustNow = account.createdAt().isBefore(LocalDateTime.now());
+
+    // then
+    assertThat(isCreatedJustNow).isTrue();
+  }
+
+  @Test public void objectsShouldBeInTheSameBucket() {
+    // when
+    Account accountOne = createAccount();
+    Account accountTwo = accountOne;
+
+    // then
+    assertThat(accountOne.hashCode() == accountTwo.hashCode()).isTrue();
+  }
+
   private Account createAccount() {
     return Account.builder()
         .number("1")
