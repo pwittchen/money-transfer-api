@@ -22,8 +22,7 @@ public class Transaction {
   }
 
   private Transaction(final String id, final String fromNumber, final String toNumber,
-      final Money money,
-      final LocalDateTime createdAt) {
+      final Money money, final LocalDateTime createdAt) {
     this.isRunning = new AtomicBoolean(true);
     this.id = id;
     this.fromNumber = fromNumber;
