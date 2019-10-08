@@ -16,6 +16,7 @@ Building and running the application
 
 Please note: If we're on Windows, use `gradlew.bat` instead of `./gradlew` script
 
+- This application requires Java 11 for building and running
 - To build an application, execute: `./gradlew build`
 - To start an application on default port `8000`, execute: `./gradlew run`
 - To build an application as a "fat jar", execute: `./gradlew shadowJar`
