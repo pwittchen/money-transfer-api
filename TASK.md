@@ -1,15 +1,19 @@
-Java/Scala Test
-===============
+Backend Test
+============
 
 Design and implement a RESTful API (including data model and the backing implementation) for money transfers between accounts.
 
 **Explicit  requirements**:
 
-1. keep  it  simple  and  to  the  point  (e.g.  no  need  to  implement  any  authentication,  assume  the API is invoked  by  another internal  system/service)
-2. use  whatever  frameworks/libraries  you  like  (except  Spring,  sorry!)  but  don't  forget  about  the requirement  #1
-3. the  datastore  should  run  in-memory  for  the  sake  of  this  test
-4. the  final  result  should  be  executable  as  a   standalone  program  (should  not require a pre-installed container/server)
-5. demonstrate  with  tests  that  the  API  works  as  expected
+1. You can use Java or Kotlin
+2. Keep it simple and to the point (e.g. no need to implement any authentication).
+3. Assume the API is invoked by multiple systems and services on behalf of end users.
+4. You can use frameworks/libraries if you like (except Spring), but don't forget about
+requirement #2 and keep it simple and avoid heavy frameworks.
+5. The datastore should run in-memory for the sake of this test.
+6. The final result should be executable as a standalone program (should not require a
+pre-installed container/server).
+7. Demonstrate with tests that the API works as expected.
 
 **Implicit  requirements**:
 
