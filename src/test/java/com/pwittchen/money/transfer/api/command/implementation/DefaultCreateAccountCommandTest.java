@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,6 +80,18 @@ public class DefaultCreateAccountCommandTest {
 
     // then
     verify(accountRepository, times(0)).create(account);
+  }
+
+  @Test
+  public void shouldProduceAppropriateErrorMessageForEmptyAccountNumber() {
+    // given
+    String expectedMessage = "Empty account number";
+
+    // when
+    EmptyAccountNumberException exception = new EmptyAccountNumberException();
+
+    // then
+    assertThat(exception.getMessage()).isEqualTo(expectedMessage);
   }
 
   @Test(expected = AccountAlreadyExistsException.class)
