@@ -85,7 +85,7 @@ public class DefaultCreateAccountCommandTest {
   @Test
   public void shouldProduceAppropriateErrorMessageForEmptyAccountNumber() {
     // given
-    String expectedMessage = "Empty account number";
+    String expectedMessage = "Account number is empty";
 
     // when
     EmptyAccountNumberException exception = new EmptyAccountNumberException();

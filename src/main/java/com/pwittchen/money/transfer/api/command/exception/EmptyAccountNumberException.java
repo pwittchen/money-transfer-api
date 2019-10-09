@@ -2,6 +2,6 @@ package com.pwittchen.money.transfer.api.command.exception;
 
 public class EmptyAccountNumberException extends RuntimeException {
   @Override public String getMessage() {
-    return "Empty account number";
+    return "Account number is empty";
   }
 }
