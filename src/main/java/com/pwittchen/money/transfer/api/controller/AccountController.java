@@ -44,7 +44,7 @@ public class AccountController {
   @OpenApi(
       method = HttpMethod.GET,
       path = "/account/:id",
-      description = "gets single account with a given id",
+      description = "gets a single account with a given id",
       pathParams = @OpenApiParam(name = "id", type = Integer.class),
       responses = {
           @OpenApiResponse(status = "200", content = @OpenApiContent(from = Account.class)),
