@@ -6,12 +6,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.joda.money.Money;
 
+@SuppressWarnings("WeakerAccess") // public access of class attributes is required by OpenAPI
 public class Account {
   private transient final Lock lock;
-  private final String number;
-  private final String owner;
-  private Money money;
-  private final LocalDateTime createdAt;
+  public final String number;
+  public final String owner;
+  public Money money;
+  public final LocalDateTime createdAt;
 
   private Account() {
     this(builder());

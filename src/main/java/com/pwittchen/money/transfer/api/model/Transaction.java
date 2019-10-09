@@ -5,13 +5,14 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.joda.money.Money;
 
+@SuppressWarnings("WeakerAccess") // public access of class attributes is required by OpenAPI
 public class Transaction {
   private final transient AtomicBoolean isRunning;
-  private final String id;
-  private final String fromNumber;
-  private final String toNumber;
-  private final Money money;
-  private final LocalDateTime createdAt;
+  public final String id;
+  public final String fromNumber;
+  public final String toNumber;
+  public final Money money;
+  public final LocalDateTime createdAt;
 
   private Transaction() {
     this(builder());
