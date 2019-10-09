@@ -60,11 +60,9 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
   }
 
   private void validateTransaction(Transaction transaction) {
-    Account sender, receiver;
-    synchronized (this) {
-      sender = getSender(transaction.from());
-      receiver = getReceiver(transaction.to());
-    }
+    Account sender = getSender(transaction.from());
+    Account receiver = getReceiver(transaction.to());
+
     if (sender.money().isLessThan(transaction.money())) {
       throw new NotEnoughMoneyException(sender.number());
     }
