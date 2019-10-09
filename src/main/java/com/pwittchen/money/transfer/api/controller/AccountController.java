@@ -134,7 +134,7 @@ public class AccountController {
   @OpenApi(
       method = HttpMethod.DELETE,
       path = "/account/:id",
-      description = "deletes an account with given id",
+      description = "deletes an account with a given id",
       pathParams = @OpenApiParam(name = "id", type = Integer.class),
       responses = {
           @OpenApiResponse(status = "200", content = @OpenApiContent(from = String.class)),

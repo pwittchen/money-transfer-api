@@ -40,7 +40,7 @@ public class TransactionController {
   @OpenApi(
       method = HttpMethod.GET,
       path = "/transaction/:id",
-      description = "gets single transaction with a given id",
+      description = "gets a single transaction with a given id",
       pathParams = @OpenApiParam(name = "id", type = Integer.class),
       responses = {
           @OpenApiResponse(status = "200", content = @OpenApiContent(from = Transaction.class)),
