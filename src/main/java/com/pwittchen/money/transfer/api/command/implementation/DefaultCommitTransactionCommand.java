@@ -37,8 +37,8 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
       Account sender, receiver;
       synchronized (this) {
         validateTransaction(transaction);
-        sender = getSender(transaction.fromNumber());
-        receiver = getReceiver(transaction.toNumber());
+        sender = getSender(transaction.from());
+        receiver = getReceiver(transaction.to());
       }
       if (sender.lock().tryLock()) {
         try {
@@ -62,16 +62,16 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
   private void validateTransaction(Transaction transaction) {
     Account sender, receiver;
     synchronized (this) {
-      sender = getSender(transaction.fromNumber());
-      receiver = getReceiver(transaction.toNumber());
+      sender = getSender(transaction.from());
+      receiver = getReceiver(transaction.to());
     }
     if (sender.money().isLessThan(transaction.money())) {
       throw new NotEnoughMoneyException(sender.number());
     }
     if (!sender.money().isSameCurrency(receiver.money())) {
-      throw new DifferentCurrencyException(transaction.fromNumber(), transaction.toNumber());
+      throw new DifferentCurrencyException(transaction.from(), transaction.to());
     }
-    if (transaction.fromNumber().equals(transaction.toNumber())) {
+    if (transaction.from().equals(transaction.to())) {
       throw new TransferToTheSameAccountException();
     }
   }

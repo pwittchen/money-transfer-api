@@ -9,8 +9,8 @@ import org.joda.money.Money;
 public class Transaction {
   private final transient AtomicBoolean isRunning;
   public final String id;
-  public final String fromNumber;
-  public final String toNumber;
+  public final String from;
+  public final String to;
   public final Money money;
   public final LocalDateTime createdAt;
 
@@ -22,12 +22,12 @@ public class Transaction {
     this(builder.id, builder.from, builder.to, builder.money, builder.createdAt);
   }
 
-  private Transaction(final String id, final String fromNumber, final String toNumber,
+  private Transaction(final String id, final String from, final String to,
       final Money money, final LocalDateTime createdAt) {
     this.isRunning = new AtomicBoolean(true);
     this.id = id;
-    this.fromNumber = fromNumber;
-    this.toNumber = toNumber;
+    this.from = from;
+    this.to = to;
     this.money = money;
     this.createdAt = createdAt;
   }
@@ -44,12 +44,12 @@ public class Transaction {
     return id;
   }
 
-  public String fromNumber() {
-    return fromNumber;
+  public String from() {
+    return from;
   }
 
-  public String toNumber() {
-    return toNumber;
+  public String to() {
+    return to;
   }
 
   public Money money() {
@@ -72,14 +72,14 @@ public class Transaction {
     Transaction that = (Transaction) o;
 
     return Objects.equals(id, that.id)
-        && Objects.equals(fromNumber, that.fromNumber)
-        && Objects.equals(toNumber, that.toNumber)
+        && Objects.equals(from, that.from)
+        && Objects.equals(to, that.to)
         && Objects.equals(money, that.money)
         && Objects.equals(createdAt, that.createdAt);
   }
 
   @Override public int hashCode() {
-    return Objects.hash(id, fromNumber, toNumber, money, createdAt);
+    return Objects.hash(id, from, to, money, createdAt);
   }
 
   public static class Builder {
@@ -97,12 +97,12 @@ public class Transaction {
       return this;
     }
 
-    public Builder fromNumber(final String from) {
+    public Builder from(final String from) {
       this.from = from;
       return this;
     }
 
-    public Builder toNumber(final String to) {
+    public Builder to(final String to) {
       this.to = to;
       return this;
     }

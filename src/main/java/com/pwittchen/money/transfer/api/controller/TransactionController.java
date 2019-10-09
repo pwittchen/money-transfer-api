@@ -116,8 +116,8 @@ public class TransactionController {
     return Transaction.builder()
         .id(UUID.randomUUID().toString())
         .createdAt(LocalDateTime.now())
-        .fromNumber(senderNumber)
-        .toNumber(receiverNumber)
+        .from(senderNumber)
+        .to(receiverNumber)
         .money(money)
         .build();
   }

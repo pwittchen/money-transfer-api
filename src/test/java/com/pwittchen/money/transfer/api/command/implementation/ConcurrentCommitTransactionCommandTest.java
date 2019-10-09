@@ -75,8 +75,8 @@ public class ConcurrentCommitTransactionCommandTest {
         .builder()
         .id("transaction_1")
         .createdAt(LocalDateTime.now())
-        .fromNumber(accountOne.number())
-        .toNumber(accountTwo.number())
+        .from(accountOne.number())
+        .to(accountTwo.number())
         .money(Money.of(CurrencyUnit.EUR, money1))
         .build();
 
@@ -85,8 +85,8 @@ public class ConcurrentCommitTransactionCommandTest {
         .builder()
         .id("transaction_2")
         .createdAt(LocalDateTime.now())
-        .fromNumber(accountOne.number())
-        .toNumber(accountTwo.number())
+        .from(accountOne.number())
+        .to(accountTwo.number())
         .money(Money.of(CurrencyUnit.EUR, money2))
         .build();
 
@@ -95,8 +95,8 @@ public class ConcurrentCommitTransactionCommandTest {
         .builder()
         .id("transaction_3")
         .createdAt(LocalDateTime.now())
-        .fromNumber(accountTwo.number())
-        .toNumber(accountOne.number())
+        .from(accountTwo.number())
+        .to(accountOne.number())
         .money(Money.of(CurrencyUnit.EUR, money3))
         .build();
 
@@ -105,8 +105,8 @@ public class ConcurrentCommitTransactionCommandTest {
         .builder()
         .id("transaction_4")
         .createdAt(LocalDateTime.now())
-        .fromNumber(accountTwo.number())
-        .toNumber(accountOne.number())
+        .from(accountTwo.number())
+        .to(accountOne.number())
         .money(Money.of(CurrencyUnit.EUR, money4))
         .build();
 
@@ -141,8 +141,8 @@ public class ConcurrentCommitTransactionCommandTest {
         .builder()
         .id("transaction_1")
         .createdAt(LocalDateTime.now())
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -151,8 +151,8 @@ public class ConcurrentCommitTransactionCommandTest {
         .builder()
         .id("transaction_2")
         .createdAt(LocalDateTime.now())
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -178,8 +178,8 @@ public class ConcurrentCommitTransactionCommandTest {
       waiter.assertNotNull(transaction);
       System.out.println(String.format("executing: %s, %s -> %s (%s), time: %d ms, thread: %s",
           transaction.id(),
-          transaction.fromNumber(),
-          transaction.toNumber(),
+          transaction.from(),
+          transaction.to(),
           transaction.money(),
           TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS),
           Thread.currentThread().getName())

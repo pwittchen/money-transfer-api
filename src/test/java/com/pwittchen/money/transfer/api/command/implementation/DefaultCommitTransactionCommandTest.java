@@ -51,8 +51,8 @@ public class DefaultCommitTransactionCommandTest {
     Transaction transaction = Transaction
         .builder()
         .id("TR1")
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -77,8 +77,8 @@ public class DefaultCommitTransactionCommandTest {
     Transaction transaction = Transaction
         .builder()
         .id("TR1")
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 600))
         .build();
 
@@ -99,8 +99,8 @@ public class DefaultCommitTransactionCommandTest {
     Transaction transaction = Transaction
         .builder()
         .id("TR1")
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -136,8 +136,8 @@ public class DefaultCommitTransactionCommandTest {
     Transaction transaction = Transaction
         .builder()
         .id("TR1")
-        .fromNumber(account.number())
-        .toNumber(account.number())
+        .from(account.number())
+        .to(account.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -160,8 +160,8 @@ public class DefaultCommitTransactionCommandTest {
     Transaction transaction = Transaction
         .builder()
         .id("TR1")
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -184,8 +184,8 @@ public class DefaultCommitTransactionCommandTest {
     Transaction transaction = Transaction
         .builder()
         .id("TR1")
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 

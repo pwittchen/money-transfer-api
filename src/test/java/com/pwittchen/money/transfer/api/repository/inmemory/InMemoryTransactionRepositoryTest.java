@@ -33,8 +33,8 @@ public class InMemoryTransactionRepositoryTest {
     Transaction transaction = Transaction
         .builder()
         .id("TR1")
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -46,8 +46,8 @@ public class InMemoryTransactionRepositoryTest {
     Transaction createdTransaction = transactionRepository.get(transaction.id()).get();
     assertThat(createdTransaction.equals(transaction)).isTrue();
     assertThat(createdTransaction.id()).isEqualTo(transaction.id());
-    assertThat(createdTransaction.fromNumber()).isEqualTo(transaction.fromNumber());
-    assertThat(createdTransaction.toNumber()).isEqualTo(transaction.toNumber());
+    assertThat(createdTransaction.from()).isEqualTo(transaction.from());
+    assertThat(createdTransaction.to()).isEqualTo(transaction.to());
     assertThat(createdTransaction.money()).isEqualTo(transaction.money());
   }
 
@@ -59,16 +59,16 @@ public class InMemoryTransactionRepositoryTest {
     Transaction transactionOne = Transaction
         .builder()
         .id("TR1")
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
     Transaction transactionTwo = Transaction
         .builder()
         .id("TR2")
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
@@ -88,8 +88,8 @@ public class InMemoryTransactionRepositoryTest {
     Transaction transaction = Transaction
         .builder()
         .id("TR1")
-        .fromNumber(sender.number())
-        .toNumber(receiver.number())
+        .from(sender.number())
+        .to(receiver.number())
         .money(Money.of(CurrencyUnit.EUR, 10))
         .build();
 
