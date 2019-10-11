@@ -2,10 +2,8 @@ package com.pwittchen.money.transfer.api.configuration.module;
 
 import com.pwittchen.money.transfer.api.command.CommitTransactionCommand;
 import com.pwittchen.money.transfer.api.command.CreateAccountCommand;
-import com.pwittchen.money.transfer.api.command.DeleteAccountCommand;
 import com.pwittchen.money.transfer.api.command.implementation.DefaultCommitTransactionCommand;
 import com.pwittchen.money.transfer.api.command.implementation.DefaultCreateAccountCommand;
-import com.pwittchen.money.transfer.api.command.implementation.DefaultDeleteAccountCommand;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import dagger.Module;
@@ -30,12 +28,5 @@ public class CommandModule {
   @Singleton
   CreateAccountCommand provideCreateAccountCommand(AccountRepository accountRepository) {
     return new DefaultCreateAccountCommand(accountRepository);
-  }
-
-  @Inject
-  @Provides
-  @Singleton
-  DeleteAccountCommand provideDeleteAccountCommand(AccountRepository accountRepository) {
-    return new DefaultDeleteAccountCommand(accountRepository);
   }
 }

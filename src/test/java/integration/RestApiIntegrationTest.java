@@ -1,11 +1,19 @@
 package integration;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.pwittchen.money.transfer.api.Application;
+import com.pwittchen.money.transfer.api.model.Account;
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import java.util.List;
 import org.eclipse.jetty.http.HttpStatus;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.restassured.RestAssured.delete;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
@@ -95,45 +103,8 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test public void shouldDeleteAccount() {
-    String number = given()
-        .param("owner", "testOwner")
-        .and().param("currency", "EUR")
-        .and().param("money", "10.00")
-        .when().post("/account")
-        .then().extract().path("value.number");
-
-    delete("/account/".concat(number))
-        .then()
-        .body(equalTo("\"account with number " + number + " deleted\""))
-        .statusCode(HttpStatus.OK_200);
-  }
-
-  @Test public void shouldTryToDeleteInvalidAccount() {
-    delete("/account/invalid")
-        .then().body(equalTo("\"Account with number invalid does not exist\""))
-        .statusCode(HttpStatus.BAD_REQUEST_400);
-  }
-
   @Test public void shouldTryToDeleteEmptyAccount() {
     delete("/account").then().statusCode(HttpStatus.NOT_FOUND_404);
-  }
-
-  @Test public void shouldGetOneAccount() {
-    String number = given()
-        .param("owner", "testOwner")
-        .and().param("currency", "EUR")
-        .and().param("money", "10.00")
-        .when().post("/account")
-        .then().extract().path("value.number");
-
-    get("/account/".concat(number)).then().statusCode(HttpStatus.OK_200);
-  }
-
-  @Test public void shouldNotGetOneAccountIfItDoesNotExist() {
-    get("/account/invalid")
-        .then().body(equalTo("\"account with id invalid does not exist\""))
-        .statusCode(HttpStatus.NOT_FOUND_404);
   }
 
   @Test public void shouldGetAllAccounts() {
@@ -142,10 +113,12 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when().post("/account")
-        .then().extract().path("value.number");
+        .then()
+        .extract().path("value.number");
 
     get("/account")
-        .then().body(containsString(number))
+        .then()
+        .body(containsString(number))
         .statusCode(HttpStatus.OK_200);
   }
 
@@ -155,14 +128,16 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "100.00")
         .when().post("/account")
-        .then().extract().path("value.number");
+        .then()
+        .extract().path("value.number");
 
     String numberTwo = given()
         .param("owner", "testOwner2")
         .and().param("currency", "EUR")
         .and().param("money", "50.00")
         .when().post("/account")
-        .then().extract().path("value.number");
+        .then()
+        .extract().path("value.number");
 
     given()
         .param("from", numberOne)
@@ -173,6 +148,29 @@ public class RestApiIntegrationTest {
         .post("/transaction")
         .then()
         .statusCode(HttpStatus.OK_200);
+
+    Response response = get("/account");
+
+    List<Account> accounts = new Gson().fromJson(
+        response.asString(), new TypeToken<List<Account>>() {
+        }.getType()
+    );
+
+    accounts
+        .stream()
+        .filter(account -> account.number().equals(numberOne))
+        .findFirst()
+        .ifPresent(
+            account -> assertThat(account.money()).isEqualTo(Money.of(CurrencyUnit.EUR, 90))
+        );
+
+    accounts
+        .stream()
+        .filter(account -> account.number().equals(numberTwo))
+        .findFirst()
+        .ifPresent(
+            account -> assertThat(account.money()).isEqualTo(Money.of(CurrencyUnit.EUR, 60))
+        );
   }
 
   @Test public void shouldTryToCommitTransactionFromInvalidAccount() {
@@ -194,7 +192,8 @@ public class RestApiIntegrationTest {
         .and().param("currency", "EUR")
         .and().param("money", "100.00")
         .when().post("/account")
-        .then().extract().path("value.number");
+        .then()
+        .extract().path("value.number");
 
     given()
         .param("from", senderAccountNumber)
@@ -208,7 +207,7 @@ public class RestApiIntegrationTest {
         .statusCode(HttpStatus.BAD_REQUEST_400);
   }
 
-  @Test public void shouldGetOneTransaction() {
+  @Test public void shouldGetAllTransactions() {
     String numberOne = given()
         .param("owner", "testOwner1")
         .and().param("currency", "EUR")
@@ -223,29 +222,18 @@ public class RestApiIntegrationTest {
         .when().post("/account")
         .then().extract().path("value.number");
 
-    String transactionId = given()
+    String id = given()
         .param("from", numberOne)
         .and().param("to", numberTwo)
         .and().param("currency", "EUR")
         .and().param("money", "10.00")
         .when()
         .post("/transaction")
-        .then()
-        .extract().path("id");
+        .then().extract().path("id");
 
-    get("/transaction/".concat(transactionId))
-        .then()
-        .body("id", equalTo(transactionId));
-  }
-
-  @Test public void shouldTryToGetOneTransactionForInvalidId() {
-    get("/transaction/invalid")
-        .then()
-        .body(equalTo("\"transaction with id invalid does not exist\""));
-  }
-
-  @Test public void shouldGetAllTransactions() {
-    get("/transaction").then().statusCode(HttpStatus.OK_200);
+    get("/transaction")
+        .then().body(containsString(id))
+        .statusCode(HttpStatus.OK_200);
   }
 
   @Test public void shouldGetNotFoundStatusForInvalidEndpoint() {

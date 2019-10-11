@@ -4,7 +4,6 @@ import com.pwittchen.money.transfer.api.command.CommitTransactionCommand;
 import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.query.GetAllTransactionsQuery;
-import com.pwittchen.money.transfer.api.query.GetTransactionQuery;
 import io.javalin.http.Context;
 import io.javalin.plugin.openapi.annotations.HttpMethod;
 import io.javalin.plugin.openapi.annotations.OpenApi;
@@ -21,42 +20,17 @@ import org.joda.money.Money;
 public class TransactionController {
 
   private ContextWrapper contextWrapper;
-  private GetTransactionQuery getTransactionQuery;
   private GetAllTransactionsQuery getAllTransactionsQuery;
   private CommitTransactionCommand commitTransactionCommand;
 
   @Inject public TransactionController(
       ContextWrapper contextWrapper,
-      GetTransactionQuery getTransactionQuery,
       GetAllTransactionsQuery getAllTransactionsQuery,
       CommitTransactionCommand commitTransactionCommand
   ) {
     this.contextWrapper = contextWrapper;
-    this.getTransactionQuery = getTransactionQuery;
     this.getAllTransactionsQuery = getAllTransactionsQuery;
     this.commitTransactionCommand = commitTransactionCommand;
-  }
-
-  @OpenApi(
-      method = HttpMethod.GET,
-      path = "/transaction/:id",
-      description = "gets a single transaction with a given id",
-      pathParams = @OpenApiParam(name = "id", type = Integer.class),
-      responses = {
-          @OpenApiResponse(status = "200", content = @OpenApiContent(from = Transaction.class)),
-          @OpenApiResponse(status = "404", content = @OpenApiContent(from = String.class))
-      }
-  )
-  public void getOne(final Context context) {
-    String id = contextWrapper.pathParam(context, "id");
-    Optional<Transaction> transaction = getTransactionQuery.run(id);
-
-    if (transaction.isPresent()) {
-      contextWrapper.json(context, transaction.get());
-    } else {
-      String message = String.format("transaction with id %s does not exist", id);
-      contextWrapper.json(context, message, HttpStatus.NOT_FOUND_404);
-    }
   }
 
   @OpenApi(

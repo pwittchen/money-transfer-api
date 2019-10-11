@@ -7,15 +7,10 @@ import com.pwittchen.money.transfer.api.controller.context.ContextWrapper;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.query.GetAllTransactionsQuery;
-import com.pwittchen.money.transfer.api.query.GetTransactionQuery;
-import com.pwittchen.money.transfer.api.query.implementation.DefaultGetAllTransactionsQuery;
-import com.pwittchen.money.transfer.api.query.implementation.DefaultGetTransactionQuery;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
 import io.javalin.http.Context;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import org.eclipse.jetty.http.HttpStatus;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
@@ -44,66 +39,22 @@ public class TransactionControllerTest {
 
   @Mock private Context context;
 
-  @Mock private Transaction transaction;
-
   @Mock private Account account;
 
-  private GetTransactionQuery getTransactionQuery;
-  private GetAllTransactionsQuery getAllTransactionsQuery;
+  @Mock private GetAllTransactionsQuery getAllTransactionsQuery;
+
   private CommitTransactionCommand commitTransactionCommand;
 
   @Before public void setUp() {
-    getTransactionQuery = spy(new DefaultGetTransactionQuery(transactionRepository));
-    getAllTransactionsQuery = spy(new DefaultGetAllTransactionsQuery(transactionRepository));
     commitTransactionCommand = spy(new DefaultCommitTransactionCommand(
         accountRepository, transactionRepository
     ));
 
     this.controller = new TransactionController(
         contextWrapper,
-        getTransactionQuery,
         getAllTransactionsQuery,
         commitTransactionCommand
     );
-  }
-
-  @Test public void shouldGetOneTransaction() {
-    // given
-    when(contextWrapper.pathParam(context, "id")).thenReturn("1");
-    when(transactionRepository.get("1")).thenReturn(Optional.of(transaction));
-
-    // when
-    controller.getOne(context);
-
-    // then
-    verify(contextWrapper).json(context, transaction);
-  }
-
-  @Test public void shouldNotGetOneTransaction() {
-    // given
-    String id = "1";
-    when(contextWrapper.pathParam(context, "id")).thenReturn(id);
-    when(transactionRepository.get(id)).thenReturn(Optional.empty());
-
-    // when
-    controller.getOne(context);
-
-    // then
-    verify(contextWrapper).json(context,
-        "transaction with id " + id + " does not exist",
-        HttpStatus.NOT_FOUND_404);
-  }
-
-  @Test public void shouldGetAllTransactions() {
-    // given
-    BlockingQueue<Transaction> transactions = new LinkedBlockingQueue<>();
-    when(transactionRepository.getAll()).thenReturn(transactions);
-
-    // when
-    controller.getAll(context);
-
-    // then
-    verify(contextWrapper).json(context, transactions);
   }
 
   @Test public void shouldCommitTransaction() throws Exception {

@@ -15,7 +15,6 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.javalin.apibuilder.ApiBuilder.delete;
 import static io.javalin.apibuilder.ApiBuilder.get;
 import static io.javalin.apibuilder.ApiBuilder.path;
 import static io.javalin.apibuilder.ApiBuilder.post;
@@ -69,16 +68,11 @@ public class Application {
 
     app.routes(() -> {
       path("/account", () -> {
-        path(":id", () -> {
-          get(accountController::getOne);
-          delete(accountController::delete);
-        });
         get(accountController::getAll);
         post(accountController::create);
       });
 
       path("/transaction", () -> {
-        path(":id", () -> get(transactionController::getOne));
         get(transactionController::getAll);
         post(transactionController::commit);
       });

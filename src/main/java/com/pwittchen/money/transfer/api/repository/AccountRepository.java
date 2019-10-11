@@ -13,8 +13,4 @@ public interface AccountRepository {
   Account create(Account account);
 
   void transfer(Account from, Account to, Money money);
-
-  void delete(String number);
-
-  void clear();
 }

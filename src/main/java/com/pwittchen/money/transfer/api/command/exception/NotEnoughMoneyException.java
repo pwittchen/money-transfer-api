@@ -1,6 +1,7 @@
 package com.pwittchen.money.transfer.api.command.exception;
 
 public class NotEnoughMoneyException extends RuntimeException {
+
   private final String accountNumber;
 
   public NotEnoughMoneyException(final String accountNumber) {

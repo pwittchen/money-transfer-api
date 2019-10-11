@@ -25,32 +25,6 @@ public class InMemoryTransactionRepositoryTest {
     transactionRepository = new InMemoryTransactionRepository();
   }
 
-  @Test public void shouldGetCreatedTransaction() {
-    // given
-    Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));
-    Account receiver = createReceiverAccount("AC2", Money.of(CurrencyUnit.EUR, 50));
-
-    Transaction transaction = Transaction
-        .builder()
-        .id("TR1")
-        .from(sender.number())
-        .to(receiver.number())
-        .money(Money.of(CurrencyUnit.EUR, 10))
-        .build();
-
-    // when
-    transactionRepository.create(transaction);
-
-    // then
-    //noinspection OptionalGetWithoutIsPresent
-    Transaction createdTransaction = transactionRepository.get(transaction.id()).get();
-    assertThat(createdTransaction.equals(transaction)).isTrue();
-    assertThat(createdTransaction.id()).isEqualTo(transaction.id());
-    assertThat(createdTransaction.from()).isEqualTo(transaction.from());
-    assertThat(createdTransaction.to()).isEqualTo(transaction.to());
-    assertThat(createdTransaction.money()).isEqualTo(transaction.money());
-  }
-
   @Test public void shouldGetAllTransactions() {
     // given
     Account sender = createSenderAccount("AC1", Money.of(CurrencyUnit.EUR, 100));

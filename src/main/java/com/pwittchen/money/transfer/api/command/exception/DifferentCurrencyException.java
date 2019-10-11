@@ -1,6 +1,7 @@
 package com.pwittchen.money.transfer.api.command.exception;
 
 public class DifferentCurrencyException extends RuntimeException {
+
   private final String accountNumberFrom;
   private final String accountNumberTo;
 

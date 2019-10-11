@@ -4,6 +4,7 @@ import com.pwittchen.money.transfer.api.command.CreateAccountCommand;
 import com.pwittchen.money.transfer.api.command.exception.AccountAlreadyExistsException;
 import com.pwittchen.money.transfer.api.command.exception.EmptyAccountNumberException;
 import com.pwittchen.money.transfer.api.command.exception.EmptyAccountOwnerException;
+import com.pwittchen.money.transfer.api.command.exception.NegativeMoneyValueException;
 import com.pwittchen.money.transfer.api.model.Account;
 import com.pwittchen.money.transfer.api.repository.AccountRepository;
 import java.util.Collections;
@@ -82,18 +83,6 @@ public class DefaultCreateAccountCommandTest {
     verify(accountRepository, times(0)).create(account);
   }
 
-  @Test
-  public void shouldProduceAppropriateErrorMessageForEmptyAccountNumber() {
-    // given
-    String expectedMessage = "Account number is empty";
-
-    // when
-    EmptyAccountNumberException exception = new EmptyAccountNumberException();
-
-    // then
-    assertThat(exception.getMessage()).isEqualTo(expectedMessage);
-  }
-
   @Test(expected = AccountAlreadyExistsException.class)
   public void shouldNotCreateAccountWhenAccountAlreadyExists() {
     // given
@@ -145,5 +134,34 @@ public class DefaultCreateAccountCommandTest {
 
     // then
     verify(accountRepository, times(0)).create(account);
+  }
+
+  @Test(expected = NegativeMoneyValueException.class)
+  public void shouldNotCreateAccountWhenMoneyIsNegative() {
+    // given
+    Account account = Account
+        .builder()
+        .owner("testOwner")
+        .number(UUID.randomUUID().toString())
+        .money(Money.of(CurrencyUnit.EUR, -10.00))
+        .build();
+
+    // when
+    createAccountCommand.run(account);
+
+    // then
+    verify(accountRepository, times(0)).create(account);
+  }
+
+  @Test
+  public void shouldProduceAppropriateErrorMessageForEmptyAccountNumber() {
+    // given
+    String expectedMessage = "Account number is empty";
+
+    // when
+    EmptyAccountNumberException exception = new EmptyAccountNumberException();
+
+    // then
+    assertThat(exception.getMessage()).isEqualTo(expectedMessage);
   }
 }

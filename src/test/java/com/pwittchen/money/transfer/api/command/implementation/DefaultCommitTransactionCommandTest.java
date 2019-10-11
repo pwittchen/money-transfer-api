@@ -3,6 +3,7 @@ package com.pwittchen.money.transfer.api.command.implementation;
 import com.pwittchen.money.transfer.api.command.CommitTransactionCommand;
 import com.pwittchen.money.transfer.api.command.exception.AccountNotExistsException;
 import com.pwittchen.money.transfer.api.command.exception.DifferentCurrencyException;
+import com.pwittchen.money.transfer.api.command.exception.NegativeMoneyValueException;
 import com.pwittchen.money.transfer.api.command.exception.NotEnoughMoneyException;
 import com.pwittchen.money.transfer.api.command.exception.TransferToTheSameAccountException;
 import com.pwittchen.money.transfer.api.model.Account;
@@ -191,6 +192,31 @@ public class DefaultCommitTransactionCommandTest {
 
     when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
     when(accountRepository.get(receiver.number())).thenReturn(Optional.empty());
+
+    // when
+    commitTransactionCommand.run(transaction);
+
+    // then
+    verify(accountRepository, times(0)).transfer(sender, receiver, transaction.money());
+    verify(transactionRepository, times(0)).create(transaction);
+  }
+
+  @Test(expected = NegativeMoneyValueException.class)
+  public void shouldNotCommitTransactionWhenMoneyValueIsNegative() {
+    // given
+    Account sender = spy(createSenderAccount(Money.of(CurrencyUnit.EUR, 100)));
+    Account receiver = spy(createReceiverAccount(Money.of(CurrencyUnit.EUR, 50)));
+
+    Transaction transaction = Transaction
+        .builder()
+        .id("TR1")
+        .from(sender.number())
+        .to(receiver.number())
+        .money(Money.of(CurrencyUnit.EUR, -10))
+        .build();
+
+    when(accountRepository.get(sender.number())).thenReturn(Optional.of(sender));
+    when(accountRepository.get(receiver.number())).thenReturn(Optional.of(receiver));
 
     // when
     commitTransactionCommand.run(transaction);

@@ -3,6 +3,7 @@ package com.pwittchen.money.transfer.api.command.implementation;
 import com.pwittchen.money.transfer.api.command.CommitTransactionCommand;
 import com.pwittchen.money.transfer.api.command.exception.AccountNotExistsException;
 import com.pwittchen.money.transfer.api.command.exception.DifferentCurrencyException;
+import com.pwittchen.money.transfer.api.command.exception.NegativeMoneyValueException;
 import com.pwittchen.money.transfer.api.command.exception.NotEnoughMoneyException;
 import com.pwittchen.money.transfer.api.command.exception.TransferToTheSameAccountException;
 import com.pwittchen.money.transfer.api.model.Account;
@@ -32,7 +33,7 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
     this.transactionRepository = transactionRepository;
   }
 
-  @Override public void run(Transaction transaction) {
+  @Override public void run(final Transaction transaction) {
     while (transaction.isRunning().get()) {
       Account sender, receiver;
       synchronized (this) {
@@ -55,14 +56,28 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
           sender.lock().unlock();
         }
       }
-      finalizeTransaction(transaction);
+      long stopTime = System.nanoTime() + TIMEOUT;
+
+      if (System.nanoTime() > stopTime) {
+        transaction.isRunning().set(false);
+      }
+
+      try {
+        TimeUnit.NANOSECONDS.sleep(FIXED_DELAY + random.nextLong() % RANDOM_DELAY);
+      } catch (InterruptedException exception) {
+        Thread.currentThread().interrupt();
+        throw new RuntimeException(exception);
+      }
     }
   }
 
-  private void validateTransaction(Transaction transaction) {
-    Account sender = getSender(transaction.from());
-    Account receiver = getReceiver(transaction.to());
+  private void validateTransaction(final Transaction transaction) {
+    final Account sender = getSender(transaction.from());
+    final Account receiver = getReceiver(transaction.to());
 
+    if (transaction.money().isNegative()) {
+      throw new NegativeMoneyValueException();
+    }
     if (sender.money().isLessThan(transaction.money())) {
       throw new NotEnoughMoneyException(sender.number());
     }
@@ -74,7 +89,7 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
     }
   }
 
-  @NotNull private Account getSender(String number) {
+  @NotNull private Account getSender(final String number) {
     final Optional<Account> from = accountRepository.get(number);
     if (from.isPresent()) {
       return from.get();
@@ -83,27 +98,12 @@ public class DefaultCommitTransactionCommand implements CommitTransactionCommand
     }
   }
 
-  @NotNull private Account getReceiver(String number) {
+  @NotNull private Account getReceiver(final String number) {
     final Optional<Account> to = accountRepository.get(number);
     if (to.isPresent()) {
       return to.get();
     } else {
       throw new AccountNotExistsException(number);
-    }
-  }
-
-  private void finalizeTransaction(Transaction transaction) {
-    long stopTime = System.nanoTime() + TIMEOUT;
-
-    if (System.nanoTime() > stopTime) {
-      transaction.isRunning().set(false);
-    }
-
-    try {
-      TimeUnit.NANOSECONDS.sleep(FIXED_DELAY + random.nextLong() % RANDOM_DELAY);
-    } catch (InterruptedException exception) {
-      Thread.currentThread().interrupt();
-      throw new RuntimeException(exception);
     }
   }
 }

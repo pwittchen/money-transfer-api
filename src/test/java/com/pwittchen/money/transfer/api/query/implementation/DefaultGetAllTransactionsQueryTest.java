@@ -1,31 +1,39 @@
 package com.pwittchen.money.transfer.api.query.implementation;
 
-import com.pwittchen.money.transfer.api.query.GetAllTransactionsQuery;
+import com.pwittchen.money.transfer.api.model.Transaction;
 import com.pwittchen.money.transfer.api.repository.TransactionRepository;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.verify;
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultGetAllTransactionsQueryTest {
 
-  private GetAllTransactionsQuery query;
-
   @Mock private TransactionRepository transactionRepository;
+
+  private DefaultGetAllTransactionsQuery query;
 
   @Before public void setUp() {
     query = new DefaultGetAllTransactionsQuery(transactionRepository);
   }
 
-  @Test public void shouldRunQuery() {
+  @Test public void shouldGetAllTransactions() {
+    // given
+    BlockingQueue<Transaction> queue = new LinkedBlockingQueue<>();
+    queue.add(Transaction.builder().build());
+    when(transactionRepository.getAll()).thenReturn(queue);
+
     // when
-    query.run();
+    BlockingQueue<Transaction> transactions = query.run();
 
     // then
-    verify(transactionRepository).getAll();
+    assertThat(transactions).isNotEmpty();
   }
 }

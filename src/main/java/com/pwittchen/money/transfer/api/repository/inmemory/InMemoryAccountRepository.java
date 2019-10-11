@@ -53,12 +53,4 @@ public class InMemoryAccountRepository implements AccountRepository {
 
     accounts.put(account.number(), updatedAccount);
   }
-
-  @Override public void delete(String number) {
-    accounts.remove(number);
-  }
-
-  @Override public void clear() {
-    accounts.clear();
-  }
 }

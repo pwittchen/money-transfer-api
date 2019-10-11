@@ -26,7 +26,6 @@ public class InMemoryAccountRepositoryTest {
 
   @Before public void setUp() {
     accountRepository = new InMemoryAccountRepository();
-    accountRepository.clear();
   }
 
   @Test public void shouldGetEmptyResultWhenAccountDoesNotExist() {
@@ -116,32 +115,6 @@ public class InMemoryAccountRepositoryTest {
     //noinspection OptionalGetWithoutIsPresent
     Money actualAmount = accountRepository.get(receiver.number()).get().money();
     assertThat(actualAmount).isEqualTo(expectedAmount);
-  }
-
-  @Test public void shouldDeleteAccount() {
-    // given
-    Account account = createAccount();
-    accountRepository.create(account);
-
-    // when
-    accountRepository.delete(account.number());
-
-    // then
-    assertThat(accountRepository.get(account.number()).isPresent()).isFalse();
-  }
-
-  @Test public void shouldClearAccounts() {
-    // given
-    accountRepository.create(createAccount());
-    accountRepository.create(createAccount());
-
-    assertThat(accountRepository.getAll().size()).isEqualTo(2);
-
-    // when
-    accountRepository.clear();
-
-    // then
-    assertThat(accountRepository.getAll().isEmpty()).isTrue();
   }
 
   private Account createAccount() {

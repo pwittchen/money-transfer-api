@@ -4,10 +4,6 @@ import io.javalin.http.Context;
 
 public class DefaultContextWrapper implements ContextWrapper {
 
-  @Override public String pathParam(Context context, String param) {
-    return context.pathParam(param);
-  }
-
   @Override public String formParam(Context context, String param) {
     return context.formParam(param);
   }

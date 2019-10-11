@@ -11,7 +11,7 @@ public class Account {
   private transient final Lock lock;
   public final String number;
   public final String owner;
-  public Money money;
+  public final Money money;
   public final LocalDateTime createdAt;
 
   private Account() {
